@@ -12,6 +12,7 @@ note right of u: Interaction A
     w->>b: Get: short-url
     activate b
     activate d
+    b->>b: generate rash
     alt validate if url exists
         b->>d: Update url entry
     else
