@@ -2,24 +2,32 @@
 sequenceDiagram
 
 participant u as User
+box rgba(0,100,100,0.25) short-url-app
 participant w as WebApp
-participant b as BackEnd
+participant b as app-backend
+end
+box rgba(100,100,0,0.25) short-url-service
+participant s as short-backend
 participant d as DB
+end
 rect rgba(0,0,0,0.25)
 note right of u: Interaction A
     u->>w: Make this url short:<br/> www.test.com?isTest=true
     activate w
     w->>b: Get: short-url
     activate b
+    b->>s: create entry with prefix<br/>'a-'
+    activate s
     activate d
-    b->>b: generate rash
-    alt validate if url exists
-        b->>d: Update url entry
+    alt validate if rash exists
+        s->>d: Update url entry
     else
-        b->>d: Create url entry
+        s->>d: Create url entry
     end
-    d->>b: short-url entry
+    d->>s: short-url entry
     deactivate d
+    s->>b: short-url result
+    deactivate s
     b->>w: short-url result
     deactivate b
     w->>u: short-url.example/slashRash
@@ -27,18 +35,18 @@ note right of u: Interaction A
 end
 rect rgba(0,100,0,0.25)
 note right of u: Interaction B
-    u->>b: get me this url destination:<br/>short-url.example/slashRash
-    activate b
-    b->>d: get url entry
+    u->>s: user access url:<br/>short-url.example/slashRash
+    activate s
+    s->>d: get url entry
     activate d
-    d->>b: url entry
+    d->>s: url entry
     deactivate d
-    b->>b: validate entry
+    s->>s: validate entry
     alt entry is valid
-        b->>u: redirect to destination
+        s->>u: redirect to destination
     else
-        b->>u: redirect to error page
+        s->>u: redirect to error page
     end
-    deactivate b
+    deactivate s
 end
 ```

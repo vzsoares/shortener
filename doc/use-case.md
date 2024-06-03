@@ -1,7 +1,7 @@
 
 ```mermaid
 flowchart LR
-    subgraph Short url service
+    subgraph Short url app
     uc1((Share short url))
     uc2((Create short url))
     uc3((Access short url))
