@@ -30,12 +30,12 @@ note right of u: Interaction A
     deactivate s
     b->>w: short-url result
     deactivate b
-    w->>u: short-url.example/slashRash
+    w->>u: short-url.example/a-rash
     deactivate w
 end
 rect rgba(0,100,0,0.25)
 note right of u: Interaction B
-    u->>s: user access url:<br/>short-url.example/slashRash
+    u->>s: user access url:<br/>short-url.example/a-rash
     activate s
     s->>d: get url entry
     activate d
