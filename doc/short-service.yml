@@ -1,0 +1,44 @@
+openapi: "3.0.2"
+info:
+  title: Short service
+  description: url shortener service
+  contact:
+    name: Vinicius Zenha
+    email: vinicius.zenha@gmail.com
+  version: "1.0"
+servers:
+  - url: https://short.zenhalab.com/
+    description: server
+  - url: http:localhost:4000/dev
+    description: local server
+paths:
+  /{rash}:
+    get:
+      parameters:
+        - in: "path"
+          name: rash
+          example: "a-dasf3@152s"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "301":
+          description: successful redirect
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  Location:
+                    type: "string"
+                    example: "https://www.destination.com"
+        "307":
+          description: failed redirect
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  Location:
+                    type: "string"
+                    example: "short.com/404"
