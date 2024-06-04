@@ -1,19 +1,22 @@
 openapi: "3.0.2"
 info:
-  title: Short service
+  title: Short app
   description: url shortener service
   contact:
     name: Vinicius Zenha <vinicius.zenha@gmail.com>
     email: vinicius.zenha@gmail.com
   version: "1.0"
-security:
-  - apiKey: []
 servers:
-  - url: https://api.zenhalab.com/shortener/v1
+  - url: https://short.zenhalab.com
     description: server
-  - url: http:localhost:4000/dev
+  - url: http:localhost:3000
     description: local server
 paths:
+  /:
+    get:
+      responses:
+        "200":
+          description: webapp
   /{rash}:
     get:
       tags:
@@ -26,19 +29,26 @@ paths:
           schema:
             type: "string"
       responses:
-        "200":
+        "301":
           description: successful redirect
           content:
             application/json:
               schema:
                 type: "object"
                 properties:
-                  destination:
+                  Location:
                     type: "string"
                     example: "https://www.destination.com"
-                  status:
+        "307":
+          description: failed redirect
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  Location:
                     type: "string"
-                    example: ACTIVE
+                    example: "short.com/404"
   /url:
     post:
       tags:
@@ -51,10 +61,10 @@ paths:
               type: "object"
               properties:
                 rash:
-                  type: "string"
+                  type: string
                   example: a-51asd34123gg
                 destination:
-                  type: "string"
+                  type: string
                   example: https://google.com
       responses:
         "200":
@@ -67,9 +77,3 @@ paths:
                   url:
                     type: string
                     example: https://s.zenhalab.com/a-3am@sdkm2
-components:
-  securitySchemes:
-    apiKey:
-      type: "apiKey"
-      name: "x-api-key"
-      in: "header"

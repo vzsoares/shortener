@@ -9,6 +9,7 @@ end
 box rgba(100,100,0,0.25) short-url-service
 participant s as short-backend
 participant d as DB
+participant r as scheduled-routine
 end
 rect rgba(0,0,0,0.25)
 note right of u: Interaction A
@@ -16,15 +17,16 @@ note right of u: Interaction A
     activate w
     w->>b: Get: short-url
     activate b
-    b->>s: create entry with prefix<br/>'a-'
+    b->>b: generate rash
+    b->>s: create entry
     activate s
+    note over s,b: create unique entry<br/>with ttl 30 days and<br/>prefix a-
     activate d
     alt validate if rash exists
-        s->>d: Update url entry
+        s->>d: do nothing
     else
         s->>d: Create url entry
     end
-    d->>s: short-url entry
     deactivate d
     s->>b: short-url result
     deactivate s
@@ -35,18 +37,30 @@ note right of u: Interaction A
 end
 rect rgba(0,100,0,0.25)
 note right of u: Interaction B
-    u->>s: user access url:<br/>short-url.example/a-rash
+    u->>b: user access url:<br/>short-url.example/a-rash
+    activate b
+    b->>s: get url entry
     activate s
-    s->>d: get url entry
     activate d
-    d->>s: url entry
+    s->d: 
     deactivate d
-    s->>s: validate entry
-    alt entry is valid
-        s->>u: redirect to destination
-    else
-        s->>u: redirect to error page
-    end
+    s->>b: url entry
     deactivate s
+    b->>b: validate entry
+    alt entry is valid
+        b->>u: redirect to destination
+    else entry is expired
+        b->>u: redirect to expired page
+    else
+        b->>u: redirect to error page
+    end
+    deactivate b
+end
+rect rgba(0,100,100,0.25)
+note right of s: Business logic
+    loop Every week
+    r->>d: UPDATE urls WHERE updatedAt + ttl <= today<br/> ANT NOT expired and ttl != 0 to expired
+    r->>d: DELETE urls WHERE updatedAt + ttl <= today<br/> AND expired AND ttl != 0
+    end
 end
 ```
