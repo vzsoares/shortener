@@ -32,35 +32,30 @@ paths:
             type: "string"
       responses:
         "301":
-          description: successful redirect
+          description: redirect
           content:
             application/json:
               schema:
-                type: "object"
-                properties:
-                  Location:
-                    type: "string"
-                    example: "https://www.destination.com"
-        "307":
-          description: not found redirect
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  Location:
-                    type: "string"
-                    example: "https://short.zenhalab.com/404"
-        "308":
-          description: expired redirect
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  Location:
-                    type: "string"
-                    example: "https://short.zenhalab.com/oops"                   
+                oneOf:
+                  - type: "object"
+                    description: successful redirect
+                    properties:
+                      Location:
+                        type: "string"
+                        example: "https://www.destination.com"
+                  - type: "object"
+                    description: not found redirect
+                    properties:
+                      Location:
+                        type: "string"
+                        example: "https://www.destination.com"
+                  - type: "object"
+                    description: expired redirect
+                    properties:
+                      Location:
+                        type: "string"
+                        example: "https://short.zenhalab.com/oops"  
+                     
   /url:
     post:
       tags:
