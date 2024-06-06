@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Short app
-  description: url shortener service
+  description: url shortener app
   contact:
     name: Vinicius Zenha <vinicius.zenha@gmail.com>
     email: vinicius.zenha@gmail.com
@@ -14,6 +14,8 @@ servers:
 paths:
   /:
     get:
+      tags:
+        - web
       responses:
         "200":
           description: webapp
@@ -40,7 +42,7 @@ paths:
                     type: "string"
                     example: "https://www.destination.com"
         "307":
-          description: failed redirect
+          description: not found redirect
           content:
             application/json:
               schema:
@@ -48,7 +50,17 @@ paths:
                 properties:
                   Location:
                     type: "string"
-                    example: "short.com/404"
+                    example: "https://short.zenhalab.com/404"
+        "308":
+          description: expired redirect
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  Location:
+                    type: "string"
+                    example: "https://short.zenhalab.com/oops"                   
   /url:
     post:
       tags:
@@ -60,9 +72,6 @@ paths:
             schema:
               type: "object"
               properties:
-                rash:
-                  type: string
-                  example: a-51asd34123gg
                 destination:
                   type: string
                   example: https://google.com
@@ -76,4 +85,4 @@ paths:
                 properties:
                   url:
                     type: string
-                    example: https://s.zenhalab.com/a-3am@sdkm2
+                    example: https://short.zenhalab.com/a-3am@sdkm2
