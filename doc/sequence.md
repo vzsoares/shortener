@@ -59,8 +59,9 @@ end
 rect rgba(0,100,100,0.25)
 note right of s: Business logic
     loop Every week
-    r->>d: UPDATE urls WHERE updatedAt + ttl <= today<br/> ANT NOT expired and ttl != 0 to expired
-    r->>d: DELETE urls WHERE updatedAt + ttl <= today<br/> AND expired AND ttl != 0
+    r->>s: /url/ops/cleanup-expired
+    s->>d: UPDATE urls WHERE updatedAt + ttl <= today<br/> ANT NOT expired and ttl != 0 to expired
+    s->>d: DELETE urls WHERE updatedAt + ttl <= today<br/> AND expired AND ttl != 0
     end
 end
 ```

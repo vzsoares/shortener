@@ -7,17 +7,46 @@ info:
     email: vinicius.zenha@gmail.com
   version: "1.0"
 security:
-  - apiKey: []
+  - apiKeyB2: []
 servers:
   - url: https://api.zenhalab.com/shortener/v1
     description: server
   - url: http:localhost:4000/dev
     description: local server
 paths:
-  /{rash}:
+  /url:
+    post:
+      tags:
+        - url
+      description: Creates short url entry;<br/>WILL NOT fail IF already exists. Instead WILL return current existing entry;<br/>IF expired then WILL reactivate it
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                rash:
+                  $ref: "#/components/schemas/short_url/properties/rash"
+                destination:
+                  $ref: "#/components/schemas/short_url/properties/destination"
+                ttl_hour:
+                  $ref: "#/components/schemas/short_url/properties/ttl_hour"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response"
+                properties:
+                  data:
+                    $ref: "#/components/schemas/short_url"
+
+  /url/{rash}:
     get:
       tags:
         - url
+      description: get short url entry
       parameters:
         - in: "path"
           name: rash
@@ -27,49 +56,92 @@ paths:
             type: "string"
       responses:
         "200":
-          description: successful redirect
+          description: ok
           content:
             application/json:
               schema:
-                type: "object"
+                $ref: "#/components/schemas/response"
                 properties:
-                  destination:
-                    type: "string"
-                    example: "https://www.destination.com"
-                  status:
-                    type: "string"
-                    example: ACTIVE
-  /url:
+                  data:
+                    $ref: "#/components/schemas/short_url"
+        "404":
+          description: not found
+
+  /url/ops/cleanup-expired:
     post:
+      description: expires and or excludes urls from the db
       tags:
-        - url
-      description: Create short url entry
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: "object"
-              properties:
-                rash:
-                  type: "string"
-                  example: a-51asd34123gg
-                destination:
-                  type: "string"
-                  example: https://google.com
+        - url operations
+      security:
+        - apiKeyA4: []
       responses:
         "200":
-          description: OK
-          content:
-            application/json:
+          headers:
+            "Access-Control-Allow-Origin":
+              description: cors
               schema:
-                type: "object"
-                properties:
-                  url:
-                    type: string
-                    example: https://s.zenhalab.com/a-3am@sdkm2
+                type: string
+          description: ok
+
 components:
   securitySchemes:
-    apiKey:
+    apiKeyB2:
+      description: organization api integration api key B2
       type: "apiKey"
       name: "x-api-key"
       in: "header"
+    apiKeyA4:
+      description: organization api integration api key A4
+      type: "apiKey"
+      name: "x-api-key"
+      in: "header"
+  schemas:
+    short_url:
+      type: "object"
+      required:
+        - "destination"
+        - "rash"
+      properties:
+        destination:
+          type: "string"
+          example: "https://www.destination.com"
+        rash:
+          type: "string"
+          example: "a-51asd34123gg"
+        status:
+          type: "string"
+          enum:
+            - ACTIVE
+            - EXPIRED
+          example: ACTIVE
+        ttl_hour:
+          type: "number"
+          example: 720
+          default: 0
+          description: time to expire, then time to exclude; So for example for a ttl of 720 hours (30 days) the entry will be accessible for 30 days and then excluded after 60 days
+        createdAt:
+          type: "string"
+          description: iso date string
+          example: "2011-10-05T14:48:00.000Z"
+        updatedAt:
+          type: "string"
+          description: iso date string
+          example: "2011-10-05T14:48:00.000Z"
+    response:
+      type: "object"
+      properties:
+        data:
+          type: "object"
+        message:
+          type: string
+          enum:
+            - OK
+            - Already created
+          example: OK
+        code:
+          type: string
+          enum:
+            - S200
+            - S409
+            - E409
+          example: "S200"
