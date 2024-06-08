@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
-  title: Short service
-  description: url shortener service
+  title: Url Shortener Service
+  description: Url Shortener Service
   contact:
     name: Vinicius Zenha <vinicius.zenha@gmail.com>
     email: vinicius.zenha@gmail.com

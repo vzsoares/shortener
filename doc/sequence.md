@@ -2,14 +2,14 @@
 sequenceDiagram
 
 participant u as User
-box rgba(0,100,100,0.25) short-url-app
+box rgba(0,100,100,0.25) Url Shortener Application
 participant w as WebApp
-participant b as app-backend
+participant b as Application BFF
 end
-box rgba(100,100,0,0.25) short-url-service
-participant s as short-backend
+box rgba(100,100,0,0.25) Url Shortener Service
+participant s as Service Backend
 participant d as DB
-participant r as scheduled-routine
+participant r as Scheduled Routine
 end
 rect rgba(0,0,0,0.25)
 note right of u: Interaction A
@@ -59,9 +59,9 @@ end
 rect rgba(0,100,100,0.25)
 note right of s: Business logic
     loop Every week
-    r->>s: /url/ops/cleanup-expired
-    s->>d: UPDATE urls WHERE updatedAt + ttl <= today<br/> ANT NOT expired and ttl != 0 to expired
-    s->>d: DELETE urls WHERE updatedAt + ttl <= today<br/> AND expired AND ttl != 0
+    r->>s: POST /url/ops/cleanup-expired
+    s->>d: Expires old urls
+    s->>d: Delete old expired urls
     end
 end
 ```

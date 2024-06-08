@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
-  title: Short app
-  description: url shortener app
+  title: Url Shortener BFF
+  description: Url Shortener Application BFF
   contact:
     name: Vinicius Zenha <vinicius.zenha@gmail.com>
     email: vinicius.zenha@gmail.com
