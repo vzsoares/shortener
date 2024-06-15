@@ -4,6 +4,7 @@
 dist
 tmp
 /out-tsc
+apps/ShortenerService/ShortenerService
 
 # dependencies
 node_modules
