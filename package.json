@@ -1,14 +1,20 @@
 {
-    "name": "@shortener/source",
-    "version": "0.0.0",
-    "license": "MIT",
-    "scripts": {},
-    "private": true,
-    "dependencies": {},
-    "devDependencies": {
-        "@nx-go/nx-go": "^3.1.0",
-        "@nx/devkit": "19.2.2",
-        "@nx/workspace": "19.2.2",
-        "nx": "19.2.2"
-    }
+  "name": "@shortener/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@nx-go/nx-go": "^3.1.0",
+    "@nx/devkit": "19.2.2",
+    "@nx/workspace": "19.2.2",
+    "@pellegrims/nx-remotecache-s3": "^7.1.0",
+    "husky": "^9.1.4",
+    "nx": "19.2.2"
+  }
 }

@@ -1,0 +1,4 @@
+#!bin/bash
+
+nx run-many -t lint build test --output-style=static
+
