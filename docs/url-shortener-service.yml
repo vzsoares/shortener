@@ -67,22 +67,6 @@ paths:
         "404":
           description: not found
 
-  /url/ops/cleanup-expired:
-    post:
-      description: expires and or excludes urls from the db
-      tags:
-        - url operations
-      security:
-        - apiKeyA4: []
-      responses:
-        "200":
-          headers:
-            "Access-Control-Allow-Origin":
-              description: cors
-              schema:
-                type: string
-          description: ok
-
 components:
   securitySchemes:
     apiKeyB2:
