@@ -28,7 +28,7 @@ Deployment_Node(aws, "us-east-1", "aws"){
 
 
 Rel(sservice, db, "Reads from and writes to", "ssh")
-Rel(frontend, sapp, "uses", "https")
+Rel(frontend, apigatewayN, "uses", "https")
 Rel(cloudfront, frontend, "forwards request", "https")
 Rel(sapp, sservice, "uses", "https")
 Rel(apigatewayN, sapp, "forwards request", "https")
