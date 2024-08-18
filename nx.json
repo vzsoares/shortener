@@ -1,19 +1,81 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "namedInputs": {
-        "default": ["{projectRoot}/**/*", "sharedGlobals"],
-        "production": [
+        "default": ["sharedGlobals"],
+        "prod": [
             "default",
-            "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-            "!{projectRoot}/tsconfig.spec.json",
-            "!{projectRoot}/.eslintrc.json",
-            "!{projectRoot}/eslint.config.js",
-            "!{projectRoot}/jest.config.[jt]s",
-            "!{projectRoot}/src/test-setup.[jt]s",
-            "!{projectRoot}/test-setup.[jt]s"
+            "!{projectRoot}/**/?(*.)+(spec|test).ts",
+            "!{projectRoot}/**/*_test.go"
         ],
-        "sharedGlobals": ["{workspaceRoot}/go.work"]
+        "sharedGlobals": [
+            "{workspaceRoot}/.github/*",
+            "{workspaceRoot}/go.work",
+            "{projectRoot}/**/*",
+            "{workspaceRoot}/.gitignore",
+            "{projectRoot}/**/*.ts",
+            "{projectRoot}/**/*.go",
+            "!{projectRoot}/**/*.md",
+            "!{projectRoot}/dist",
+            "!{projectRoot}/tmp",
+            "!{projectRoot}/**/function.zip",
+            "!{projectRoot}/**/bootstrap"
+        ]
+    },
+    "workspaceLayout": {
+        "appsDir": "apps",
+        "libsDir": "libs"
+    },
+    "defaultBase": "origin/prod",
+    "targetDefaults": {
+        "build": {
+            "cache": true,
+            "dependsOn": ["lint", "test", "pre-build"],
+            "outputs": [
+                "{projectRoot}/dist",
+                "{projectRoot}/functions/**/function.zip",
+                "{projectRoot}/functions/**/bootstrap"
+            ],
+            "configurations": {
+                "prod": {
+                    "args": ["STAGE=prod"]
+                },
+                "dev": {
+                    "args": ["STAGE=dev"]
+                }
+            }
+        },
+        "test": {
+            "cache": true
+        },
+        "lint": {
+            "cache": true
+        },
+        "deploy": {
+            "cache": false,
+            "dependsOn": ["^build", "build"],
+            "configurations": {
+                "prod": {
+                    "args": ["STAGE=prod"]
+                },
+                "dev": {
+                    "args": ["STAGE=dev"]
+                }
+            }
+        }
     },
     "plugins": ["@nx-go/nx-go"],
-    "generators": {}
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "@pellegrims/nx-remotecache-s3",
+            "options": {
+                "cacheableOperations": ["build", "test", "lint", "e2e"],
+                "bucket": "zenhalab-artifacts-dev",
+                "name": "zenhalab-artifacts-dev",
+                "prefix": "cache/nx/microservices/",
+                "region": "us-east-1",
+                "forcePathStyle": true,
+                "readOnly": false
+            }
+        }
+    }
 }
