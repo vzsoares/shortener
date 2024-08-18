@@ -817,7 +817,7 @@
   dependencies:
     "@nx/workspace" "19.2.2"
 
-"@nx-go/nx-go@^3.1.0":
+"@nx-go/nx-go@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@nx-go/nx-go/-/nx-go-3.2.0.tgz#e6614c952ad71b62a088eaf80769dd619116d884"
   integrity sha512-oGr7kCBta/PdLKKPa2pRGWHxzPAbTvS1eZA+3NqEniw7JScVn+2w+6A/dctyPRidBQMwlpUO4mgfHzbwwt0xiQ==
