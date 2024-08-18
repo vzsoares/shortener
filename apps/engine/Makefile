@@ -12,7 +12,7 @@ AWK ?= awk
 GO ?= go
 MAKE ?= make
 
-FUNCTIONS := test
+FUNCTIONS := create-url
 
 STAGE ?= dev
 
