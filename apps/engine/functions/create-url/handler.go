@@ -42,5 +42,28 @@ func Handler(ctx context.Context, event events.APIGatewayV2HTTPRequest) (events.
 		panic(err.Error())
 	}
 
+	qinput := &dynamodb.QueryInput{
+		TableName:              &TableName,
+		KeyConditionExpression: aws.String("#name = :name"),
+		ExpressionAttributeValues: map[string]ddbtypes.AttributeValue{
+			":name": &ddbtypes.AttributeValueMemberS{Value: "Ali"},
+		},
+		ExpressionAttributeNames: map[string]string{
+			"#name": "Name",
+		},
+	}
+
+	qres, err := client.Query(ctx, qinput)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	qbody, err := json.Marshal(qres)
+	if err != nil {
+		panic(err.Error())
+	}
+	println(string(qbody))
+	println()
+
 	return events.APIGatewayV2HTTPResponse{StatusCode: 200, Body: string(body)}, nil
 }
