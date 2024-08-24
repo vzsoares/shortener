@@ -1,9 +1,9 @@
 package main
 
 import (
+	b64 "encoding/base64"
 	"fmt"
 	"math/rand"
-	"os"
 	"testing"
 	"time"
 
@@ -13,19 +13,20 @@ import (
 var apiUrl string
 
 func init() {
-	_apiUrl, ok := os.LookupEnv("API_URL")
-	if !ok {
-		panic("Can't find API_URL environment variable")
-	}
+	// _apiUrl, ok := os.LookupEnv("API_URL")
+	// if !ok {
+	// 	panic("Can't find API_URL environment variable")
+	// }
 
-	apiUrl = _apiUrl
+	// apiUrl = _apiUrl
+	apiUrl = "http://localhost:8000"
 }
 
 func randomString(length int) string {
-	rand.Seed(time.Now().UnixNano())
-	b := make([]byte, length)
-	rand.Read(b)
-	return fmt.Sprintf("%x", b)[:length]
+	u := time.Now().UnixNano()
+	s := fmt.Sprint(u)
+	sEnc := b64.StdEncoding.EncodeToString([]byte(s))
+	return fmt.Sprintf("%x", sEnc)[:length]
 }
 
 func getRandomProduct() types.Url {
@@ -39,6 +40,8 @@ func getRandomProduct() types.Url {
 }
 
 func TestFlow(t *testing.T) {
+	s := randomString(10)
+	println(s)
 	// TODO create table
 	// TODO create item
 	// TODO get item
