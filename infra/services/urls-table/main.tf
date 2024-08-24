@@ -13,26 +13,6 @@ resource "aws_dynamodb_table" "urls-table" {
     type = "S"
   }
 
-#  attribute {
-#    name = "Destination"
-#    type = "S"
-#  }
-#
-#  attribute {
-#    name = "CreatedAt"
-#    type = "N"
-#  }
-#
-#  attribute {
-#    name = "UpdatedAt"
-#    type = "N"
-#  }
-#
-#  attribute {
-#    name = "Version"
-#    type = "N"
-#  }
-
   ttl {
     attribute_name = "Ttl"
     enabled        = true
@@ -42,5 +22,28 @@ resource "aws_dynamodb_table" "urls-table" {
     Terraform = "true"
     Stage     = var.stage
   }
+
+  #####################################
+  ### other atributes for reference ###
+  #  attribute {
+  #    name = "Destination"
+  #    type = "S"
+  #  }
+  #
+  #  attribute {
+  #    name = "CreatedAt"
+  #    type = "N"
+  #  }
+  #
+  #  attribute {
+  #    name = "UpdatedAt"
+  #    type = "N"
+  #  }
+  #
+  #  attribute {
+  #    name = "Version"
+  #    type = "N"
+  #  }
+  #####################################
 }
 
