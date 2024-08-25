@@ -3,10 +3,12 @@ package main
 import (
 	"apps/engine/types"
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 
 	ddbtypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -71,19 +73,34 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 
 func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 	// TODO conditional put, if exists then update Version,UpdatedAt, ...rest
-	item, err := attributevalue.MarshalMap(url)
-	if err != nil {
-		panic(err.Error())
-	}
+	update := expression.Set(
+		expression.Name("Rash"),
+		expression.IfNotExists(
+			expression.Name("Rash"), expression.Value(url.Rash),
+		),
+	)
+	expr, err := expression.NewBuilder().WithUpdate(update).Build()
 
-	_, err = s.Client.PutItem(ctx, &dynamodb.PutItemInput{
+	res, err := s.Client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
 		TableName: &TableName,
-		Item:      item,
+		Key: map[string]ddbtypes.AttributeValue{
+			"Rash": &ddbtypes.AttributeValueMemberS{Value: url.Rash},
+		},
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		UpdateExpression:          expr.Update(),
+		ReturnValues:              ddbtypes.ReturnValueUpdatedNew,
 	})
 	if err != nil {
 		panic(err.Error())
 	}
+	b := &struct{}{}
 
+	err = attributevalue.UnmarshalMap(res.Attributes, b)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("***** %v", b)
 	return err
 }
 
