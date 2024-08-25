@@ -8,7 +8,9 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+
 	ddbtypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
@@ -45,9 +47,28 @@ func NewDynamoStore(ctx context.Context) *DynamoStore {
 	}
 }
 
-func (*DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) {
-	fk := &types.Url{}
-	return fk, nil
+func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) {
+	input := &dynamodb.GetItemInput{
+		TableName: &TableName,
+		Key: map[string]ddbtypes.AttributeValue{
+			"Rash": &ddbtypes.AttributeValueMemberS{Value: rash},
+		}}
+
+	res, err := s.Client.GetItem(ctx, input)
+	if err != nil {
+		panic(err.Error())
+	}
+	if res.Item == nil {
+		panic("404")
+	}
+
+	item := types.Url{}
+	err = attributevalue.UnmarshalMap(res.Item, &item)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return &item, nil
 }
 
 func (*DynamoStore) Put(ctx context.Context, item *types.Url) (bool, error) {
