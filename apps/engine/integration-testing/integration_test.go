@@ -1,13 +1,19 @@
 package main
 
 import (
+	"context"
 	b64 "encoding/base64"
 	"fmt"
 	"math/rand"
 	"testing"
 	"time"
 
+	store "apps/engine/store/url"
 	"apps/engine/types"
+
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	ddbtypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/aws/aws-sdk-go/aws"
 )
 
 var apiUrl string
@@ -42,6 +48,46 @@ func getRandomProduct() types.Url {
 func TestFlow(t *testing.T) {
 	s := randomString(10)
 	println(s)
+
+	fk := &types.Url{
+		Rash:        "123456",
+		Destination: "destin.com",
+		CreatedAt:   0,
+		Ttl:         0,
+		UpdatedAt:   0,
+	}
+	ctx := context.TODO()
+	store := store.NewDynamoStore(ctx)
+	created, err := store.Client.CreateTable(ctx, &dynamodb.CreateTableInput{
+		AttributeDefinitions: []ddbtypes.AttributeDefinition{{
+			AttributeName: aws.String("Destination"),
+			AttributeType: ddbtypes.ScalarAttributeTypeS,
+		}, {
+			AttributeName: aws.String("CreatedAt"),
+			AttributeType: ddbtypes.ScalarAttributeTypeN,
+		}, {
+			AttributeName: aws.String("UpdatedAt"),
+			AttributeType: ddbtypes.ScalarAttributeTypeN,
+		}, {
+			AttributeName: aws.String("Ttl"),
+			AttributeType: ddbtypes.ScalarAttributeTypeN,
+		}, {
+			AttributeName: aws.String("Rash"),
+			AttributeType: ddbtypes.ScalarAttributeTypeS,
+		}},
+		KeySchema: []ddbtypes.KeySchemaElement{{
+			AttributeName: aws.String("Rash"),
+			KeyType:       ddbtypes.KeyTypeHash,
+		}},
+		TableName:   aws.String(*store.Table),
+		BillingMode: "PAY PER REQUEST",
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	println(created.TableDescription.TableName)
+	r := store.Put(ctx, fk)
+	println(r)
 	// TODO create table
 	// TODO create item
 	// TODO get item

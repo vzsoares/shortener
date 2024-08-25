@@ -1,8 +1,9 @@
-package main
+package store
 
 import (
 	"apps/engine/types"
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -14,7 +15,7 @@ import (
 	ddbtypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-var TableName = "sample"
+var TableName = "urls"
 var BaseEndpoint = "http://localhost:8000/"
 
 type Store interface {
@@ -75,11 +76,15 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 	// TODO conditional put, if exists then update Version,UpdatedAt, ...rest
 	update := expression.Set(
 		expression.Name("Rash"),
-		expression.IfNotExists(
-			expression.Name("Rash"), expression.Value(url.Rash),
-		),
+		expression.Value(url.Rash),
 	)
+	// expression.IfNotExists(
+	//     expression.Name("Rash"), expression.Value(url.Rash),
+	// ),
 	expr, err := expression.NewBuilder().WithUpdate(update).Build()
+	if err != nil {
+		panic(err.Error())
+	}
 
 	res, err := s.Client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
 		TableName: &TableName,
@@ -92,6 +97,14 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 		ReturnValues:              ddbtypes.ReturnValueUpdatedNew,
 	})
 	if err != nil {
+		a := expr.Names()
+		b := expr.Values()
+		c := expr.Update()
+
+		bs, _ := json.Marshal(a)
+		bss, _ := json.Marshal(b)
+		bsss, _ := json.Marshal(c)
+		fmt.Println(string(bs), string(bss), string(bsss))
 		panic(err.Error())
 	}
 	b := &struct{}{}
