@@ -17,7 +17,7 @@ var BaseEndpoint = "http://localhost:8000/"
 
 type Store interface {
 	Get(context.Context, string) (*types.Url, error)
-	Put(context.Context, *types.Url) (bool, error)
+	Put(context.Context, *types.Url) (string, error)
 	Delete(context.Context, string) error
 }
 
@@ -69,11 +69,23 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 	return &item, nil
 }
 
-func (*DynamoStore) Put(ctx context.Context, item *types.Url) (bool, error) {
+func (*DynamoStore) Put(ctx context.Context, item *types.Url) (string, error) {
 	// TODO conditional put, if exists then update Version,UpdatedAt, ...rest
-	return false, nil
+	return "id", nil
 }
 
-func (*DynamoStore) Delete(ctx context.Context, rash string) error {
-	return nil
+func (s *DynamoStore) Delete(ctx context.Context, rash string) error {
+	input := &dynamodb.DeleteItemInput{
+		TableName: &TableName,
+		Key: map[string]ddbtypes.AttributeValue{
+			"Rash": &ddbtypes.AttributeValueMemberS{Value: rash},
+		},
+	}
+
+	_, err := s.Client.DeleteItem(ctx, input)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return err
 }
