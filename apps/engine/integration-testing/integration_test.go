@@ -36,24 +36,19 @@ func randomString(length int) string {
 	return fmt.Sprintf("%x", sEnc)[:length]
 }
 
-func getRandomProduct() types.Url {
-	return types.Url{
+func getRandomProduct() *types.Url {
+	return &types.Url{
 		Rash:        randomString(10),
 		Destination: randomString(10),
 		Ttl:         rand.Int(),
 		UpdatedAt:   rand.Int(),
 		CreatedAt:   rand.Int(),
+		Version:     1,
 	}
 }
 
 func TestFlow(t *testing.T) {
-	fk := &types.Url{
-		Rash:        randomString(6),
-		Destination: randomString(10),
-		CreatedAt:   0,
-		Ttl:         0,
-		UpdatedAt:   0,
-	}
+	fk := getRandomProduct()
 	ctx := context.TODO()
 	store := store.NewDynamoStore(ctx)
 
@@ -91,8 +86,8 @@ func TestFlow(t *testing.T) {
 				AttributeName: aws.String("Rash"),
 				KeyType:       ddbtypes.KeyTypeHash,
 			}},
-			TableName: aws.String(*store.Table),
-			// BillingMode: "PAY PER REQUEST",
+			TableName:   aws.String(*store.Table),
+			BillingMode: "PAY PER REQUEST",
 			ProvisionedThroughput: &ddbtypes.ProvisionedThroughput{
 				ReadCapacityUnits:  aws.Int64(10),
 				WriteCapacityUnits: aws.Int64(10),

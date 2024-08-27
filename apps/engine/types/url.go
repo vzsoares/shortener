@@ -6,4 +6,5 @@ type Url struct {
 	Ttl         int    `dynamodbav:"ttl" json:"ttl"`
 	UpdatedAt   int    `dynamodbav:"updatedAt" json:"updatedAt"`
 	CreatedAt   int    `dynamodbav:"createdAt,unixtime" json:"createdAt"`
+	Version     int    `dynamodbav:"version" json:"version"`
 }

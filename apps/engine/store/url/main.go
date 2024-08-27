@@ -73,14 +73,24 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 }
 
 func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
-	// TODO conditional put, if exists then update Version,UpdatedAt, ...rest
+	// Destination
 	update := expression.Set(
 		expression.Name("Destination"),
 		expression.Value(url.Rash),
 	)
-	// expression.IfNotExists(
-	//     expression.Name("Rash"), expression.Value(url.Rash),
-	// ),
+	// Version + 1
+	update.Add(expression.Name("Version"), expression.Value(1))
+	// CreatedAt if not set
+	update.Set(expression.Name("CreatedAt"),
+		expression.IfNotExists(expression.Name("CreatedAt"),
+			expression.Value(url.CreatedAt),
+		),
+	)
+	// UpdatedAt
+	update.Set(expression.Name("UpdatedAt"), expression.Value(url.UpdatedAt))
+	// Ttl
+	update.Set(expression.Name("Ttl"), expression.Value(url.Ttl))
+
 	expr, err := expression.NewBuilder().WithUpdate(update).Build()
 	if err != nil {
 		panic(err.Error())
