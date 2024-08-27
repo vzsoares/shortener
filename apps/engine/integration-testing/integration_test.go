@@ -5,6 +5,7 @@ import (
 	b64 "encoding/base64"
 	"fmt"
 	"math/rand"
+	"slices"
 	"testing"
 	"time"
 
@@ -46,46 +47,62 @@ func getRandomProduct() types.Url {
 }
 
 func TestFlow(t *testing.T) {
-	s := randomString(10)
-	println(s)
-
 	fk := &types.Url{
-		Rash:        "123456",
-		Destination: "destin.com",
+		Rash:        randomString(6),
+		Destination: randomString(10),
 		CreatedAt:   0,
 		Ttl:         0,
 		UpdatedAt:   0,
 	}
 	ctx := context.TODO()
 	store := store.NewDynamoStore(ctx)
-	created, err := store.Client.CreateTable(ctx, &dynamodb.CreateTableInput{
-		AttributeDefinitions: []ddbtypes.AttributeDefinition{{
-			AttributeName: aws.String("Destination"),
-			AttributeType: ddbtypes.ScalarAttributeTypeS,
-		}, {
-			AttributeName: aws.String("CreatedAt"),
-			AttributeType: ddbtypes.ScalarAttributeTypeN,
-		}, {
-			AttributeName: aws.String("UpdatedAt"),
-			AttributeType: ddbtypes.ScalarAttributeTypeN,
-		}, {
-			AttributeName: aws.String("Ttl"),
-			AttributeType: ddbtypes.ScalarAttributeTypeN,
-		}, {
-			AttributeName: aws.String("Rash"),
-			AttributeType: ddbtypes.ScalarAttributeTypeS,
-		}},
-		KeySchema: []ddbtypes.KeySchemaElement{{
-			AttributeName: aws.String("Rash"),
-			KeyType:       ddbtypes.KeyTypeHash,
-		}},
-		TableName:   aws.String(*store.Table),
-		BillingMode: "PAY PER REQUEST",
-	})
+
+	listTablesRes, err := store.Client.ListTables(ctx, &dynamodb.ListTablesInput{})
 	if err != nil {
 		panic(err.Error())
 	}
-	println(created.TableDescription.TableName)
+	hasTable := slices.Contains(listTablesRes.TableNames, "urls")
+
+	if !hasTable {
+		created, err := store.Client.CreateTable(ctx, &dynamodb.CreateTableInput{
+			AttributeDefinitions: []ddbtypes.AttributeDefinition{
+				// {
+				// 	AttributeName: aws.String("Destination"),
+				// 	AttributeType: ddbtypes.ScalarAttributeTypeS,
+				// },
+				// {
+				// 	AttributeName: aws.String("CreatedAt"),
+				// 	AttributeType: ddbtypes.ScalarAttributeTypeN,
+				// },
+				// {
+				// 	AttributeName: aws.String("UpdatedAt"),
+				// 	AttributeType: ddbtypes.ScalarAttributeTypeN,
+				// },
+				// {
+				// 	AttributeName: aws.String("Ttl"),
+				// 	AttributeType: ddbtypes.ScalarAttributeTypeN,
+				// },
+				{
+					AttributeName: aws.String("Rash"),
+					AttributeType: ddbtypes.ScalarAttributeTypeS,
+				},
+			},
+			KeySchema: []ddbtypes.KeySchemaElement{{
+				AttributeName: aws.String("Rash"),
+				KeyType:       ddbtypes.KeyTypeHash,
+			}},
+			TableName: aws.String(*store.Table),
+			// BillingMode: "PAY PER REQUEST",
+			ProvisionedThroughput: &ddbtypes.ProvisionedThroughput{
+				ReadCapacityUnits:  aws.Int64(10),
+				WriteCapacityUnits: aws.Int64(10),
+			},
+		})
+		if err != nil {
+			panic(err.Error())
+		}
+		println("created: ", *created.TableDescription.TableName)
+	}
 	r := store.Put(ctx, fk)
 	println(r)
 	// TODO create table
