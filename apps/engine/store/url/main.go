@@ -75,7 +75,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 	// TODO conditional put, if exists then update Version,UpdatedAt, ...rest
 	update := expression.Set(
-		expression.Name("Rash"),
+		expression.Name("Destination"),
 		expression.Value(url.Rash),
 	)
 	// expression.IfNotExists(
@@ -94,7 +94,7 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
 		UpdateExpression:          expr.Update(),
-		ReturnValues:              ddbtypes.ReturnValueUpdatedNew,
+		ReturnValues:              ddbtypes.ReturnValueAllNew,
 	})
 	if err != nil {
 		a := expr.Names()
@@ -107,13 +107,13 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 		fmt.Println(string(bs), string(bss), string(bsss))
 		panic(err.Error())
 	}
-	b := &struct{}{}
+	b := &types.Url{}
 
 	err = attributevalue.UnmarshalMap(res.Attributes, b)
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("***** %v", b)
+	fmt.Printf("***** %+v\n", b)
 	return err
 }
 
