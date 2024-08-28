@@ -29,10 +29,37 @@ func init() {
 	apiUrl = "http://localhost:8000"
 }
 
+func urlsAreEqual(a *types.Url, b *types.Url) bool {
+	if a.Rash != b.Rash {
+		println("rash")
+		return false
+	}
+	if a.Destination != b.Destination {
+		return false
+	}
+	if a.Ttl != b.Ttl {
+		return false
+	}
+	if a.CreatedAt != b.CreatedAt {
+		return false
+	}
+	if a.UpdatedAt != b.UpdatedAt {
+		return false
+	}
+	if a.Version != b.Version {
+		return false
+	}
+	return true
+}
+
 func randomString(length int) string {
 	u := time.Now().UnixNano()
 	s := fmt.Sprint(u)
-	sEnc := b64.StdEncoding.EncodeToString([]byte(s))
+	rs := ""
+	for i := len(s) - 1; i >= 0; i-- {
+		rs = rs + string(s[i])
+	}
+	sEnc := b64.StdEncoding.EncodeToString([]byte(rs))
 	return fmt.Sprintf("%x", sEnc)[:length]
 }
 
@@ -58,6 +85,7 @@ func TestFlow(t *testing.T) {
 	}
 	hasTable := slices.Contains(listTablesRes.TableNames, "urls")
 
+	//create table
 	if !hasTable {
 		created, err := store.Client.CreateTable(ctx, &dynamodb.CreateTableInput{
 			AttributeDefinitions: []ddbtypes.AttributeDefinition{
@@ -98,13 +126,60 @@ func TestFlow(t *testing.T) {
 		}
 		println("created: ", *created.TableDescription.TableName)
 	}
-	r := store.Put(ctx, fk)
-	println(r)
-	// TODO create table
 	// TODO create item
+	fmt.Printf("*****og %+v\n", fk)
+	err = store.Put(ctx, fk)
+	if err != nil {
+		panic(err.Error())
+	}
 	// TODO get item
+	r, err := store.Get(ctx, fk.Rash)
+	if err != nil {
+		panic(err.Error())
+	}
+	ok := urlsAreEqual(r, fk)
+	if !ok {
+		panic("urls not equal")
+	}
 	// TODO update item
+	tm := &types.Url{
+		Rash:      fk.Rash,
+		CreatedAt: fk.CreatedAt,
+		Version:   2,
+	}
+	fk.Destination = randomString(10)
+	fk.UpdatedAt = rand.Int()
+	fk.CreatedAt = rand.Int()
+	fk.Version = rand.Int()
+	fk.Ttl = rand.Int()
+
+	tm.Destination = fk.Destination
+	tm.UpdatedAt = fk.UpdatedAt
+	tm.Ttl = fk.Ttl
+
+	err = store.Put(ctx, fk)
+	if err != nil {
+		panic(err.Error())
+	}
 	// TODO get item
+	r, err = store.Get(ctx, fk.Rash)
+	if err != nil {
+		panic(err.Error())
+	}
+	ok = urlsAreEqual(r, tm)
+	if !ok {
+		panic("urls not equal")
+	}
 	// TODO delete item
+	err = store.Delete(ctx, fk.Rash)
+	if err != nil {
+		panic(err.Error())
+	}
 	// TODO get item
+	r, err = store.Get(ctx, fk.Rash)
+	if err != nil {
+		if err.Error() != "404" {
+			panic(err.Error())
+		}
+	}
 }

@@ -3,7 +3,7 @@ package store
 import (
 	"apps/engine/types"
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -60,7 +60,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 		panic(err.Error())
 	}
 	if res.Item == nil {
-		panic("404")
+		return nil, errors.New("404")
 	}
 
 	item := types.Url{}
@@ -76,7 +76,7 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 	// Destination
 	update := expression.Set(
 		expression.Name("Destination"),
-		expression.Value(url.Rash),
+		expression.Value(url.Destination),
 	)
 	// Version + 1
 	update.Add(expression.Name("Version"), expression.Value(1))
@@ -107,14 +107,6 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 		ReturnValues:              ddbtypes.ReturnValueAllNew,
 	})
 	if err != nil {
-		a := expr.Names()
-		b := expr.Values()
-		c := expr.Update()
-
-		bs, _ := json.Marshal(a)
-		bss, _ := json.Marshal(b)
-		bsss, _ := json.Marshal(c)
-		fmt.Println(string(bs), string(bss), string(bsss))
 		panic(err.Error())
 	}
 	b := &types.Url{}
