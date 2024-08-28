@@ -1,9 +1,9 @@
 package store
 
 import (
+	"apps/engine/tools"
 	"apps/engine/types"
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -60,7 +60,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 		panic(err.Error())
 	}
 	if res.Item == nil {
-		return nil, errors.New("404")
+		return nil, tools.ItemNotFoundError
 	}
 
 	item := types.Url{}

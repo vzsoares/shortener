@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	b64 "encoding/base64"
+	"errors"
 	"fmt"
 	"math/rand"
 	"slices"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	store "apps/engine/store/url"
+	"apps/engine/tools"
 	"apps/engine/types"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -177,9 +179,11 @@ func TestFlow(t *testing.T) {
 	}
 	// TODO get item
 	r, err = store.Get(ctx, fk.Rash)
-	if err != nil {
-		if err.Error() != "404" {
-			panic(err.Error())
-		}
+	if err == nil {
+		panic("Must error")
 	}
+	if !errors.Is(err, tools.ItemNotFoundError) {
+		panic(err.Error())
+	}
+
 }
