@@ -11,7 +11,8 @@ type AppError struct {
 type CODES string
 
 const (
-	CODE_DB_ITEM_NOT_FOUND CODES = "DBI404"
+	CODE_INTERNAL_SERVER_ERROR CODES = "E500"
+	CODE_DB_ITEM_NOT_FOUND     CODES = "DBI404"
 )
 
 var (
