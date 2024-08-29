@@ -107,6 +107,7 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.UrlFull) error {
 	if err != nil {
 		return err
 	}
+
 	return err
 }
 

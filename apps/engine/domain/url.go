@@ -33,10 +33,16 @@ func (d *UrlDomain) GetUrl(ctx context.Context, id string) (*types.UrlFull, erro
 
 func (d *UrlDomain) PutUrl(ctx context.Context, url *types.UrlBase) error {
 	now := time.Now().Unix()
+
+	if url.Ttl > 0 && url.Ttl > int(now) {
+		return errors.New("invalid ttl")
+	}
+
 	full := &types.UrlFull{
-		UrlBase:   url,
-		UpdatedAt: int(now),
+		UrlBase: url,
+		// dynamo will not overwrite this
 		CreatedAt: int(now),
+		UpdatedAt: int(now),
 		// always 0; dynamo handles increase
 		Version: 0,
 	}

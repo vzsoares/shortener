@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	b64 "encoding/base64"
 	"encoding/json"
@@ -198,7 +199,7 @@ func Test_GetHandler_NonExistentItem_NotFound(t *testing.T) {
 	handler := handler.NewHttpHandler(ctx, domain)
 
 	// Create Request
-	req := httptest.NewRequest(http.MethodGet, "/upper/123", nil)
+	req := httptest.NewRequest(http.MethodGet, "/123", nil)
 	req.SetPathValue("id", "123")
 	w := httptest.NewRecorder()
 
@@ -216,5 +217,41 @@ func Test_GetHandler_NonExistentItem_NotFound(t *testing.T) {
 	}
 	if target.Code != "DBI404" {
 		t.Errorf("expected DBI404 got %v", target.Code)
+	}
+}
+
+func Test_PostHandler_JustCreate(t *testing.T) {
+	// Setup
+	ctx := context.TODO()
+	domain := domain.NewUrlDomain(ctx, dstore)
+	handler := handler.NewHttpHandler(ctx, domain)
+
+	url := types.UrlBase{
+		Rash:        randomString(10),
+		Destination: randomString(10),
+		Ttl:         0,
+	}
+	var byt bytes.Buffer
+	err := json.NewEncoder(&byt).Encode(&url)
+	if err != nil {
+		t.Error("failed to parse json")
+	}
+
+	// Create Request
+	req := httptest.NewRequest(http.MethodPost, "/", &byt)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	// Exec Request
+	handler.PostHandler(w, req)
+	res := w.Result()
+	defer res.Body.Close()
+
+	// Parse res body
+	target := &tools.Body{}
+	err = json.NewDecoder(res.Body).Decode(target)
+
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
 	}
 }
