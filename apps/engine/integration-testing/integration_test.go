@@ -3,14 +3,19 @@ package main
 import (
 	"context"
 	b64 "encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
+	"net/http"
+	"net/http/httptest"
 	"slices"
 	"testing"
 	"time"
 
-	store "apps/engine/store/url"
+	"apps/engine/domain"
+	"apps/engine/handler"
+	store "apps/engine/store"
 	"apps/engine/tools"
 	"apps/engine/types"
 
@@ -186,4 +191,32 @@ func TestFlow(t *testing.T) {
 		panic(err.Error())
 	}
 
+}
+
+func TestHandler(t *testing.T) {
+	ctx := context.TODO()
+	store := store.NewDynamoStore(ctx)
+	domain := domain.NewUrlDomain(ctx, store)
+	domain.GetUrl(ctx, "123")
+	handler := handler.NewHttpHandler(ctx, domain)
+
+	req := httptest.NewRequest(http.MethodGet, "/upper/123", nil)
+	// req = http.SetURLVars(req, map[string]string{"id": "123"})
+	req.SetPathValue("id", "123")
+	w := httptest.NewRecorder()
+	handler.GetHandler(w, req)
+	res := w.Result()
+	defer res.Body.Close()
+	// data, err := io.ReadAll(res.Body)
+	target := &tools.Body{}
+	err := json.NewDecoder(res.Body).Decode(target)
+	// fmt.Printf("*****data %+v\n", data)
+	fmt.Printf("*****data sa %+v\n", target)
+	fmt.Printf("*****status %+v\n", res.Status)
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+	if target.Code != "DBI404" {
+		t.Errorf("expected ABC got %v", "123id")
+	}
 }

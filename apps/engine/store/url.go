@@ -18,18 +18,12 @@ import (
 var TableName = "urls"
 var BaseEndpoint = "http://localhost:8000/"
 
-type Store interface {
-	Get(context.Context, string) (*types.Url, error)
-	Put(context.Context, *types.Url) error
-	Delete(context.Context, string) error
-}
-
 type DynamoStore struct {
 	Table  *string
 	Client *dynamodb.Client
 }
 
-var _ Store = (*DynamoStore)(nil)
+var _ types.UrlStore = (*DynamoStore)(nil)
 
 func NewDynamoStore(ctx context.Context) *DynamoStore {
 	cfg, err := config.LoadDefaultConfig(ctx)

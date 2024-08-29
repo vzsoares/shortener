@@ -8,18 +8,26 @@ import (
 )
 
 type Body struct {
-	data    any
-	message string
-	code    CODES
+	Data    any    `json:"data"`
+	Message string `json:"message"`
+	Code    CODES  `json:"code"`
+}
+
+func NewBody(data any, msg string, code CODES) *Body {
+	return &Body{
+		Data:    data,
+		Message: msg,
+		Code:    code,
+	}
 }
 
 func GatewayResponse(statusCode int, data any, msg string, code CODES) events.APIGatewayV2HTTPResponse {
 	var marshalled []byte
 	var err error
 	var body Body = Body{
-		data:    data,
-		message: msg,
-		code:    code,
+		Data:    data,
+		Message: msg,
+		Code:    code,
 	}
 
 	marshalled, err = json.Marshal(body)
