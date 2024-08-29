@@ -24,7 +24,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 )
 
-func urlsAreEqual(a *types.Url, b *types.Url) bool {
+func urlsAreEqual(a *types.UrlFull, b *types.UrlFull) bool {
 	if a.Rash != b.Rash {
 		println("rash")
 		return false
@@ -58,14 +58,16 @@ func randomString(length int) string {
 	return fmt.Sprintf("%x", sEnc)[:length]
 }
 
-func getRandomProduct() *types.Url {
-	return &types.Url{
-		Rash:        randomString(10),
-		Destination: randomString(10),
-		Ttl:         rand.Int(),
-		UpdatedAt:   rand.Int(),
-		CreatedAt:   rand.Int(),
-		Version:     1,
+func getRandomProduct() *types.UrlFull {
+	return &types.UrlFull{
+		UrlBase: &types.UrlBase{
+			Rash:        randomString(10),
+			Destination: randomString(10),
+			Ttl:         rand.Int(),
+		},
+		UpdatedAt: rand.Int(),
+		CreatedAt: rand.Int(),
+		Version:   1,
 	}
 }
 
@@ -139,9 +141,10 @@ func Test_StoreCompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 	}
 
 	// Update created
-	tm := &types.Url{
+	tm := &types.UrlFull{
 		// Rash, CreatedAt must not change
-		Rash:      fk.Rash,
+		UrlBase: &types.UrlBase{Rash: fk.Rash},
+
 		CreatedAt: fk.CreatedAt,
 		// Version goes up 1 by 1 automatically
 		Version: 2,

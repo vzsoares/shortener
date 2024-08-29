@@ -40,7 +40,7 @@ func NewDynamoStore(ctx context.Context, endpoint string, https bool) *DynamoSto
 	}
 }
 
-func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) {
+func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.UrlFull, error) {
 	input := &dynamodb.GetItemInput{
 		TableName: &TableName,
 		Key: map[string]ddbtypes.AttributeValue{
@@ -55,7 +55,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 		return nil, tools.ItemNotFoundError
 	}
 
-	item := types.Url{}
+	item := types.UrlFull{}
 	err = attributevalue.UnmarshalMap(res.Item, &item)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 	return &item, nil
 }
 
-func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
+func (s *DynamoStore) Put(ctx context.Context, url *types.UrlFull) error {
 	// Destination
 	update := expression.Set(
 		expression.Name("Destination"),
@@ -102,7 +102,7 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 		return err
 	}
 
-	b := &types.Url{}
+	b := &types.UrlFull{}
 	err = attributevalue.UnmarshalMap(res.Attributes, b)
 	if err != nil {
 		return err

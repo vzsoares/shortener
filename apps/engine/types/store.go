@@ -5,7 +5,7 @@ import (
 )
 
 type UrlStore interface {
-	Get(context.Context, string) (*Url, error)
-	Put(context.Context, *Url) error
+	Get(context.Context, string) (*UrlFull, error)
+	Put(context.Context, *UrlFull) error
 	Delete(context.Context, string) error
 }
