@@ -24,18 +24,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 )
 
-var apiUrl string
-
-func init() {
-	// _apiUrl, ok := os.LookupEnv("API_URL")
-	// if !ok {
-	// 	panic("Can't find API_URL environment variable")
-	// }
-
-	// apiUrl = _apiUrl
-	apiUrl = "http://localhost:8000"
-}
-
 func urlsAreEqual(a *types.Url, b *types.Url) bool {
 	if a.Rash != b.Rash {
 		println("rash")
@@ -81,14 +69,28 @@ func getRandomProduct() *types.Url {
 	}
 }
 
-func TestFlow(t *testing.T) {
+var apiUrl string
+
+func init() {
+	// _apiUrl, ok := os.LookupEnv("API_URL")
+	// if !ok {
+	// 	panic("Can't find API_URL environment variable")
+	// }
+
+	// apiUrl = _apiUrl
+	apiUrl = "http://localhost:8000"
+}
+
+func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 	fk := getRandomProduct()
 	ctx := context.TODO()
 	store := store.NewDynamoStore(ctx)
 
-	listTablesRes, err := store.Client.ListTables(ctx, &dynamodb.ListTablesInput{})
+	listTablesRes, err := store.Client.ListTables(ctx,
+		&dynamodb.ListTablesInput{},
+	)
 	if err != nil {
-		panic(err.Error())
+		t.Error(err.Error())
 	}
 	hasTable := slices.Contains(listTablesRes.TableNames, "urls")
 
@@ -96,22 +98,6 @@ func TestFlow(t *testing.T) {
 	if !hasTable {
 		created, err := store.Client.CreateTable(ctx, &dynamodb.CreateTableInput{
 			AttributeDefinitions: []ddbtypes.AttributeDefinition{
-				// {
-				// 	AttributeName: aws.String("Destination"),
-				// 	AttributeType: ddbtypes.ScalarAttributeTypeS,
-				// },
-				// {
-				// 	AttributeName: aws.String("CreatedAt"),
-				// 	AttributeType: ddbtypes.ScalarAttributeTypeN,
-				// },
-				// {
-				// 	AttributeName: aws.String("UpdatedAt"),
-				// 	AttributeType: ddbtypes.ScalarAttributeTypeN,
-				// },
-				// {
-				// 	AttributeName: aws.String("Ttl"),
-				// 	AttributeType: ddbtypes.ScalarAttributeTypeN,
-				// },
 				{
 					AttributeName: aws.String("Rash"),
 					AttributeType: ddbtypes.ScalarAttributeTypeS,
@@ -180,39 +166,36 @@ func TestFlow(t *testing.T) {
 	// TODO delete item
 	err = store.Delete(ctx, fk.Rash)
 	if err != nil {
-		panic(err.Error())
+		t.Error(err.Error())
 	}
 	// TODO get item
 	r, err = store.Get(ctx, fk.Rash)
 	if err == nil {
-		panic("Must error")
+		t.Error("Must error")
 	}
 	if !errors.Is(err, tools.ItemNotFoundError) {
-		panic(err.Error())
+		t.Error(err.Error())
 	}
 
 }
 
-func TestHandler(t *testing.T) {
+func Test_GetHandler_NonExistentItem_NotFound(t *testing.T) {
 	ctx := context.TODO()
 	store := store.NewDynamoStore(ctx)
 	domain := domain.NewUrlDomain(ctx, store)
-	domain.GetUrl(ctx, "123")
 	handler := handler.NewHttpHandler(ctx, domain)
 
 	req := httptest.NewRequest(http.MethodGet, "/upper/123", nil)
-	// req = http.SetURLVars(req, map[string]string{"id": "123"})
 	req.SetPathValue("id", "123")
 	w := httptest.NewRecorder()
+
 	handler.GetHandler(w, req)
 	res := w.Result()
 	defer res.Body.Close()
-	// data, err := io.ReadAll(res.Body)
+
 	target := &tools.Body{}
 	err := json.NewDecoder(res.Body).Decode(target)
-	// fmt.Printf("*****data %+v\n", data)
-	fmt.Printf("*****data sa %+v\n", target)
-	fmt.Printf("*****status %+v\n", res.Status)
+
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
 	}
