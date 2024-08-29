@@ -29,7 +29,9 @@ func (h *UrlHttpHandler) GetHandler(w http.ResponseWriter, r *http.Request) {
 	if id == "" {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(tools.NewBody(nil, "Missing id", tools.CODE_BAD_REQUEST))
+		json.NewEncoder(w).Encode(tools.NewBody(nil,
+			"Missing id", tools.CODE_BAD_REQUEST),
+		)
 		return
 	}
 
@@ -38,10 +40,14 @@ func (h *UrlHttpHandler) GetHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if errors.Is(err, tools.ItemNotFoundError) {
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(tools.NewBody(nil, "Not found", tools.CODE_DB_ITEM_NOT_FOUND))
+			json.NewEncoder(w).Encode(tools.NewBody(nil,
+				"Not found", tools.CODE_DB_ITEM_NOT_FOUND),
+			)
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(tools.NewBody(nil, "Not found", tools.CODE_INTERNAL_SERVER_ERROR))
+			json.NewEncoder(w).Encode(tools.NewBody(nil,
+				"Not found", tools.CODE_INTERNAL_SERVER_ERROR),
+			)
 		}
 		return
 	}
@@ -58,7 +64,9 @@ func (h *UrlHttpHandler) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	if id == "" {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(tools.NewBody(nil, "Missing id", tools.CODE_BAD_REQUEST))
+		json.NewEncoder(w).Encode(tools.NewBody(nil,
+			"Missing id", tools.CODE_BAD_REQUEST),
+		)
 		return
 	}
 
@@ -78,13 +86,32 @@ func (h *UrlHttpHandler) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 func (h *UrlHttpHandler) PostHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
-	url := &types.UrlBase{}
+	if r.Header.Get("Content-Type") != "application/json" {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(tools.NewBody(nil,
+			"content type not supported", tools.CODE_BAD_REQUEST),
+		)
+		return
+	}
 
-	err := h.domain.PutUrl(ctx, url)
+	url := &types.UrlBase{}
+	err := json.NewDecoder(r.Body).Decode(url)
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(tools.NewBody(nil,
+			"invalid json", tools.CODE_BAD_REQUEST),
+		)
+		return
+	}
+
+	err = h.domain.PutUrl(ctx, url)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(tools.NewBody(nil, "Error", tools.CODE_INTERNAL_SERVER_ERROR))
+		json.NewEncoder(w).Encode(tools.NewBody(nil, "Failed to put", tools.CODE_INTERNAL_SERVER_ERROR))
 		return
 	}
 
