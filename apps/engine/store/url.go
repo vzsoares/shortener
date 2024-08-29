@@ -4,7 +4,6 @@ import (
 	"apps/engine/tools"
 	"apps/engine/types"
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -16,7 +15,6 @@ import (
 )
 
 var TableName = "urls"
-var BaseEndpoint = "http://localhost:8000/"
 
 type DynamoStore struct {
 	Table  *string
@@ -25,15 +23,15 @@ type DynamoStore struct {
 
 var _ types.UrlStore = (*DynamoStore)(nil)
 
-func NewDynamoStore(ctx context.Context) *DynamoStore {
+func NewDynamoStore(ctx context.Context, endpoint string, https bool) *DynamoStore {
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	client := dynamodb.NewFromConfig(cfg, func(o *dynamodb.Options) {
-		o.EndpointOptions.DisableHTTPS = true
-		o.BaseEndpoint = aws.String(BaseEndpoint)
+		o.EndpointOptions.DisableHTTPS = https
+		o.BaseEndpoint = aws.String(endpoint)
 	})
 
 	return &DynamoStore{
@@ -103,13 +101,12 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 	if err != nil {
 		return err
 	}
-	b := &types.Url{}
 
+	b := &types.Url{}
 	err = attributevalue.UnmarshalMap(res.Attributes, b)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("***** %+v\n", b)
 	return err
 }
 

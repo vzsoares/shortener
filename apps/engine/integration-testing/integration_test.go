@@ -15,7 +15,7 @@ import (
 
 	"apps/engine/domain"
 	"apps/engine/handler"
-	store "apps/engine/store"
+	"apps/engine/store"
 	"apps/engine/tools"
 	"apps/engine/types"
 
@@ -70,6 +70,7 @@ func getRandomProduct() *types.Url {
 }
 
 var apiUrl string
+var dstore *store.DynamoStore
 
 func init() {
 	// _apiUrl, ok := os.LookupEnv("API_URL")
@@ -79,24 +80,21 @@ func init() {
 
 	// apiUrl = _apiUrl
 	apiUrl = "http://localhost:8000"
-}
 
-func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
-	fk := getRandomProduct()
 	ctx := context.TODO()
-	store := store.NewDynamoStore(ctx)
+	dstore = store.NewDynamoStore(ctx, apiUrl, true)
 
-	listTablesRes, err := store.Client.ListTables(ctx,
+	listTablesRes, err := dstore.Client.ListTables(ctx,
 		&dynamodb.ListTablesInput{},
 	)
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 	hasTable := slices.Contains(listTablesRes.TableNames, "urls")
 
 	//create table
 	if !hasTable {
-		created, err := store.Client.CreateTable(ctx, &dynamodb.CreateTableInput{
+		created, err := dstore.Client.CreateTable(ctx, &dynamodb.CreateTableInput{
 			AttributeDefinitions: []ddbtypes.AttributeDefinition{
 				{
 					AttributeName: aws.String("Rash"),
@@ -107,7 +105,7 @@ func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 				AttributeName: aws.String("Rash"),
 				KeyType:       ddbtypes.KeyTypeHash,
 			}},
-			TableName:   aws.String(*store.Table),
+			TableName:   aws.String(*dstore.Table),
 			BillingMode: "PAY PER REQUEST",
 			ProvisionedThroughput: &ddbtypes.ProvisionedThroughput{
 				ReadCapacityUnits:  aws.Int64(10),
@@ -119,14 +117,19 @@ func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 		}
 		println("created: ", *created.TableDescription.TableName)
 	}
-	// TODO create item
-	fmt.Printf("*****og %+v\n", fk)
-	err = store.Put(ctx, fk)
+}
+
+func Test_StoreCompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
+	// Create
+	ctx := context.TODO()
+	fk := getRandomProduct()
+	err := dstore.Put(ctx, fk)
 	if err != nil {
 		panic(err.Error())
 	}
-	// TODO get item
-	r, err := store.Get(ctx, fk.Rash)
+
+	// Get created
+	r, err := dstore.Get(ctx, fk.Rash)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -134,11 +137,14 @@ func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 	if !ok {
 		panic("urls not equal")
 	}
-	// TODO update item
+
+	// Update created
 	tm := &types.Url{
+		// Rash, CreatedAt must not change
 		Rash:      fk.Rash,
 		CreatedAt: fk.CreatedAt,
-		Version:   2,
+		// Version goes up 1 by 1 automatically
+		Version: 2,
 	}
 	fk.Destination = randomString(10)
 	fk.UpdatedAt = rand.Int()
@@ -150,12 +156,13 @@ func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 	tm.UpdatedAt = fk.UpdatedAt
 	tm.Ttl = fk.Ttl
 
-	err = store.Put(ctx, fk)
+	err = dstore.Put(ctx, fk)
 	if err != nil {
 		panic(err.Error())
 	}
-	// TODO get item
-	r, err = store.Get(ctx, fk.Rash)
+
+	// Get updated
+	r, err = dstore.Get(ctx, fk.Rash)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -163,13 +170,15 @@ func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 	if !ok {
 		panic("urls not equal")
 	}
-	// TODO delete item
-	err = store.Delete(ctx, fk.Rash)
+
+	// Delete item
+	err = dstore.Delete(ctx, fk.Rash)
 	if err != nil {
 		t.Error(err.Error())
 	}
-	// TODO get item
-	r, err = store.Get(ctx, fk.Rash)
+
+	// Get deleted item
+	r, err = dstore.Get(ctx, fk.Rash)
 	if err == nil {
 		t.Error("Must error")
 	}
@@ -180,19 +189,22 @@ func Test_CompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 }
 
 func Test_GetHandler_NonExistentItem_NotFound(t *testing.T) {
+	// Setup
 	ctx := context.TODO()
-	store := store.NewDynamoStore(ctx)
-	domain := domain.NewUrlDomain(ctx, store)
+	domain := domain.NewUrlDomain(ctx, dstore)
 	handler := handler.NewHttpHandler(ctx, domain)
 
+	// Create Request
 	req := httptest.NewRequest(http.MethodGet, "/upper/123", nil)
 	req.SetPathValue("id", "123")
 	w := httptest.NewRecorder()
 
+	// Exec Request
 	handler.GetHandler(w, req)
 	res := w.Result()
 	defer res.Body.Close()
 
+	// Parse res body
 	target := &tools.Body{}
 	err := json.NewDecoder(res.Body).Decode(target)
 
@@ -200,6 +212,6 @@ func Test_GetHandler_NonExistentItem_NotFound(t *testing.T) {
 		t.Errorf("expected error to be nil got %v", err)
 	}
 	if target.Code != "DBI404" {
-		t.Errorf("expected ABC got %v", "123id")
+		t.Errorf("expected DBI404 got %v", target.Code)
 	}
 }
