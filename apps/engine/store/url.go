@@ -51,7 +51,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 
 	res, err := s.Client.GetItem(ctx, input)
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 	if res.Item == nil {
 		return nil, tools.ItemNotFoundError
@@ -60,7 +60,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.Url, error) 
 	item := types.Url{}
 	err = attributevalue.UnmarshalMap(res.Item, &item)
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
 	return &item, nil
@@ -87,7 +87,7 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 
 	expr, err := expression.NewBuilder().WithUpdate(update).Build()
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 
 	res, err := s.Client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
@@ -101,13 +101,13 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.Url) error {
 		ReturnValues:              ddbtypes.ReturnValueAllNew,
 	})
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	b := &types.Url{}
 
 	err = attributevalue.UnmarshalMap(res.Attributes, b)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	fmt.Printf("***** %+v\n", b)
 	return err
@@ -123,7 +123,7 @@ func (s *DynamoStore) Delete(ctx context.Context, rash string) error {
 
 	_, err := s.Client.DeleteItem(ctx, input)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 
 	return err

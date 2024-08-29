@@ -5,6 +5,7 @@ import (
 	"apps/engine/tools"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
@@ -34,8 +35,13 @@ func (h *UrlHttpHandler) GetHandler(w http.ResponseWriter, r *http.Request) {
 	p, err := h.store.GetUrl(ctx, id)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(tools.NewBody(nil, "Not found", tools.CODE_DB_ITEM_NOT_FOUND))
+		if errors.Is(err, tools.ItemNotFoundError) {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(tools.NewBody(nil, "Not found", tools.CODE_DB_ITEM_NOT_FOUND))
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(tools.NewBody(nil, "Not found", tools.CODE_INTERNAL_SERVER_ERROR))
+		}
 		return
 	}
 
