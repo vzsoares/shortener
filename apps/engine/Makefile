@@ -26,7 +26,7 @@ SAM_TERRAFORM_ROOT=--terraform-project-root-path ../../../
 build: ##@ Build package
 > @echo "Building for stage: ${STAGE}"
 > @cd ./function && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags lambda.norpc
-> @cd ./function && zip -X -r -j function.zip bootstrap ../db.stub.json
+> @cd ./function && zip -X -r -j function.zip bootstrap
 
 ##@
 ##@ Run local SAM
