@@ -12,8 +12,6 @@ AWK ?= awk
 GO ?= go
 MAKE ?= make
 
-FUNCTIONS := create-url
-
 STAGE ?= dev
 
 BASE_TF_WORK_DIR=../../infra/environments
@@ -25,14 +23,10 @@ SAM_TERRAFORM_ROOT=--terraform-project-root-path ../../../
 ##@ Build
 ##@
 
-build: ##@ Build packages
+build: ##@ Build package
 > @echo "Building for stage: ${STAGE}"
-> @${MAKE} $(foreach function,${FUNCTIONS}, build-${function}) -j
-
-build-%:
-> @echo "Building $*"
-> @cd ./functions/$* && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags lambda.norpc
-> @cd ./functions/$* && zip -X -r -j function.zip bootstrap
+> @cd ./function && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags lambda.norpc
+> @cd ./function && zip -X -r -j function.zip bootstrap ../db.stub.json
 
 ##@
 ##@ Run local SAM
