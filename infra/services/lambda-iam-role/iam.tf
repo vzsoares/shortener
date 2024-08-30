@@ -37,13 +37,13 @@ data "aws_iam_policy_document" "url-table-full-acesss-policy-doc" {
   statement {
     effect    = "Allow"
     actions   = ["dynamodb:*"]
-    resources = [var.table-arn]
+    resources = ["arn:aws:dynamodb:*:*:table/shortener-urls"]
   }
 }
 
 resource "aws_iam_policy" "url-table-full-acesss-policy" {
-  name        = "shortener-urls-full-access"
-  description = "dynamo shortener urls access"
+  name        = "ShortenerUrlsTableFullAccess"
+  description = "Dynamodb shortener urls table access"
   policy      = data.aws_iam_policy_document.url-table-full-acesss-policy-doc.json
 }
 

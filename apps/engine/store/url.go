@@ -14,7 +14,7 @@ import (
 	ddbtypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-var TableName = "urls"
+var TableName = "shortener-urls"
 
 type DynamoStore struct {
 	Table  *string
