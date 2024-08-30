@@ -30,3 +30,24 @@ resource "aws_iam_role_policy_attachment" "lambda_smm_readonly" {
   role       = aws_iam_role.iam.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
 }
+
+# dynamo policy
+
+data "aws_iam_policy_document" "url-table-full-acesss-policy-doc" {
+  statement {
+    effect    = "Allow"
+    actions   = ["dynamodb:*"]
+    resources = [var.table-arn]
+  }
+}
+
+resource "aws_iam_policy" "url-table-full-acesss-policy" {
+  name        = "shortener-urls-full-access"
+  description = "dynamo shortener urls access"
+  policy      = data.aws_iam_policy_document.url-table-full-acesss-policy-doc.json
+}
+
+resource "aws_iam_role_policy_attachment" "urls-table-only" {
+  role       = aws_iam_role.iam.name
+  policy_arn = aws_iam_policy.url-table-full-acesss-policy.arn
+}

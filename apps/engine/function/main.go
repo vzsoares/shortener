@@ -44,7 +44,7 @@ func init() {
 		json.NewEncoder(w).Encode(time.UnixDate)
 	})
 	ctx := context.TODO()
-	store := store.NewDynamoStore(ctx, apiUrlLocal, true)
+	store := store.NewDynamoStore(ctx, apiUrl, false)
 	domain := domain.NewUrlDomain(ctx, store)
 	handler := handler.NewHttpHandler(ctx, domain)
 

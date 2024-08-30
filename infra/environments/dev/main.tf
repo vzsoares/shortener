@@ -9,8 +9,9 @@ module "urls-table" {
   stage  = local.stage
 }
 
-module  "role" {
-    source = "../../services/lambda-iam-role"
+module "role" {
+  source    = "../../services/lambda-iam-role"
+  table-arn = module.urls-table.arn
 }
 
 module "api_gateway" {

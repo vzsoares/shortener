@@ -22,28 +22,9 @@ resource "aws_dynamodb_table" "urls-table" {
     Terraform = "true"
     Stage     = var.stage
   }
+}
 
-  #####################################
-  ### other atributes for reference ###
-  #  attribute {
-  #    name = "Destination"
-  #    type = "S"
-  #  }
-  #
-  #  attribute {
-  #    name = "CreatedAt"
-  #    type = "N"
-  #  }
-  #
-  #  attribute {
-  #    name = "UpdatedAt"
-  #    type = "N"
-  #  }
-  #
-  #  attribute {
-  #    name = "Version"
-  #    type = "N"
-  #  }
-  #####################################
+output "arn" {
+  value = aws_dynamodb_table.urls-table.arn
 }
 
