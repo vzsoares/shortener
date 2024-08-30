@@ -10,6 +10,7 @@ import (
 	"apps/engine/domain"
 	"apps/engine/handler"
 	"apps/engine/store"
+	"apps/engine/tools"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -34,17 +35,25 @@ func buildPath(p string, m *string) string {
 	return res
 }
 
-var apiUrl = "https://dynamodb.us-east-1.amazonaws.com"
-var apiUrlLocal = "http://host.docker.internal:8000"
+var apiUrl string
+var skipHttps bool
 
 func init() {
+	if tools.DEBUG {
+		apiUrl = "http://host.docker.internal:8000"
+		skipHttps = true
+	} else {
+		apiUrl = "https://dynamodb.us-east-1.amazonaws.com"
+		skipHttps = false
+	}
+
 	http.HandleFunc(buildPath("/ping", nil), func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(time.UnixDate)
 	})
 	ctx := context.TODO()
-	store := store.NewDynamoStore(ctx, apiUrl, false)
+	store := store.NewDynamoStore(ctx, apiUrl, skipHttps)
 	domain := domain.NewUrlDomain(ctx, store)
 	handler := handler.NewHttpHandler(ctx, domain)
 

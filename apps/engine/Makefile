@@ -13,6 +13,7 @@ GO ?= go
 MAKE ?= make
 
 STAGE ?= dev
+DEBUG ?= DEBUG
 
 BASE_TF_WORK_DIR=../../infra/environments
 
@@ -25,7 +26,7 @@ SAM_TERRAFORM_ROOT=--terraform-project-root-path ../../../
 
 build: ##@ Build package
 > @echo "Building for stage: ${STAGE}"
-> @cd ./function && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags lambda.norpc
+> @cd ./function && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags lambda.norpc,${BUILD_TAG}
 > @cd ./function && zip -X -r -j function.zip bootstrap
 
 ##@
@@ -33,11 +34,12 @@ build: ##@ Build package
 ##@
 
 sam-build: ##@ Build for sam
-> @make build && cd ${BASE_TF_WORK_DIR}/${STAGE} && ${SAM} build ${SAM_COMMON_AGRS} ${SAM_TERRAFORM_ROOT} ${EXTRA}
+> @make build BUILD_TAG=${DEBUG} && cd ${BASE_TF_WORK_DIR}/${STAGE} && ${SAM} build ${SAM_COMMON_AGRS} ${SAM_TERRAFORM_ROOT} ${EXTRA}
 
 start: ##@ Start local api
        ##@ - if this is your first run then
        ##@ run make tf-init && make sam-build
+       ##@ runs in DEBUG by default to disable do `$ make start DEBUG=""`
 > @make watch-build start-api -j
 
 start-api:
