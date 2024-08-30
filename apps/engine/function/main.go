@@ -56,6 +56,7 @@ func init() {
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	httpLambda.StripBasePath("/shortener/v1")
 	return httpLambda.ProxyWithContext(ctx, req)
 }
 
