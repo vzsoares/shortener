@@ -19,6 +19,7 @@ import (
 var GET = "GET"
 var PUT = "PUT"
 var POST = "POST"
+var DELETE = "DELETE"
 
 var httpLambda *httpadapter.HandlerAdapter
 
@@ -48,6 +49,7 @@ func init() {
 	handler := handler.NewHttpHandler(ctx, domain)
 
 	http.HandleFunc(buildPath("/url/{id}", &GET), handler.GetHandler)
+	http.HandleFunc(buildPath("/url/{id}", &DELETE), handler.DeleteHandler)
 	http.HandleFunc(buildPath("/url", &POST), handler.PostHandler)
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)

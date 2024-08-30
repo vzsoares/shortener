@@ -34,7 +34,7 @@ func (d *UrlDomain) GetUrl(ctx context.Context, id string) (*types.UrlFull, erro
 func (d *UrlDomain) PutUrl(ctx context.Context, url *types.UrlBase) error {
 	now := time.Now().Unix()
 
-	if url.Ttl > 0 && url.Ttl > int(now) {
+	if url.Ttl > 0 && url.Ttl < int(now) {
 		return tools.InputValidationError
 	}
 	if len(url.Rash) < 4 {
