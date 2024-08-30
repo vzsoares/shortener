@@ -27,13 +27,13 @@ func buildPath(p string, m *string) string {
 	if m == nil {
 		res = fmt.Sprint(basePath, p)
 	} else {
-		res = fmt.Sprint(*m, basePath, p)
+		res = fmt.Sprint(*m, " ", basePath, p)
 	}
 	return res
 }
 
 var apiUrl = "https://dynamodb.us-east-1.amazonaws.com"
-var apiUrlLocal = "http://localhost:8000"
+var apiUrlLocal = "http://host.docker.internal:8000"
 
 func init() {
 	http.HandleFunc(buildPath("/ping", nil), func(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +46,7 @@ func init() {
 	domain := domain.NewUrlDomain(ctx, store)
 	handler := handler.NewHttpHandler(ctx, domain)
 
-	http.HandleFunc(buildPath("/url", &GET), handler.GetHandler)
+	http.HandleFunc(buildPath("/url/{id}", &GET), handler.GetHandler)
 	http.HandleFunc(buildPath("/url", &PUT), handler.PostHandler)
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)

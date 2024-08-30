@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -44,9 +45,10 @@ func (h *UrlHttpHandler) GetHandler(w http.ResponseWriter, r *http.Request) {
 				"Not found", tools.CODE_DB_ITEM_NOT_FOUND),
 			)
 		} else {
+			fmt.Printf("error: %+v", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(tools.NewBody(nil,
-				"Not found", tools.CODE_INTERNAL_SERVER_ERROR),
+				"Something went wrong", tools.CODE_INTERNAL_SERVER_ERROR),
 			)
 		}
 		return

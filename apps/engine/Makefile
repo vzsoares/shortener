@@ -41,7 +41,7 @@ start: ##@ Start local api
 > @make watch-build start-api -j
 
 start-api:
-> @cd ${BASE_TF_WORK_DIR}/${STAGE} && ${SAM} local start-api --debug --skip-pull-image ${SAM_COMMON_AGRS}
+> @cd ${BASE_TF_WORK_DIR}/${STAGE} && ${SAM} local start-api --debug --skip-pull-image ${SAM_COMMON_AGRS} --add-host=host.docker.internal:host-gateway
 
 watch-build:
 > @npx nodemon -e go --signal SIGTERM --exec 'make' sam-build EXTRA=--skip-prepare-infra
