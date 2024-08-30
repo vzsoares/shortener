@@ -40,10 +40,10 @@ var skipHttps bool
 
 func init() {
 	if tools.DEBUG {
-		apiUrl = "http://host.docker.internal:8000"
+		apiUrl = tools.LOCAL_DB_URL_DOCKER
 		skipHttps = true
 	} else {
-		apiUrl = "https://dynamodb.us-east-1.amazonaws.com"
+		apiUrl = tools.REMOTE_DB_URL
 		skipHttps = false
 	}
 

@@ -82,7 +82,7 @@ func init() {
 	// }
 
 	// apiUrl = _apiUrl
-	apiUrl = "http://localhost:8000"
+	apiUrl = tools.LOCAL_DB_URL
 
 	ctx := context.TODO()
 	dstore = store.NewDynamoStore(ctx, apiUrl, true)
@@ -93,7 +93,7 @@ func init() {
 	if err != nil {
 		panic(err.Error())
 	}
-	hasTable := slices.Contains(listTablesRes.TableNames, "urls")
+	hasTable := slices.Contains(listTablesRes.TableNames, *dstore.Table)
 
 	//create table
 	if !hasTable {
@@ -108,8 +108,7 @@ func init() {
 				AttributeName: aws.String("Rash"),
 				KeyType:       ddbtypes.KeyTypeHash,
 			}},
-			TableName:   aws.String(*dstore.Table),
-			BillingMode: "PAY PER REQUEST",
+			TableName: dstore.Table,
 			ProvisionedThroughput: &ddbtypes.ProvisionedThroughput{
 				ReadCapacityUnits:  aws.Int64(10),
 				WriteCapacityUnits: aws.Int64(10),

@@ -1,5 +1,5 @@
-version: "3.8"
 services:
+    # if access denied then $sudo chmod 777 ./docker/dynamodb
     dynamodb-local:
         command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
         image: "amazon/dynamodb-local:latest"
