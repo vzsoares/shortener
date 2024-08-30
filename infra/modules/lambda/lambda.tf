@@ -9,7 +9,7 @@ locals {
 resource "aws_lambda_function" "lambda" {
   function_name = local.function_name
   role          = var.lambda_iam_arn
-  handler       = "index.handler"
+  handler       = "bootstrap"
 
   source_code_hash  = filebase64sha256(local.full_file_path)
   s3_bucket         = local.s3_bucket
