@@ -35,7 +35,13 @@ func (d *UrlDomain) PutUrl(ctx context.Context, url *types.UrlBase) error {
 	now := time.Now().Unix()
 
 	if url.Ttl > 0 && url.Ttl > int(now) {
-		return errors.New("invalid ttl")
+		return tools.InputValidationError
+	}
+	if len(url.Rash) < 4 {
+		return tools.InputValidationError
+	}
+	if len(url.Destination) < 4 {
+		return tools.InputValidationError
 	}
 
 	full := &types.UrlFull{

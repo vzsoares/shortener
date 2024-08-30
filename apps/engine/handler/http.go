@@ -74,6 +74,7 @@ func (h *UrlHttpHandler) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := h.domain.DeleteUrl(ctx, id)
 	if err != nil {
+		fmt.Printf("error: %+v", err.Error())
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(tools.NewBody(nil, "Error", tools.CODE_INTERNAL_SERVER_ERROR))
@@ -111,9 +112,17 @@ func (h *UrlHttpHandler) PostHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = h.domain.PutUrl(ctx, url)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(tools.NewBody(nil, "Failed to put", tools.CODE_INTERNAL_SERVER_ERROR))
+		fmt.Printf("error: %+v", err.Error())
+		if errors.Is(err, tools.InputValidationError) {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(tools.NewBody(nil,
+				"Validation error", tools.InputValidationError.Code),
+			)
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(tools.NewBody(nil, err.Error(), tools.CODE_INTERNAL_SERVER_ERROR))
+		}
 		return
 	}
 
