@@ -9,7 +9,7 @@ info:
 security:
   - apiKeyB2: []
 servers:
-  - url: https://api.zenhalab.com/shortener/v1
+  - url: https://api.zenhalab.com/shortener/v1/engine
     description: server
   - url: http:localhost:4000/dev
     description: local server
@@ -18,7 +18,7 @@ paths:
     post:
       tags:
         - url
-      description: Creates short url entry;<br/>WILL NOT fail IF already exists. Instead WILL return current existing entry;<br/>IF expired then WILL reactivate it
+      description: Creates or updates existing rash entry
       requestBody:
         content:
           application/json:
@@ -29,8 +29,8 @@ paths:
                   $ref: "#/components/schemas/short_url/properties/rash"
                 destination:
                   $ref: "#/components/schemas/short_url/properties/destination"
-                ttl_hour:
-                  $ref: "#/components/schemas/short_url/properties/ttl_hour"
+                ttl:
+                  $ref: "#/components/schemas/short_url/properties/ttl"
       responses:
         "200":
           description: OK
@@ -38,9 +38,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/response"
-                properties:
-                  data:
-                    $ref: "#/components/schemas/short_url"
 
   /url/{rash}:
     get:
@@ -69,11 +66,6 @@ paths:
 
 components:
   securitySchemes:
-    apiKeyB2:
-      description: organization api integration api key B2
-      type: "apiKey"
-      name: "x-api-key"
-      in: "header"
     apiKeyA4:
       description: organization api integration api key A4
       type: "apiKey"
@@ -92,25 +84,23 @@ components:
         rash:
           type: "string"
           example: "a-51asd34123gg"
-        status:
-          type: "string"
-          enum:
-            - ACTIVE
-            - EXPIRED
-          example: ACTIVE
-        ttl_hour:
+        ttl:
           type: "number"
-          example: 720
+          example: 1725137810
           default: 0
-          description: time to expire, then time to exclude; So for example for a ttl of 720 hours (30 days) the entry will be accessible for 30 days and then excluded after 60 days
+          description: epoch date to expire
         createdAt:
-          type: "string"
-          description: iso date string
-          example: "2011-10-05T14:48:00.000Z"
+          type: "number"
+          description: epoch date
+          example: 1725137810
         updatedAt:
-          type: "string"
-          description: iso date string
-          example: "2011-10-05T14:48:00.000Z"
+          type: "number"
+          description: epoch date
+          example: 1725137810
+        version:
+          type: "number"
+          description: times changed
+          example: 1   
     response:
       type: "object"
       properties:
