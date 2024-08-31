@@ -254,3 +254,60 @@ func Test_PostHandler_JustCreate(t *testing.T) {
 		t.Errorf("expected error to be nil got %v", err)
 	}
 }
+
+func Test_AuthMiddlewareGetHandler_Unauthorized(t *testing.T) {
+	// Setup
+	ctx := context.TODO()
+	domain := domain.NewUrlDomain(ctx, dstore)
+	handler := handlers.NewHttpHandler(ctx, domain)
+
+	// Create Request
+	req := httptest.NewRequest(http.MethodGet, "/123", nil)
+	req.SetPathValue("id", "123")
+	req.Header.Set("X-Api-Key", "alk214")
+	w := httptest.NewRecorder()
+
+	// Exec Request
+	handlers.AuthMiddleware(handler.GetHandler)(w, req)
+	res := w.Result()
+	defer res.Body.Close()
+
+	// Parse res body
+	target := ""
+	err := json.NewDecoder(res.Body).Decode(&target)
+
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+	if target != "Unauthorized" {
+		t.Errorf("expected Unauthorized got %v", target)
+	}
+}
+func Test_AuthMiddlewareGetHandler_MissingApiKey(t *testing.T) {
+	// Setup
+	ctx := context.TODO()
+	domain := domain.NewUrlDomain(ctx, dstore)
+	handler := handlers.NewHttpHandler(ctx, domain)
+
+	// Create Request
+	req := httptest.NewRequest(http.MethodGet, "/123", nil)
+	req.SetPathValue("id", "123")
+	req.Header.Set("Wrong-X-Api-Key", "alk214")
+	w := httptest.NewRecorder()
+
+	// Exec Request
+	handlers.AuthMiddleware(handler.GetHandler)(w, req)
+	res := w.Result()
+	defer res.Body.Close()
+
+	// Parse res body
+	target := ""
+	err := json.NewDecoder(res.Body).Decode(&target)
+
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+	if target != "Missing X-Api-Key" {
+		t.Errorf("expected Missing X-Api-Key got %v", target)
+	}
+}
