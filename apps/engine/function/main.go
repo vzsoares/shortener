@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"apps/engine/domain"
-	"apps/engine/handler"
+	"apps/engine/handlers"
 	"apps/engine/store"
 	"apps/engine/tools"
 
@@ -55,11 +55,14 @@ func init() {
 	ctx := context.TODO()
 	store := store.NewDynamoStore(ctx, apiUrl, skipHttps)
 	domain := domain.NewUrlDomain(ctx, store)
-	handler := handler.NewHttpHandler(ctx, domain)
+	handler := handlers.NewHttpHandler(ctx, domain)
 
-	http.HandleFunc(buildPath("/url/{id}", &GET), handler.GetHandler)
-	http.HandleFunc(buildPath("/url/{id}", &DELETE), handler.DeleteHandler)
-	http.HandleFunc(buildPath("/url", &POST), handler.PostHandler)
+	http.HandleFunc(buildPath("/url/{id}", &GET),
+		handlers.AuthMiddleware(handler.GetHandler))
+	http.HandleFunc(buildPath("/url/{id}", &DELETE),
+		handlers.AuthMiddleware(handler.DeleteHandler))
+	http.HandleFunc(buildPath("/url", &POST),
+		handlers.AuthMiddleware(handler.PostHandler))
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)
 }

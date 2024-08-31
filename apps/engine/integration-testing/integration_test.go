@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"apps/engine/domain"
-	"apps/engine/handler"
+	"apps/engine/handlers"
 	"apps/engine/store"
 	"apps/engine/tools"
 	"apps/engine/types"
@@ -195,7 +195,7 @@ func Test_GetHandler_NonExistentItem_NotFound(t *testing.T) {
 	// Setup
 	ctx := context.TODO()
 	domain := domain.NewUrlDomain(ctx, dstore)
-	handler := handler.NewHttpHandler(ctx, domain)
+	handler := handlers.NewHttpHandler(ctx, domain)
 
 	// Create Request
 	req := httptest.NewRequest(http.MethodGet, "/123", nil)
@@ -223,7 +223,7 @@ func Test_PostHandler_JustCreate(t *testing.T) {
 	// Setup
 	ctx := context.TODO()
 	domain := domain.NewUrlDomain(ctx, dstore)
-	handler := handler.NewHttpHandler(ctx, domain)
+	handler := handlers.NewHttpHandler(ctx, domain)
 
 	url := types.UrlBase{
 		Rash:        randomString(10),
