@@ -14,6 +14,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 )
 
@@ -37,6 +38,7 @@ func buildPath(p string, m *string) string {
 
 var apiUrl string
 var skipHttps bool
+var parameterStore *tools.Ssm
 
 func init() {
 	if tools.DEBUG {
@@ -53,16 +55,24 @@ func init() {
 		json.NewEncoder(w).Encode(time.UnixDate)
 	})
 	ctx := context.TODO()
-	store := store.NewDynamoStore(ctx, apiUrl, skipHttps)
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	store := store.NewDynamoStore(ctx, apiUrl, skipHttps, cfg)
 	domain := domain.NewUrlDomain(ctx, store)
 	handler := handlers.NewHttpHandler(ctx, domain)
+	if parameterStore == nil {
+		parameterStore = tools.NewSmmStore(cfg, ctx)
+	}
 
 	http.HandleFunc(buildPath("/url/{id}", &GET),
-		handlers.AuthMiddleware(handler.GetHandler))
+		handlers.AuthMiddleware(handler.GetHandler, parameterStore))
 	http.HandleFunc(buildPath("/url/{id}", &DELETE),
-		handlers.AuthMiddleware(handler.DeleteHandler))
+		handlers.AuthMiddleware(handler.DeleteHandler, parameterStore))
 	http.HandleFunc(buildPath("/url", &POST),
-		handlers.AuthMiddleware(handler.PostHandler))
+		handlers.AuthMiddleware(handler.PostHandler, parameterStore))
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)
 }

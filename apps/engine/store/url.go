@@ -6,7 +6,6 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -23,12 +22,7 @@ type DynamoStore struct {
 
 var _ types.UrlStore = (*DynamoStore)(nil)
 
-func NewDynamoStore(ctx context.Context, endpoint string, https bool) *DynamoStore {
-	cfg, err := config.LoadDefaultConfig(ctx)
-	if err != nil {
-		panic(err.Error())
-	}
-
+func NewDynamoStore(ctx context.Context, endpoint string, https bool, cfg aws.Config) *DynamoStore {
 	client := dynamodb.NewFromConfig(cfg, func(o *dynamodb.Options) {
 		o.EndpointOptions.DisableHTTPS = https
 		o.BaseEndpoint = aws.String(endpoint)

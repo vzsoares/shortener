@@ -1,34 +1,11 @@
 package handlers
 
 import (
-	"context"
+	"apps/engine/tools"
 	"net/http"
-
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
-var A4Key string
-
-func GetApiKey(key string) string {
-	ctx := context.TODO()
-	cfg, err := config.LoadDefaultConfig(ctx)
-	if err != nil {
-		panic(err.Error())
-	}
-	ssmClient := ssm.NewFromConfig(cfg)
-	res, err := ssmClient.GetParameter(ctx, &ssm.GetParameterInput{
-		Name: aws.String(key),
-	})
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return *res.Parameter.Value
-}
-
-func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
+func AuthMiddleware(next http.HandlerFunc, parameterStore *tools.Ssm) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		incomingKey := r.Header.Get("X-Api-Key")
 		if incomingKey == "" {
@@ -36,11 +13,9 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		if A4Key == "" {
-			A4Key = GetApiKey("/dev/API_KEY_A4")
-		}
+		a4Key := parameterStore.Get("API_KEY_A4")
 
-		if incomingKey != A4Key {
+		if incomingKey != a4Key {
 			http.Error(w, "\"Unauthorized\"", http.StatusForbidden)
 			return
 		}

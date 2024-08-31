@@ -20,6 +20,7 @@ import (
 	"apps/engine/tools"
 	"apps/engine/types"
 
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	ddbtypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go/aws"
@@ -74,6 +75,7 @@ func getRandomProduct() *types.UrlFull {
 
 var apiUrl string
 var dstore *store.DynamoStore
+var parameterStore *tools.Ssm
 
 func init() {
 	// _apiUrl, ok := os.LookupEnv("API_URL")
@@ -85,7 +87,14 @@ func init() {
 	apiUrl = tools.LOCAL_DB_URL
 
 	ctx := context.TODO()
-	dstore = store.NewDynamoStore(ctx, apiUrl, true)
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		panic(err.Error())
+	}
+	if parameterStore == nil {
+		parameterStore = tools.NewSmmStore(cfg, ctx)
+	}
+	dstore = store.NewDynamoStore(ctx, apiUrl, true, cfg)
 
 	listTablesRes, err := dstore.Client.ListTables(ctx,
 		&dynamodb.ListTablesInput{},
@@ -268,7 +277,7 @@ func Test_AuthMiddlewareGetHandler_Unauthorized(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	// Exec Request
-	handlers.AuthMiddleware(handler.GetHandler)(w, req)
+	handlers.AuthMiddleware(handler.GetHandler, parameterStore)(w, req)
 	res := w.Result()
 	defer res.Body.Close()
 
@@ -296,7 +305,7 @@ func Test_AuthMiddlewareGetHandler_MissingApiKey(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	// Exec Request
-	handlers.AuthMiddleware(handler.GetHandler)(w, req)
+	handlers.AuthMiddleware(handler.GetHandler, parameterStore)(w, req)
 	res := w.Result()
 	defer res.Body.Close()
 
