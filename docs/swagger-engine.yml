@@ -63,6 +63,24 @@ paths:
                     $ref: "#/components/schemas/short_url"
         "404":
           description: not found
+    delete:
+      tags:
+        - url
+      description: deletes existing rash entry
+      parameters:
+        - in: "path"
+          name: rash
+          example: "a-dasf3@152s"
+          required: true
+          schema:
+            type: "string"      
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response"
 
 components:
   securitySchemes:
