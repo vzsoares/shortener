@@ -1,3 +1,6 @@
 go 1.22
 
-use ./apps/engine
+use (
+	./apps/engine
+	./apps/public-api
+)
