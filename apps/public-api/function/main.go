@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -32,16 +34,14 @@ func buildPath(p string, m *string) string {
 	return res
 }
 
-var apiUrl string
-var remoteApi = "https://api-dev.zenhalab.com/shortener/v1"
-var localApi = "http://localhost:3000"
+var apiUrl string = "https://api-dev.zenhalab.com/shortener/v1"
 
 func init() {
 	if tools.DEBUG {
-		apiUrl = localApi
 	} else {
-		apiUrl = remoteApi
 	}
+
+	client := http.Client{}
 
 	http.HandleFunc(buildPath("/ping", nil), func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -49,7 +49,31 @@ func init() {
 		json.NewEncoder(w).Encode(time.UnixDate)
 	})
 
-	http.HandleFunc(buildPath("/url/{id}", &GET), func(w http.ResponseWriter, r *http.Request) {})
+	http.HandleFunc(buildPath("/url/{id}", &GET), func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+
+		if id == "" {
+			panic("No id")
+		}
+		request, err := http.NewRequest(GET, fmt.Sprintf("%v/engine/url/%v", apiUrl, id), nil)
+		if err != nil {
+			panic(err.Error())
+		}
+		request.Header.Set("X-Api-Key", "1234")
+
+		response, err := client.Do(request)
+		if err != nil {
+			panic(err.Error())
+		}
+		defer response.Body.Close()
+
+		body, err := io.ReadAll(response.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		println(string(body))
+	})
 	http.HandleFunc(buildPath("/url", &POST), func(w http.ResponseWriter, r *http.Request) {})
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)
