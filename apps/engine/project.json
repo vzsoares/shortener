@@ -22,7 +22,8 @@
         "test": {
             "executor": "@nx-go/nx-go:test",
             "options": {
-                "args": ["-tags DEBUG,"]
+                "args": ["-tags DEBUG,"],
+                "env": { "STAGE": "dev" }
             }
         },
         "lint": {
