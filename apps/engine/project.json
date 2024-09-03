@@ -20,7 +20,10 @@
             }
         },
         "test": {
-            "executor": "@nx-go/nx-go:test"
+            "executor": "@nx-go/nx-go:test",
+            "options": {
+                "args": ["-tags DEBUG,"]
+            }
         },
         "lint": {
             "executor": "@nx-go/nx-go:lint"
