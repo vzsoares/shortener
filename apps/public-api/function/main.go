@@ -23,7 +23,7 @@ var httpLambda *httpadapter.HandlerAdapter
 
 func buildPath(p string, m *string) string {
 	var res string
-	basePath := "/engine"
+	basePath := "/public-api"
 	if m == nil {
 		res = fmt.Sprint(basePath, p)
 	} else {
@@ -34,7 +34,7 @@ func buildPath(p string, m *string) string {
 
 var apiUrl string
 var remoteApi = "https://api-dev.zenhalab.com/shortener/v1"
-var localApi = "http://localhost:4000"
+var localApi = "http://localhost:3000"
 
 func init() {
 	if tools.DEBUG {

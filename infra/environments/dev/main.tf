@@ -29,3 +29,12 @@ module "engine-lambda" {
   lambda_iam_arn        = module.role.iam_role_arn
 }
 
+module "public-api-lambda" {
+  source = "../../../apps/public-api/infra"
+
+  stage                 = local.stage
+  gateway_id            = module.api_gateway.id
+  gateway_execution_arn = module.api_gateway.execution_arn
+  lambda_iam_arn        = module.role.iam_role_arn
+}
+

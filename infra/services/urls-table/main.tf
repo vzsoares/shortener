@@ -22,6 +22,10 @@ resource "aws_dynamodb_table" "urls-table" {
     Terraform = "true"
     Stage     = var.stage
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 output "arn" {
