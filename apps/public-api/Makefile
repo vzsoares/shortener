@@ -36,6 +36,13 @@ build: ##@ Build package
 sam-build: ##@ Build for sam
 > @make build BUILD_TAG=${DEBUG} && cd ${BASE_TF_WORK_DIR}/${STAGE} && ${SAM} build ${SAM_COMMON_AGRS} ${SAM_TERRAFORM_ROOT} ${EXTRA}
 
+start-api-debug: ##@ start with listen and serve
+> @cd ./function && STAGE=dev go run -tags=DEBUG, .
+
+start-debug:
+> @npx nodemon -e go --signal SIGTERM --exec 'make' start-api-debug
+
+
 start: ##@ Start local api
        ##@ - if this is your first run then
        ##@ run make tf-init && make sam-build

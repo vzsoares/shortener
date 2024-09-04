@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -200,9 +201,16 @@ func init() {
 			)
 			return
 		}
+		var frontBaseUrl = "https://s.zenhalab.com"
+		type data struct {
+			Url string `json:"url"`
+		}
+		resData := &data{Url: fmt.Sprintf("%v/%v", frontBaseUrl, url.Rash)}
+		resBody := etools.NewBody(resData, "Ok", etools.CODE_OK)
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(etools.NewBody(nil, "Ok", etools.CODE_OK))
+		json.NewEncoder(w).Encode(resBody)
 	})
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)
@@ -214,5 +222,10 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 }
 
 func main() {
-	lambda.Start(Handler)
+	if tools.DEBUG {
+		println("Running debug server...")
+		log.Fatal(http.ListenAndServe(":3000", nil))
+	} else {
+		lambda.Start(Handler)
+	}
 }
