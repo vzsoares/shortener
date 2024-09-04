@@ -4,15 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"log"
 	"net/http"
 	"time"
 
+	etools "apps/engine/tools"
 	"apps/public-api/tools"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 )
 
@@ -35,6 +35,8 @@ func buildPath(p string, m *string) string {
 }
 
 var apiUrl string = "https://api-dev.zenhalab.com/shortener/v1"
+var apiKeyA4 string
+var parameterStore *etools.Ssm
 
 func init() {
 	if tools.DEBUG {
@@ -42,6 +44,20 @@ func init() {
 	}
 
 	client := http.Client{}
+	ctx := context.TODO()
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		panic(err.Error())
+	}
+	if parameterStore == nil {
+		parameterStore = etools.NewSmmStore(cfg, ctx)
+
+	}
+
+	if apiKeyA4 == "" {
+		apiKeyA4 = parameterStore.Get("API_KEY_A4")
+
+	}
 
 	http.HandleFunc(buildPath("/ping", nil), func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -53,26 +69,61 @@ func init() {
 		id := r.PathValue("id")
 
 		if id == "" {
+			// TODO error page
 			panic("No id")
 		}
 		request, err := http.NewRequest(GET, fmt.Sprintf("%v/engine/url/%v", apiUrl, id), nil)
 		if err != nil {
+			// TODO error page
 			panic(err.Error())
 		}
-		request.Header.Set("X-Api-Key", "1234")
+
+		request.Header.Set("X-Api-Key", apiKeyA4)
 
 		response, err := client.Do(request)
 		if err != nil {
+			// TODO error page
 			panic(err.Error())
 		}
 		defer response.Body.Close()
 
-		body, err := io.ReadAll(response.Body)
+		body := &etools.Body{}
+		err = json.NewDecoder(response.Body).Decode(body)
 		if err != nil {
-			log.Fatal(err)
+			// TODO error page
+			panic(err.Error())
 		}
 
-		println(string(body))
+		if body.Code == "DBI404" {
+			// TODO not found destination
+			w.Header().Set("Location", "https://google.com")
+			w.Header().Set("Cache-Control", "no-store")
+			w.WriteHeader(http.StatusTemporaryRedirect)
+			return
+		}
+		if body.Code != "S200" {
+			// TODO error page
+			w.Header().Set("Location", "https://google.com")
+			w.Header().Set("Cache-Control", "no-store")
+			w.WriteHeader(http.StatusTemporaryRedirect)
+			return
+		}
+		data := body.Data.(map[string]any)
+
+		destination, ok := data["destination"]
+		destinationstring, ok := destination.(string)
+		if !ok {
+			// TODO error page
+			w.Header().Set("Location", "https://google.com")
+			w.Header().Set("Cache-Control", "no-store")
+			w.WriteHeader(http.StatusTemporaryRedirect)
+			return
+		}
+
+		fmt.Printf("%+v\n", body)
+		w.Header().Set("Location", destinationstring)
+		w.Header().Set("Cache-Control", "no-store")
+		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
 	http.HandleFunc(buildPath("/url", &POST), func(w http.ResponseWriter, r *http.Request) {})
 
