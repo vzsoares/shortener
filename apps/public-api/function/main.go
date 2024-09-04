@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"time"
 
@@ -228,4 +229,17 @@ func main() {
 	} else {
 		lambda.Start(Handler)
 	}
+}
+
+var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~()'!*:@,;"
+
+func genRash(size int) string {
+	l := len(chars)
+	r := ""
+	for range size {
+		rd := rand.Intn(l)
+		c := chars[rd]
+		r += string(c)
+	}
+	return r
 }
