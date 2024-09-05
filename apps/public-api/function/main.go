@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -136,41 +135,13 @@ func init() {
 			Ttl: int(now) + int(thirtyDays),
 		}
 
-		var byt bytes.Buffer
-		err = json.NewEncoder(&byt).Encode(&url)
+		body, err := services.PutUrl(url, apiUrl, apiKeyA4, client)
 		if err != nil {
 			respondJson(w, http.StatusInternalServerError,
 				etools.NewBody(nil,
 					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
 			)
-		}
-		request, err := http.NewRequest(POST, fmt.Sprintf("%v/engine/url", apiUrl), &byt)
-		if err != nil {
-			respondJson(w, http.StatusInternalServerError,
-				etools.NewBody(nil,
-					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
-			)
-		}
-
-		request.Header.Set("X-Api-Key", apiKeyA4)
-		request.Header.Set("Content-Type", "application/json")
-
-		response, err := client.Do(request)
-		if err != nil {
-			respondJson(w, http.StatusInternalServerError,
-				etools.NewBody(nil,
-					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
-			)
-		}
-		defer response.Body.Close()
-
-		body := &etools.Body{}
-		err = json.NewDecoder(response.Body).Decode(body)
-		if err != nil {
-			respondJson(w, http.StatusInternalServerError,
-				etools.NewBody(nil,
-					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
-			)
+			return
 		}
 
 		fmt.Printf("%+v\n", body)
