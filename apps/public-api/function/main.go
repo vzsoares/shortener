@@ -132,10 +132,9 @@ func init() {
 
 	http.HandleFunc(buildPath("/url", &POST), func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Content-Type") != "application/json" {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(etools.NewBody(nil,
-				"content type not supported", etools.CODE_BAD_REQUEST),
+			respondJson(w, http.StatusBadRequest,
+				etools.NewBody(nil,
+					"Content type not supported", etools.CODE_BAD_REQUEST),
 			)
 			return
 		}
@@ -147,10 +146,9 @@ func init() {
 		err := json.NewDecoder(r.Body).Decode(murl)
 
 		if err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(etools.NewBody(nil,
-				"invalid json", etools.CODE_BAD_REQUEST),
+			respondJson(w, http.StatusBadRequest,
+				etools.NewBody(nil,
+					"Invalid json", etools.CODE_BAD_REQUEST),
 			)
 			return
 		}
@@ -167,12 +165,17 @@ func init() {
 		var byt bytes.Buffer
 		err = json.NewEncoder(&byt).Encode(&url)
 		if err != nil {
-			panic(err.Error())
+			respondJson(w, http.StatusInternalServerError,
+				etools.NewBody(nil,
+					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+			)
 		}
 		request, err := http.NewRequest(POST, fmt.Sprintf("%v/engine/url", apiUrl), &byt)
 		if err != nil {
-			// TODO error page
-			panic(err.Error())
+			respondJson(w, http.StatusInternalServerError,
+				etools.NewBody(nil,
+					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+			)
 		}
 
 		request.Header.Set("X-Api-Key", apiKeyA4)
@@ -180,25 +183,27 @@ func init() {
 
 		response, err := client.Do(request)
 		if err != nil {
-			// TODO error page
-			panic(err.Error())
+			respondJson(w, http.StatusInternalServerError,
+				etools.NewBody(nil,
+					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+			)
 		}
 		defer response.Body.Close()
 
 		body := &etools.Body{}
 		err = json.NewDecoder(response.Body).Decode(body)
 		if err != nil {
-			// TODO error page
-			panic(err.Error())
+			respondJson(w, http.StatusInternalServerError,
+				etools.NewBody(nil,
+					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+			)
 		}
 
 		fmt.Printf("%+v\n", body)
 		if body.Code != "S200" {
-			// TODO error page
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(etools.NewBody(nil,
-				"Internal server errro", etools.CODE_INTERNAL_SERVER_ERROR),
+			respondJson(w, http.StatusInternalServerError,
+				etools.NewBody(nil,
+					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
 			)
 			return
 		}
@@ -209,9 +214,7 @@ func init() {
 		resData := &data{Url: fmt.Sprintf("%v/%v", frontBaseUrl, url.Rash)}
 		resBody := etools.NewBody(resData, "Ok", etools.CODE_OK)
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(resBody)
+		respondJson(w, http.StatusOK, resBody)
 	})
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)
@@ -242,4 +245,10 @@ func genRash(size int) string {
 		r += string(c)
 	}
 	return r
+}
+
+func respondJson(w http.ResponseWriter, s int, j any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(s)
+	json.NewEncoder(w).Encode(j)
 }
