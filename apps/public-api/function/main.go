@@ -26,6 +26,8 @@ var POST = "POST"
 var DELETE = "DELETE"
 
 var httpLambda *httpadapter.HandlerAdapter
+var errorPageUrl = "https://google.com"
+var notFoundPageUrl = "https://google.com"
 
 func buildPath(p string, m *string) string {
 	var res string
@@ -73,43 +75,33 @@ func init() {
 		id := r.PathValue("id")
 
 		if id == "" {
-			// TODO error page
-			panic("No id")
+			respondRedirect(w, errorPageUrl)
 		}
 		request, err := http.NewRequest(GET, fmt.Sprintf("%v/engine/url/%v", apiUrl, id), nil)
 		if err != nil {
-			// TODO error page
-			panic(err.Error())
+			respondRedirect(w, errorPageUrl)
 		}
 
 		request.Header.Set("X-Api-Key", apiKeyA4)
 
 		response, err := client.Do(request)
 		if err != nil {
-			// TODO error page
-			panic(err.Error())
+			respondRedirect(w, errorPageUrl)
 		}
 		defer response.Body.Close()
 
 		body := &etools.Body{}
 		err = json.NewDecoder(response.Body).Decode(body)
 		if err != nil {
-			// TODO error page
-			panic(err.Error())
+			respondRedirect(w, errorPageUrl)
 		}
 
 		if body.Code == "DBI404" {
-			// TODO not found destination
-			w.Header().Set("Location", "https://google.com")
-			w.Header().Set("Cache-Control", "no-store")
-			w.WriteHeader(http.StatusTemporaryRedirect)
+			respondRedirect(w, notFoundPageUrl)
 			return
 		}
 		if body.Code != "S200" {
-			// TODO error page
-			w.Header().Set("Location", "https://google.com")
-			w.Header().Set("Cache-Control", "no-store")
-			w.WriteHeader(http.StatusTemporaryRedirect)
+			respondRedirect(w, errorPageUrl)
 			return
 		}
 		data := body.Data.(map[string]any)
@@ -117,17 +109,12 @@ func init() {
 		destination, ok := data["destination"]
 		destinationstring, ok := destination.(string)
 		if !ok {
-			// TODO error page
-			w.Header().Set("Location", "https://google.com")
-			w.Header().Set("Cache-Control", "no-store")
-			w.WriteHeader(http.StatusTemporaryRedirect)
+			respondRedirect(w, errorPageUrl)
 			return
 		}
 
 		fmt.Printf("%+v\n", body)
-		w.Header().Set("Location", destinationstring)
-		w.Header().Set("Cache-Control", "no-store")
-		w.WriteHeader(http.StatusTemporaryRedirect)
+		respondRedirect(w, destinationstring)
 	})
 
 	http.HandleFunc(buildPath("/url", &POST), func(w http.ResponseWriter, r *http.Request) {
@@ -251,4 +238,9 @@ func respondJson(w http.ResponseWriter, s int, j any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(s)
 	json.NewEncoder(w).Encode(j)
+}
+func respondRedirect(w http.ResponseWriter, l string) {
+	w.Header().Set("Location", l)
+	w.Header().Set("Cache-Control", "no-store")
+	w.WriteHeader(http.StatusTemporaryRedirect)
 }
