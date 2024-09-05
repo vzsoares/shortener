@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
@@ -128,8 +129,20 @@ func init() {
 
 		now := time.Now().Unix()
 		thirtyDays := 30 * (time.Hour.Seconds() * 24)
+		fn := func(i int) (string, error) {
+			rash, err := getValidRash(client, i+5)
+			return rash, err
+		}
+		rash, err := RetryN(fn, 3)
+		if err != nil {
+			respondJson(w, http.StatusInternalServerError,
+				etools.NewBody(nil,
+					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+			)
+			return
+		}
 		url := &types.UrlBase{
-			Rash:        "p-sadw",
+			Rash:        rash,
 			Destination: murl.Destination,
 			// Public url last 30 days
 			Ttl: int(now) + int(thirtyDays),
@@ -144,7 +157,6 @@ func init() {
 			return
 		}
 
-		fmt.Printf("%+v\n", body)
 		if body.Code != "S200" {
 			respondJson(w, http.StatusInternalServerError,
 				etools.NewBody(nil,
@@ -165,6 +177,17 @@ func init() {
 	httpLambda = httpadapter.New(http.DefaultServeMux)
 }
 
+func RetryN[T any](fn func(i int) (T, error), count int) (T, error) {
+	for i := range count {
+		v, err := fn(i)
+		if err == nil {
+			return v, nil
+		}
+	}
+	var v T
+	return v, errors.New("Failed miserably")
+}
+
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	httpLambda.StripBasePath("/shortener/v1")
 	return httpLambda.ProxyWithContext(ctx, req)
@@ -182,6 +205,7 @@ func main() {
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~()'!*:@,;"
 
 func genRash(size int) string {
+	prefix := "p-"
 	l := len(chars)
 	r := ""
 	for range size {
@@ -189,7 +213,7 @@ func genRash(size int) string {
 		c := chars[rd]
 		r += string(c)
 	}
-	return r
+	return fmt.Sprintf("%v%v", prefix, r)
 }
 
 func respondJson(w http.ResponseWriter, s int, j any) {
@@ -201,4 +225,17 @@ func respondRedirect(w http.ResponseWriter, l string) {
 	w.Header().Set("Location", l)
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(http.StatusTemporaryRedirect)
+}
+
+func getValidRash(client http.Client, size int) (string, error) {
+	rash := genRash(size)
+	res, err := services.GetUrl(rash, apiUrl, apiKeyA4, client)
+	if err != nil {
+		return "", err
+	}
+
+	if res.Code != "DBI404" {
+		return "", errors.New("Exists")
+	}
+	return rash, nil
 }
