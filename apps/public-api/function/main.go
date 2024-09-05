@@ -12,6 +12,7 @@ import (
 
 	etools "apps/engine/tools"
 	"apps/engine/types"
+	"apps/public-api/services"
 	"apps/public-api/tools"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -77,21 +78,7 @@ func init() {
 		if id == "" {
 			respondRedirect(w, errorPageUrl)
 		}
-		request, err := http.NewRequest(GET, fmt.Sprintf("%v/engine/url/%v", apiUrl, id), nil)
-		if err != nil {
-			respondRedirect(w, errorPageUrl)
-		}
-
-		request.Header.Set("X-Api-Key", apiKeyA4)
-
-		response, err := client.Do(request)
-		if err != nil {
-			respondRedirect(w, errorPageUrl)
-		}
-		defer response.Body.Close()
-
-		body := &etools.Body{}
-		err = json.NewDecoder(response.Body).Decode(body)
+		body, err := services.GetUrl(id, apiUrl, apiKeyA4, client)
 		if err != nil {
 			respondRedirect(w, errorPageUrl)
 		}
@@ -104,8 +91,8 @@ func init() {
 			respondRedirect(w, errorPageUrl)
 			return
 		}
-		data := body.Data.(map[string]any)
 
+		data := body.Data.(map[string]any)
 		destination, ok := data["destination"]
 		destinationstring, ok := destination.(string)
 		if !ok {
