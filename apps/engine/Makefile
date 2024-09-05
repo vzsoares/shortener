@@ -36,16 +36,22 @@ build: ##@ Build package
 sam-build: ##@ Build for sam
 > @make build BUILD_TAG=${DEBUG} && cd ${BASE_TF_WORK_DIR}/${STAGE} && ${SAM} build ${SAM_COMMON_AGRS} ${SAM_TERRAFORM_ROOT} ${EXTRA}
 
-start: ##@ Start local api
+start-api-debug: ##@ start with listen and serve
+> @cd ./function && STAGE=dev go run -tags=DEBUG, .
+
+start: ##@ start local http api
+> @npx nodemon -e go --signal SIGTERM --exec 'make' start-api-debug
+
+start-sam: ##@ Start local api
        ##@ - if this is your first run then
        ##@ run make tf-init && make sam-build
        ##@ runs in DEBUG by default to disable do `$ make start DEBUG=""`
-> @make watch-build start-api -j
+> @make watch-build-sam start-api-sam -j
 
-start-api:
+start-api-sam:
 > @cd ${BASE_TF_WORK_DIR}/${STAGE} && ${SAM} local start-api --debug --skip-pull-image ${SAM_COMMON_AGRS} --add-host=host.docker.internal:host-gateway
 
-watch-build:
+watch-build-sam:
 > @npx nodemon -e go --signal SIGTERM --exec 'make' sam-build EXTRA=--skip-prepare-infra
 
 ##@

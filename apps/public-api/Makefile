@@ -42,7 +42,6 @@ start-api-debug: ##@ start with listen and serve
 start: ##@ start local http api
 > @npx nodemon -e go --signal SIGTERM --exec 'make' start-api-debug
 
-
 start-sam: ##@ Start local api
        ##@ - if this is your first run then
        ##@ run make tf-init && make sam-build

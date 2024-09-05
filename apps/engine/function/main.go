@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -42,7 +43,7 @@ var parameterStore *tools.Ssm
 
 func init() {
 	if tools.DEBUG {
-		apiUrl = tools.LOCAL_DB_URL_DOCKER
+		apiUrl = tools.LOCAL_DB_URL
 		skipHttps = true
 	} else {
 		apiUrl = tools.REMOTE_DB_URL
@@ -83,5 +84,10 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 }
 
 func main() {
-	lambda.Start(Handler)
+	if tools.DEBUG {
+		println("Running debug server...")
+		log.Fatal(http.ListenAndServe(":4000", nil))
+	} else {
+		lambda.Start(Handler)
+	}
 }
