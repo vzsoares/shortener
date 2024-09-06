@@ -6,11 +6,6 @@ import (
 	"math/rand"
 )
 
-func Utils(name string) string {
-	result := "Utils " + name
-	return result
-}
-
 var UriSafeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~()'!*:@,;"
 
 func GenUriSafeRash(size int, prefix string) string {
@@ -26,7 +21,7 @@ func GenUriSafeRash(size int, prefix string) string {
 
 func RetryN[T any](fn func(i int) (T, error), count int) (T, error) {
 	for i := range count {
-		v, err := fn(i)
+		v, err := fn(i + 1)
 		if err == nil {
 			return v, nil
 		}
