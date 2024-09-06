@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"libs/utils"
 	"log"
-	"math/rand"
 	"net/http"
 	"time"
 
@@ -137,7 +137,8 @@ func init() {
 			rash, err := getValidRash(client, i+5)
 			return rash, err
 		}
-		rash, err := RetryN(fn, 3)
+		rash, err := utils.RetryN(fn, 3)
+
 		if err != nil {
 			respondJson(w, http.StatusInternalServerError,
 				etools.NewBody(nil,
@@ -181,17 +182,6 @@ func init() {
 	httpLambda = httpadapter.New(http.DefaultServeMux)
 }
 
-func RetryN[T any](fn func(i int) (T, error), count int) (T, error) {
-	for i := range count {
-		v, err := fn(i)
-		if err == nil {
-			return v, nil
-		}
-	}
-	var v T
-	return v, errors.New("Failed miserably")
-}
-
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	httpLambda.StripBasePath("/shortener/v1")
 	return httpLambda.ProxyWithContext(ctx, req)
@@ -206,20 +196,6 @@ func main() {
 	}
 }
 
-var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~()'!*:@,;"
-
-func genRash(size int) string {
-	prefix := "p-"
-	l := len(chars)
-	r := ""
-	for range size {
-		rd := rand.Intn(l)
-		c := chars[rd]
-		r += string(c)
-	}
-	return fmt.Sprintf("%v%v", prefix, r)
-}
-
 func respondJson(w http.ResponseWriter, s int, j any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(s)
@@ -232,7 +208,7 @@ func respondRedirect(w http.ResponseWriter, l string) {
 }
 
 func getValidRash(client http.Client, size int) (string, error) {
-	rash := genRash(size)
+	rash := utils.GenUriSafeRash(size, "p-")
 	res, err := services.GetUrl(rash, apiUrl, apiKeyA4, client)
 	if err != nil {
 		return "", err
