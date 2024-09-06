@@ -2,8 +2,8 @@ package main
 
 import (
 	"apps/public-api/handlers"
+	"apps/public-api/tools"
 	"context"
-	"encoding/json"
 	"libs/utils"
 	"net/http"
 	"net/http/httptest"
@@ -49,14 +49,13 @@ func Test_GetHandler_RedirectError(t *testing.T) {
 	res := w.Result()
 	defer res.Body.Close()
 
-	// Parse res body
-	target := &utils.Body{}
-	err := json.NewDecoder(res.Body).Decode(target)
+	location := res.Header.Get("Location")
 
-	if err != nil {
-		t.Errorf("expected error to be nil got %v", err)
+	if res.StatusCode != 307 {
+		t.Errorf("expected StatusCode to be 307 got %v", res.StatusCode)
 	}
-	if target.Code != "DBI404" {
-		t.Errorf("expected DBI404 got %v", target.Code)
+
+	if location != tools.DEFAULT_ERROR_PAGE {
+		t.Errorf("expected to be %v got %v", tools.DEFAULT_ERROR_PAGE, location)
 	}
 }
