@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"libs/utils"
 	"net/http"
 
-	etools "apps/engine/tools"
 	"apps/engine/types"
 )
 
-func GetUrl(id string, apiUrl string, apiKeyA4 string, client http.Client) (*etools.Body, error) {
+func GetUrl(id string, apiUrl string, apiKeyA4 string, client http.Client) (*utils.Body, error) {
 	request, err := http.NewRequest("GET", fmt.Sprintf("%v/engine/url/%v", apiUrl, id), nil)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func GetUrl(id string, apiUrl string, apiKeyA4 string, client http.Client) (*eto
 	}
 	defer response.Body.Close()
 
-	body := &etools.Body{}
+	body := &utils.Body{}
 	err = json.NewDecoder(response.Body).Decode(body)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func GetUrl(id string, apiUrl string, apiKeyA4 string, client http.Client) (*eto
 	return body, nil
 }
 
-func PutUrl(url *types.UrlBase, apiUrl string, apiKeyA4 string, client http.Client) (*etools.Body, error) {
+func PutUrl(url *types.UrlBase, apiUrl string, apiKeyA4 string, client http.Client) (*utils.Body, error) {
 	var byt bytes.Buffer
 	err := json.NewEncoder(&byt).Encode(url)
 	if err != nil {
@@ -52,7 +52,7 @@ func PutUrl(url *types.UrlBase, apiUrl string, apiKeyA4 string, client http.Clie
 	}
 	defer response.Body.Close()
 
-	body := &etools.Body{}
+	body := &utils.Body{}
 	err = json.NewDecoder(response.Body).Decode(body)
 	if err != nil {
 		return nil, err

@@ -2,29 +2,16 @@ package tools
 
 import (
 	"encoding/json"
+	"libs/utils"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
 )
 
-type Body struct {
-	Data    any    `json:"data"`
-	Message string `json:"message"`
-	Code    CODES  `json:"code"`
-}
-
-func NewBody(data any, msg string, code CODES) *Body {
-	return &Body{
-		Data:    data,
-		Message: msg,
-		Code:    code,
-	}
-}
-
-func GatewayResponse(statusCode int, data any, msg string, code CODES) events.APIGatewayV2HTTPResponse {
+func GatewayResponse(statusCode int, data any, msg string, code utils.CODES) events.APIGatewayV2HTTPResponse {
 	var marshalled []byte
 	var err error
-	var body Body = Body{
+	var body utils.Body = utils.Body{
 		Data:    data,
 		Message: msg,
 		Code:    code,
@@ -32,7 +19,7 @@ func GatewayResponse(statusCode int, data any, msg string, code CODES) events.AP
 
 	marshalled, err = json.Marshal(body)
 	if err != nil {
-		return GatewayResponse(http.StatusInternalServerError, nil, err.Error(), CODE_INTERNAL_SERVER_ERROR)
+		return GatewayResponse(http.StatusInternalServerError, nil, err.Error(), utils.CODE_INTERNAL_SERVER_ERROR)
 	}
 
 	stringified := string(marshalled)

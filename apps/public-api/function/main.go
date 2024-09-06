@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"time"
 
-	etools "apps/engine/tools"
 	"apps/engine/types"
 	"apps/public-api/services"
 	"apps/public-api/tools"
@@ -45,7 +44,7 @@ var apiUrl string
 var apiUrlRemote string = "https://api-dev.zenhalab.com/shortener/v1"
 var apiUrlLocal string = "http://localhost:4000"
 var apiKeyA4 string
-var parameterStore *etools.Ssm
+var parameterStore *utils.Ssm
 
 func init() {
 	if tools.DEBUG {
@@ -61,7 +60,7 @@ func init() {
 		panic(err.Error())
 	}
 	if parameterStore == nil {
-		parameterStore = etools.NewSmmStore(cfg, ctx)
+		parameterStore = utils.NewSmmStore(cfg, ctx)
 
 	}
 
@@ -111,8 +110,8 @@ func init() {
 	http.HandleFunc(buildPath("/url", &POST), func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Content-Type") != "application/json" {
 			respondJson(w, http.StatusBadRequest,
-				etools.NewBody(nil,
-					"Content type not supported", etools.CODE_BAD_REQUEST),
+				utils.NewBody(nil,
+					"Content type not supported", utils.CODE_BAD_REQUEST),
 			)
 			return
 		}
@@ -125,8 +124,8 @@ func init() {
 
 		if err != nil {
 			respondJson(w, http.StatusBadRequest,
-				etools.NewBody(nil,
-					"Invalid json", etools.CODE_BAD_REQUEST),
+				utils.NewBody(nil,
+					"Invalid json", utils.CODE_BAD_REQUEST),
 			)
 			return
 		}
@@ -141,8 +140,8 @@ func init() {
 
 		if err != nil {
 			respondJson(w, http.StatusInternalServerError,
-				etools.NewBody(nil,
-					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+				utils.NewBody(nil,
+					"Internal server error", utils.CODE_INTERNAL_SERVER_ERROR),
 			)
 			return
 		}
@@ -156,16 +155,16 @@ func init() {
 		body, err := services.PutUrl(url, apiUrl, apiKeyA4, client)
 		if err != nil {
 			respondJson(w, http.StatusInternalServerError,
-				etools.NewBody(nil,
-					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+				utils.NewBody(nil,
+					"Internal server error", utils.CODE_INTERNAL_SERVER_ERROR),
 			)
 			return
 		}
 
 		if body.Code != "S200" {
 			respondJson(w, http.StatusInternalServerError,
-				etools.NewBody(nil,
-					"Internal server error", etools.CODE_INTERNAL_SERVER_ERROR),
+				utils.NewBody(nil,
+					"Internal server error", utils.CODE_INTERNAL_SERVER_ERROR),
 			)
 			return
 		}
@@ -174,7 +173,7 @@ func init() {
 			Url string `json:"url"`
 		}
 		resData := &data{Url: fmt.Sprintf("%v/%v", frontBaseUrl, url.Rash)}
-		resBody := etools.NewBody(resData, "Ok", etools.CODE_OK)
+		resBody := utils.NewBody(resData, "Ok", utils.CODE_OK)
 
 		respondJson(w, http.StatusOK, resBody)
 	})

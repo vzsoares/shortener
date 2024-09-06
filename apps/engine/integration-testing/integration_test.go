@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"libs/utils"
 	"math/rand"
 	"net/http"
 	"net/http/httptest"
@@ -75,7 +76,7 @@ func getRandomProduct() *types.UrlFull {
 
 var apiUrl string
 var dstore *store.DynamoStore
-var parameterStore *tools.Ssm
+var parameterStore *utils.Ssm
 
 func init() {
 	// _apiUrl, ok := os.LookupEnv("API_URL")
@@ -92,7 +93,7 @@ func init() {
 		panic(err.Error())
 	}
 	if parameterStore == nil {
-		parameterStore = tools.NewSmmStore(cfg, ctx)
+		parameterStore = utils.NewSmmStore(cfg, ctx)
 	}
 	dstore = store.NewDynamoStore(ctx, apiUrl, true, cfg)
 
@@ -194,7 +195,7 @@ func Test_StoreCompleteFlow_CreateGetAlterGetDeleteGet(t *testing.T) {
 	if err == nil {
 		t.Error("Must error")
 	}
-	if !errors.Is(err, tools.ItemNotFoundError) {
+	if !errors.Is(err, utils.ItemNotFoundError) {
 		t.Error(err.Error())
 	}
 
@@ -217,7 +218,7 @@ func Test_GetHandler_NonExistentItem_NotFound(t *testing.T) {
 	defer res.Body.Close()
 
 	// Parse res body
-	target := &tools.Body{}
+	target := &utils.Body{}
 	err := json.NewDecoder(res.Body).Decode(target)
 
 	if err != nil {
@@ -256,7 +257,7 @@ func Test_PostHandler_JustCreate(t *testing.T) {
 	defer res.Body.Close()
 
 	// Parse res body
-	target := &tools.Body{}
+	target := &utils.Body{}
 	err = json.NewDecoder(res.Body).Decode(target)
 
 	if err != nil {

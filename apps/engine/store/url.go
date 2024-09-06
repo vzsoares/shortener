@@ -1,9 +1,9 @@
 package store
 
 import (
-	"apps/engine/tools"
 	"apps/engine/types"
 	"context"
+	"libs/utils"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -46,7 +46,7 @@ func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.UrlFull, err
 		return nil, err
 	}
 	if res.Item == nil {
-		return nil, tools.ItemNotFoundError
+		return nil, utils.ItemNotFoundError
 	}
 
 	item := types.UrlFull{}

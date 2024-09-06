@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"libs/utils"
 	"log"
 	"net/http"
 	"time"
@@ -39,7 +40,7 @@ func buildPath(p string, m *string) string {
 
 var apiUrl string
 var skipHttps bool
-var parameterStore *tools.Ssm
+var parameterStore *utils.Ssm
 
 func init() {
 	if tools.DEBUG {
@@ -65,7 +66,7 @@ func init() {
 	domain := domain.NewUrlDomain(ctx, store)
 	handler := handlers.NewHttpHandler(ctx, domain)
 	if parameterStore == nil {
-		parameterStore = tools.NewSmmStore(cfg, ctx)
+		parameterStore = utils.NewSmmStore(cfg, ctx)
 	}
 
 	http.HandleFunc(buildPath("/url/{id}", &GET),
