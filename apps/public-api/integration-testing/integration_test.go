@@ -33,7 +33,7 @@ func init() {
 
 }
 
-func Test_GetHandler_RedirectError(t *testing.T) {
+func Test_GetHandler_RedirectNotFound(t *testing.T) {
 	ctx := context.TODO()
 	client := http.Client{}
 
@@ -56,6 +56,52 @@ func Test_GetHandler_RedirectError(t *testing.T) {
 	}
 
 	if location != tools.DEFAULT_NOT_FOUND_PAGE {
+		t.Errorf("expected to be %v got %v", tools.DEFAULT_NOT_FOUND_PAGE, location)
+	}
+}
+
+func Test_GetHandler_RedirectError(t *testing.T) {
+	ctx := context.TODO()
+	client := http.Client{}
+
+	handler := handlers.NewHttpHandler(ctx, client, apiUrl, apiKeyA4)
+
+	// Create Request
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	w := httptest.NewRecorder()
+
+	// Exec Request
+	handler.GetHandler(w, req)
+	res := w.Result()
+	defer res.Body.Close()
+
+	location := res.Header.Get("Location")
+
+	if res.StatusCode != 307 {
+		t.Errorf("expected StatusCode to be 307 got %v", res.StatusCode)
+	}
+
+	if location != tools.DEFAULT_ERROR_PAGE {
 		t.Errorf("expected to be %v got %v", tools.DEFAULT_ERROR_PAGE, location)
+	}
+}
+
+func Test_PostHandler_BadRequestError(t *testing.T) {
+	ctx := context.TODO()
+	client := http.Client{}
+
+	handler := handlers.NewHttpHandler(ctx, client, apiUrl, apiKeyA4)
+
+	// Create Request
+	req := httptest.NewRequest(http.MethodPost, "/", nil)
+	w := httptest.NewRecorder()
+
+	// Exec Request
+	handler.PostHandler(w, req)
+	res := w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != 400 {
+		t.Errorf("expected StatusCode to be 400 got %v", res.StatusCode)
 	}
 }
