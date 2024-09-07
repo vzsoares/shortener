@@ -4,6 +4,7 @@ import (
 	"apps/public-api/handlers"
 	"apps/public-api/tools"
 	"context"
+	"encoding/json"
 	"libs/utils"
 	"net/http"
 	"net/http/httptest"
@@ -100,8 +101,19 @@ func Test_PostHandler_BadRequestError(t *testing.T) {
 	handler.PostHandler(w, req)
 	res := w.Result()
 	defer res.Body.Close()
+	// Parse res body
+	target := &utils.Body{}
+	err := json.NewDecoder(res.Body).Decode(target)
+
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
 
 	if res.StatusCode != 400 {
 		t.Errorf("expected StatusCode to be 400 got %v", res.StatusCode)
+	}
+
+	if target.Code != "E400" {
+		t.Errorf("expected DBI404 got %v", target.Code)
 	}
 }
