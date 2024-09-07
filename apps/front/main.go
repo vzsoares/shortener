@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	tmpl, err := template.ParseFiles("pages/home/index.go.html")
+	tmpl, err := template.ParseFiles("src/pages/index.go.html")
 	if err != nil {
 		log.Fatal(err)
 	}
