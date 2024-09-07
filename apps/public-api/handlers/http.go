@@ -3,6 +3,7 @@ package handlers
 import (
 	"apps/engine/types"
 	"apps/public-api/services"
+	"apps/public-api/tools"
 	"context"
 	"encoding/json"
 	"errors"
@@ -28,8 +29,8 @@ func NewHttpHandler(ctx context.Context, client http.Client, apiUrl string, apiK
 	}
 }
 
-var errorPageUrl = "https://google.com"
-var notFoundPageUrl = "https://google.com"
+var errorPageUrl = tools.DEFAULT_ERROR_PAGE
+var notFoundPageUrl = tools.DEFAULT_NOT_FOUND_PAGE
 
 func respondJson(w http.ResponseWriter, s int, j any) {
 	w.Header().Set("Content-Type", "application/json")

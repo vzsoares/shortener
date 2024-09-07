@@ -55,7 +55,7 @@ func Test_GetHandler_RedirectError(t *testing.T) {
 		t.Errorf("expected StatusCode to be 307 got %v", res.StatusCode)
 	}
 
-	if location != tools.DEFAULT_ERROR_PAGE {
+	if location != tools.DEFAULT_NOT_FOUND_PAGE {
 		t.Errorf("expected to be %v got %v", tools.DEFAULT_ERROR_PAGE, location)
 	}
 }
