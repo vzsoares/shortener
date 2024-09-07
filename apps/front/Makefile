@@ -29,11 +29,14 @@ build: ##@ Build package
 > @GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags ${BUILD_TAG},
 
 ##@
-##@ Run local SAM
+##@ Run local
 ##@
 
 css-watch:
 > @npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch
+
+watch-build:
+> @npx nodemon -e go,go.html --exec go run .
 
 ##@
 ##@ Misc commands
