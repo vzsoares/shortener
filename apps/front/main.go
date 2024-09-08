@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	tmpl, err := template.ParseFiles("src/pages/index.go.html")
+	templates, err := template.ParseGlob("src/**/*.go.html")
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -15,7 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = tmpl.Execute(w, nil)
+	err = templates.ExecuteTemplate(w, "index.go.html", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,13 +1,4 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title></title>
-        <link href="styles.css" rel="stylesheet" />
-    </head>
-    <body>
-        {{- $v1 := 1 -}} {{ $v1 }}
-        <h1 class="text-3xl font-bold underline">Hello world!</h1>
-    </body>
-</html>
+{{ template "base.go.html" . }} {{ define "title"}}shortener{{ end }} {{ define
+"page" }} {{ $x := "foo" }}
+<h1 class="text-3xl font-bold underline">Hello {{ $x }}!</h1>
+{{ end }}
