@@ -1,5 +1,5 @@
-{{ template "base.go.html" . }} {{ define "title"}}Shortener{{ end }} {{ define
-"page" }} {{ $x := "Foo" }}
+{{ template "base.go.html" . }} {{ define "title" }}Shortener{{ end }} {{ define
+"page" }}
 <div class="min-h-screen flex flex-col bg-neutral-500">
     <div class="max-w-screen-lg mx-auto w-full">
         <div class="p-2">
@@ -9,7 +9,9 @@
     <div class="max-w-screen-lg mx-auto w-full flex-1 mt-[20%]">
         <div class="flex p-2">
             <input class="h-10 w-full" type="text" name="" value="" />
-            <button type="" class="bg-primary p-2  text-neutral-500">Make</button>
+            <button type="" class="bg-primary p-2 text-neutral-500">
+                Make
+            </button>
         </div>
     </div>
 </div>
