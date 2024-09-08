@@ -9,15 +9,37 @@
     </div>
     <!-- body -->
     <div class="max-w-screen-lg mx-auto w-full flex-1 mt-[20%]">
-        <div class="flex p-2">
-            <input class="h-10 w-full p-2" type="text" name="" value="" />
+        <form class="flex px-2" onsubmit="return shortenUrl(event)">
+            <input class="h-10 w-full p-2" type="text" name="url" value="" />
             <button
-                type="button"
+                type="submit"
                 class="bg-primary p-2 text-neutral-500 hover:scale-110 active:opacity-80"
             >
                 Shorten
             </button>
-        </div>
+        </form>
+        <script>
+            function shortenUrl(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const formProps = Object.fromEntries(formData);
+                const url = formProps["url"];
+                if (!isUrl(url)) {
+                    window.alert("Invalid Url ):");
+                    return;
+                }
+                // TODO fetch url
+                // TODO display url
+            }
+            function isUrl(url) {
+                try {
+                    const u = new URL(url);
+                    return u.protocol === "https:";
+                } catch {
+                    return false;
+                }
+            }
+        </script>
     </div>
     <!-- footer -->
     <div class="max-w-screen-lg mx-auto w-full">

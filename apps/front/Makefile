@@ -29,9 +29,9 @@ build: ##@ Build package
 > @GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags ${BUILD_TAG},
 
 css-build-mini:
-> @npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify
+> @npx tailwindcss -i ./src/assets/styles.css -o ./dist/assets/styles.css --minify
 css-build:
-> @npx tailwindcss -i ./src/styles.css -o ./dist/styles.css
+> @npx tailwindcss -i ./src/assets/styles.css -o ./dist/assets/styles.css
 
 ##@
 ##@ Run local

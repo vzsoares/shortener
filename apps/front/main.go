@@ -35,4 +35,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// TODO mv assets folder to dist
 }
