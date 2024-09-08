@@ -28,21 +28,23 @@ build: ##@ Build package
 > @echo "Building for stage: ${STAGE}"
 > @GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags ${BUILD_TAG},
 
-css-build:
+css-build-mini:
 > @npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify
+css-build:
+> @npx tailwindcss -i ./src/styles.css -o ./dist/styles.css
 
 ##@
 ##@ Run local
 ##@
 
 dev:
-> @make -j serve-watch css-watch watch-build
+> @make serve-watch css-watch watch-build -j
 
 serve-watch:
 > @cd dist && npx live-server
 
 css-watch:
-> @npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch
+> @npx nodemon -e tailwind.config.js,go.html,css --exec make css-build
 
 watch-build:
 > @npx nodemon -e go,go.html --exec go run .

@@ -6,9 +6,24 @@ import (
 	"os"
 )
 
-func main() {
-	templates, err := template.ParseGlob("src/**/*.go.html")
+type Palette struct {
+	Primary string
+}
 
+type Data struct {
+	Palette Palette
+}
+
+var Coolors = &Palette{
+	Primary: "#532B88",
+}
+
+func main() {
+	data := &Data{
+		Palette: *Coolors,
+	}
+
+	templates, err := template.ParseGlob("src/**/*.go.html")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -16,7 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = templates.ExecuteTemplate(w, "index.go.html", nil)
+	err = templates.ExecuteTemplate(w, "index.go.html", data)
 	if err != nil {
 		log.Fatal(err)
 	}
