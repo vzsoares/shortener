@@ -1,17 +1,38 @@
 {{ template "base.go.html" . }} {{ define "title" }}Shortener{{ end }} {{ define
 "page" }}
 <div class="min-h-screen flex flex-col bg-neutral-500">
+    <!-- navbar -->
     <div class="max-w-screen-lg mx-auto w-full">
         <div class="p-2">
             <h1 class="text-primary font-bold text-4xl">S</h1>
         </div>
     </div>
+    <!-- body -->
     <div class="max-w-screen-lg mx-auto w-full flex-1 mt-[20%]">
         <div class="flex p-2">
-            <input class="h-10 w-full" type="text" name="" value="" />
-            <button type="" class="bg-primary p-2 text-neutral-500">
-                Make
+            <input class="h-10 w-full p-2" type="text" name="" value="" />
+            <button
+                type="button"
+                class="bg-primary p-2 text-neutral-500 hover:scale-110 active:opacity-80"
+            >
+                Shorten
             </button>
+        </div>
+    </div>
+    <!-- footer -->
+    <div class="max-w-screen-lg mx-auto w-full">
+        <div class="flex p-2 flex-col">
+            <div class="ml-auto flex gap-6">
+                <a
+                    href="https://www.linkedin.com/in/vinicius-zenha/"
+                    target="_blank"
+                >
+                    <p>linkedin</p>
+                </a>
+                <a href="https://github.com/vzsoares" target="_blank">
+                    <p>github</p>
+                </a>
+            </div>
         </div>
     </div>
 </div>
