@@ -1,6 +1,6 @@
 openapi: "3.0.2"
 info:
-  title: Url Shortener Engine
+  title: Url Shortener - Engine
   description: Url Shortener Engine
   contact:
     name: Vinicius Zenha <vinicius.zenha@gmail.com>
