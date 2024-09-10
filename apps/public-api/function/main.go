@@ -22,6 +22,7 @@ var GET = "GET"
 var PUT = "PUT"
 var POST = "POST"
 var DELETE = "DELETE"
+var OPTIONS = "OPTIONS"
 
 var httpLambda *httpadapter.HandlerAdapter
 
@@ -67,7 +68,7 @@ func init() {
 
 	handler := handlers.NewHttpHandler(ctx, client, apiUrl, apiKeyA4)
 
-	http.HandleFunc(buildPath("/ping", nil), func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(buildPath("/ping", &GET), func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(time.UnixDate)
@@ -75,6 +76,11 @@ func init() {
 
 	http.HandleFunc(buildPath("/url/{id}", &GET), handler.GetHandler)
 	http.HandleFunc(buildPath("/url", &POST), handler.PostHandler)
+
+	http.HandleFunc(buildPath("/", &OPTIONS), func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.WriteHeader(http.StatusOK)
+	})
 
 	httpLambda = httpadapter.New(http.DefaultServeMux)
 }
