@@ -19,6 +19,9 @@
             </button>
         </form>
         <script>
+            const baseUrl =
+                "https://api-dev.zenhalab.com/shortener/v1/public-api";
+
             function shortenUrl(e) {
                 e.preventDefault();
                 const formData = new FormData(e.target);
@@ -28,25 +31,27 @@
                     window.alert("Invalid Url ):");
                     return;
                 }
-                const baseUrl =
-                    "https://api-dev.zenhalab.com/shortener/v1/public-api";
-                // TODO fetch url
-                function createEntry(url) {
-                    const res = fetch(`${baseUrl}/url`, {
-                        method: "POST",
-                        body: JSON.stringify({ destination: url }),
-                        headers: {
-                            "Content-Type": "application/json",
-                            Accept: "*/*",
-                        },
-                    })
-                        .then((r) => r.JSON())
-                        .then((r) => console.log(r))
-                        .catch(() => {});
-                }
-                createEntry(url);
-                // TODO display url
+                // fetch url
+                createEntry(url).then(() => {
+                    // TODO display url
+                });
             }
+
+            function createEntry(url) {
+                const res = fetch(`${baseUrl}/url`, {
+                    method: "POST",
+                    body: JSON.stringify({ destination: url }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "*/*",
+                    },
+                })
+                    .then((r) => r.JSON())
+                    .then((r) => r.data.url)
+                    .catch(() => {});
+                return res;
+            }
+
             function isUrl(url) {
                 try {
                     const u = new URL(url);
