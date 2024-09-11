@@ -8,7 +8,7 @@
         </div>
     </div>
     <!-- body -->
-    <div class="max-w-screen-lg mx-auto w-full flex-1 mt-[20%]">
+    <div class="max-w-screen-lg mx-auto w-full flex-1 mt-[20%] flex flex-col">
         <form class="flex px-2" onsubmit="return shortenUrl(event)">
             <input class="h-10 w-full p-2" type="text" name="url" value="" />
             <button
@@ -18,6 +18,20 @@
                 Shorten
             </button>
         </form>
+        <div
+            class="mx-6 opacity-0 transition-all duration-300 ease"
+            id="result-box"
+        >
+            <div class="border border-light mt-8 w-full flex">
+                <p class="w-full p-2" id="result">text-text-text</p>
+                <button
+                    type="submit"
+                    class="border border-light p-2 text-primary hover:scale-90 active:opacity-80"
+                >
+                    Copy
+                </button>
+            </div>
+        </div>
         <script>
             const baseUrl =
                 "https://api-dev.zenhalab.com/shortener/v1/public-api";
@@ -32,12 +46,18 @@
                     return;
                 }
                 // fetch url
-                createEntry(url).then(() => {
-                    // TODO display url
+                createEntry(url).then((v) => {
+                    // display url
+                    const resultE = document.getElementById("result");
+                    const resultBoxE = document.getElementById("result-box");
+                    resultBoxE.classList.remove("opacity-0");
+
+                    resultE.innerHTML = v;
                 });
             }
 
-            function createEntry(url) {
+            async function createEntry(url) {
+                return "https://test.com";
                 const res = fetch(`${baseUrl}/url`, {
                     method: "POST",
                     body: JSON.stringify({ destination: url }),
@@ -48,7 +68,7 @@
                 })
                     .then((r) => r.JSON())
                     .then((r) => r.data.url)
-                    .catch(() => {});
+                    .catch(() => null);
                 return res;
             }
 
