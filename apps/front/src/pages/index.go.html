@@ -23,9 +23,10 @@
             id="result-box"
         >
             <div class="border border-light mt-8 w-full flex">
-                <p class="w-full p-2" id="result">text-text-text</p>
+                <p class="w-full p-2" id="result"></p>
                 <button
                     type="submit"
+                    onclick="copyResultToClibBoard()"
                     class="border border-light p-2 text-primary hover:scale-90 active:opacity-80"
                 >
                     Copy
@@ -70,6 +71,19 @@
                     .then((r) => r.data.url)
                     .catch(() => null);
                 return res;
+            }
+
+            function copyResultToClibBoard() {
+                const resultE = document.getElementById("result");
+                // TODO display alert
+                // disaply for when fetch fails too
+                navigator.clipboard.writeText(resultE.innerHTML).then(
+                    () =>
+                        console.log(
+                            "Async: Copying to clipboard was successful!",
+                        ),
+                    (err) => console.error("Async: Could not copy text: ", err),
+                );
             }
 
             function isUrl(url) {
