@@ -1,6 +1,58 @@
 {{ template "base.go.html" . }} {{ define "title" }}Shortener{{ end }} {{ define
 "page" }}
 <div class="min-h-screen flex flex-col bg-neutral-500">
+    <!-- Toast -->
+    <div
+        class="fixed start-0 bottom-[-100%] w-full transition-all duration-300 ease"
+        id="toast-box"
+    >
+        <div class="max-w-screen-lg mx-auto p-2">
+            <div
+                class="flex scale-0 w-fit transition-all duration-300 ease"
+                id="toast-box-in"
+            >
+                <div class="bg-primary p-2 min-w-[192px] flex justify-between">
+                    <h1
+                        class="text-neutral-500 select-none"
+                        id="toast-content"
+                    ></h1>
+                    <p
+                        class="text-neutral-500 text-bold hover:scale-125 cursor-pointer select-none"
+                    >
+                        x
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function show(txt) {
+            const toastE = document.getElementById("toast-content");
+            const toastBoxE = document.getElementById("toast-box");
+            const toastBoxInE = document.getElementById("toast-box-in");
+            toastBoxInE.classList.remove("scale-0");
+            toastBoxE.classList.remove("bottom-[-100%]");
+            toastBoxE.classList.add("bottom-0");
+
+            toastE.innerHTML = txt;
+        }
+        function hide() {
+            const toastE = document.getElementById("toast-content");
+            const toastBoxE = document.getElementById("toast-box");
+            const toastBoxInE = document.getElementById("toast-box-in");
+            toastBoxInE.classList.add("scale-0");
+            toastBoxE.classList.remove("bottom-0");
+            toastBoxE.classList.add("bottom-[-100%]");
+
+            toastE.innerHTML = "";
+        }
+        setTimeout(() => {
+            show("asdbvasd");
+        }, 300);
+        setTimeout(() => {
+            hide("asdbvasd");
+        }, 1200);
+    </script>
     <!-- navbar -->
     <div class="max-w-screen-lg mx-auto w-full">
         <div class="p-2">
