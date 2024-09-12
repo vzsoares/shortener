@@ -18,6 +18,7 @@
                     ></h1>
                     <p
                         class="text-neutral-500 text-bold hover:scale-125 cursor-pointer select-none"
+                        onclick="hideToaster()"
                     >
                         x
                     </p>
@@ -26,17 +27,26 @@
         </div>
     </div>
     <script>
-        function show(txt) {
+        let hideToasterTimeoutId;
+        function showToaster(txt) {
             const toastE = document.getElementById("toast-content");
             const toastBoxE = document.getElementById("toast-box");
             const toastBoxInE = document.getElementById("toast-box-in");
+
+            const showing = toastBoxE.classList.contains("bottom-0");
+
             toastBoxInE.classList.remove("scale-0");
             toastBoxE.classList.remove("bottom-[-100%]");
             toastBoxE.classList.add("bottom-0");
 
             toastE.innerHTML = txt;
+
+            clearTimeout(hideToasterTimeoutId);
+            hideToasterTimeoutId = setTimeout(() => {
+                hideToaster();
+            }, 2500);
         }
-        function hide() {
+        function hideToaster() {
             const toastE = document.getElementById("toast-content");
             const toastBoxE = document.getElementById("toast-box");
             const toastBoxInE = document.getElementById("toast-box-in");
@@ -46,12 +56,6 @@
 
             toastE.innerHTML = "";
         }
-        setTimeout(() => {
-            show("asdbvasd");
-        }, 300);
-        setTimeout(() => {
-            hide("asdbvasd");
-        }, 1200);
     </script>
     <!-- navbar -->
     <div class="max-w-screen-lg mx-auto w-full">
@@ -121,20 +125,15 @@
                 })
                     .then((r) => r.JSON())
                     .then((r) => r.data.url)
-                    .catch(() => null);
+                    .catch(() => showToaster("Error );"));
                 return res;
             }
 
             function copyResultToClibBoard() {
                 const resultE = document.getElementById("result");
-                // TODO display alert
-                // disaply for when fetch fails too
                 navigator.clipboard.writeText(resultE.innerHTML).then(
-                    () =>
-                        console.log(
-                            "Async: Copying to clipboard was successful!",
-                        ),
-                    (err) => console.error("Async: Could not copy text: ", err),
+                    () => showToaster("Copied"),
+                    (err) => showToaster("Failed to copy"),
                 );
             }
 
