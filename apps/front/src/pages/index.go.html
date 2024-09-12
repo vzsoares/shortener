@@ -92,6 +92,7 @@
         <script>
             const baseUrl =
                 "https://api-dev.zenhalab.com/shortener/v1/public-api";
+            let prevUrl;
 
             function shortenUrl(e) {
                 e.preventDefault();
@@ -99,11 +100,13 @@
                 const formProps = Object.fromEntries(formData);
                 const url = formProps["url"];
                 if (!isUrl(url)) {
-                    window.alert("Invalid Url ):");
+                    showToaster("Invalid Url ):");
                     return;
                 }
+                if (url === prevUrl) return;
                 // fetch url
                 createEntry(url).then((v) => {
+                    prevUrl = url;
                     // display url
                     const resultE = document.getElementById("result");
                     const resultBoxE = document.getElementById("result-box");
@@ -114,7 +117,6 @@
             }
 
             async function createEntry(url) {
-                return "https://test.com";
                 const res = fetch(`${baseUrl}/url`, {
                     method: "POST",
                     body: JSON.stringify({ destination: url }),
