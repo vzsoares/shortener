@@ -125,7 +125,7 @@
                         Accept: "*/*",
                     },
                 })
-                    .then((r) => r.JSON())
+                    .then((r) => r.json())
                     .then((r) => r.data.url)
                     .catch(() => showToaster("Error );"));
                 return res;
