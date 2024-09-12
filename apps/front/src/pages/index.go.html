@@ -1,6 +1,6 @@
 {{ template "base.go.html" . }} {{ define "title" }}Shortener{{ end }} {{ define
 "page" }}
-<div class="min-h-screen flex flex-col bg-neutral-500">
+<div class="min-h-screen flex flex-col bg-background">
     <!-- Toast -->
     <div
         class="fixed start-0 bottom-[-100%] w-full transition-all duration-300 ease"
@@ -13,11 +13,11 @@
             >
                 <div class="bg-primary p-2 min-w-[192px] flex justify-between">
                     <h1
-                        class="text-neutral-500 select-none"
+                        class="text-background select-none"
                         id="toast-content"
                     ></h1>
                     <p
-                        class="text-neutral-500 text-bold hover:scale-125 cursor-pointer select-none"
+                        class="text-background text-bold hover:scale-125 cursor-pointer select-none"
                         onclick="hideToaster()"
                     >
                         x
@@ -75,7 +75,7 @@
             <input class="h-10 w-full p-2" type="text" name="url" value="" />
             <button
                 type="submit"
-                class="bg-primary p-2 text-neutral-500 hover:scale-110 active:opacity-80"
+                class="bg-primary p-2 text-background hover:scale-110 active:opacity-80"
             >
                 Shorten
             </button>
@@ -84,12 +84,12 @@
             class="mx-6 opacity-0 transition-all duration-300 ease"
             id="result-box"
         >
-            <div class="border border-light mt-8 w-full flex">
+            <div class="border border-border mt-8 w-full flex">
                 <p class="w-full p-2" id="result"></p>
                 <button
                     type="submit"
                     onclick="copyResultToClibBoard()"
-                    class="border border-light p-2 text-primary hover:scale-90 active:opacity-80"
+                    class="border border-border p-2 text-primary hover:scale-90 active:opacity-80"
                 >
                     Copy
                 </button>
