@@ -2,9 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+.dark {
     --primary: #532b88;
-    --secondary: #2f184b;
-    --background: #f4effa;
+    --background: #645972;
+    --border: #b99cdd;
+    --text-widget: #efe8f7;
+    --text-back: #efe8f7;
+}
+
+.light {
+    --primary: #532b88;
+    --background: #ded0ef;
     --border: #9b72cf;
+    --text-widget: #efe8f7;
+    --text-back: #28232e;
 }
