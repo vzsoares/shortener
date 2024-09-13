@@ -1,10 +1,15 @@
 package main
 
+//go:generate make css-build
+
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"os"
+	"os/exec"
+	"path/filepath"
 )
 
 type Palette struct {
@@ -26,6 +31,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	os.Mkdir("./dist", os.ModePerm)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	w, err := os.Create("dist/index.html")
 	if err != nil {
 		log.Fatal(err)
@@ -34,8 +45,32 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// TODO mv assets folder to dist
-	err = Copy("./src/assets/favicon.ico", "./dist/assets/favicon.ico")
+
+	// copy assets
+	assets, err := filepath.Glob("src/assets/*")
+	if len(assets) < 1 {
+		return
+	}
+
+	os.Mkdir("./dist/assets", os.ModePerm)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	for _, v := range assets {
+		fname := filepath.Base(v)
+		err = Copy(
+			fmt.Sprintf("./src/assets/%v", fname),
+			fmt.Sprintf("./dist/assets/%v", fname),
+		)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+	}
+
+	// make css
+	cssBuildCmd := exec.Command("make", "css-build")
+	err = cssBuildCmd.Run()
 	if err != nil {
 		log.Fatal(err.Error())
 	}

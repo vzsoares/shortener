@@ -29,25 +29,22 @@ build: ##@ Build package
 > @GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags ${BUILD_TAG},
 
 css-build-mini:
-> @npx tailwindcss -i ./src/assets/styles.css -o ./dist/assets/styles.css --minify
+> @npx tailwindcss -i ./src/css/styles.css -o ./dist/css/styles.css --minify
 css-build:
-> @npx tailwindcss -i ./src/assets/styles.css -o ./dist/assets/styles.css
+> @npx tailwindcss -i ./src/css/styles.css -o ./dist/css/styles.css
 
 ##@
 ##@ Run local
 ##@
 
 dev:
-> @make serve-watch css-watch watch-build -j
+> @make serve-watch watch-build -j
 
 serve-watch:
 > @cd dist && npx live-server
 
-css-watch:
-> @npx nodemon -e tailwind.config.js,go.html,css --exec make css-build
-
 watch-build:
-> @npx nodemon -e go,go.html --exec go run .
+> @npx nodemon -e tailwind.config.js,go.html,css,go --ignore "dist/*" --exec go run .
 
 ##@
 ##@ Misc commands
