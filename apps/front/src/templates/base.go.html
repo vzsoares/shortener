@@ -8,6 +8,38 @@
         <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
     </head>
     <body>
+        <script>
+            function loadTheme() {
+                if (
+                    localStorage.theme === "dark" ||
+                    (!("theme" in localStorage) &&
+                        window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches)
+                ) {
+                    document.documentElement.classList.add("dark");
+                } else {
+                    document.documentElement.classList.remove("dark");
+                }
+            }
+            loadTheme();
+
+            function toggleTheme() {
+                const isDark =
+                    document.documentElement.classList.contains("dark");
+                if (isDark) {
+                    localStorage.theme = "light";
+                    document.documentElement.classList.remove("dark");
+                } else {
+                    localStorage.theme = "dark";
+                    document.documentElement.classList.add("dark");
+                }
+            }
+
+            function useSystemTheme() {
+                localStorage.removeItem("theme");
+                loadTheme();
+            }
+        </script>
         {{ block "page" . }}{{ end }}
     </body>
 </html>
