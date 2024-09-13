@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"io"
 	"log"
 	"os"
 )
@@ -34,4 +35,24 @@ func main() {
 		log.Fatal(err)
 	}
 	// TODO mv assets folder to dist
+	err = Copy("./src/assets/favicon.ico", "./dist/assets/favicon.ico")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+}
+
+func Copy(srcpath, dstpath string) (err error) {
+	r, err := os.Open(srcpath)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	w, err := os.Create(dstpath)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(w, r)
+	return err
 }
