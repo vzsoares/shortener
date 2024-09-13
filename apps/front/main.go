@@ -14,13 +14,11 @@ type Data struct {
 	Palette Palette
 }
 
-var Coolors = &Palette{
-	Primary: "#532B88",
-}
-
 func main() {
 	data := &Data{
-		Palette: *Coolors,
+		Palette: Palette{
+			Primary: "#532B88",
+		},
 	}
 
 	templates, err := template.ParseGlob("src/**/*.go.html")
