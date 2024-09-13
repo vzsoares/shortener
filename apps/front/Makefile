@@ -46,6 +46,14 @@ serve-watch:
 watch-build:
 > @npx nodemon -e tailwind.config.js,go.html,css,go --ignore "dist/*" --exec go run .
 
+
+##@
+##@ Deploy
+##@
+
+deploy-front:
+> @aws s3 sync --acl=public-read ./dist s3://s.zenhalab.com/
+
 ##@
 ##@ Misc commands
 ##@
