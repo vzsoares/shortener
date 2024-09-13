@@ -9,30 +9,32 @@
     </head>
     <body>
         <script>
+            document.addEventListener("DOMContentLoaded", (event) => {
+                loadTheme();
+            });
             function loadTheme() {
+                const themeWidget = document.getElementById(
+                    "theme_widget_content",
+                );
                 if (
                     localStorage.theme === "dark" ||
                     (!("theme" in localStorage) &&
                         window.matchMedia("(prefers-color-scheme: dark)")
                             .matches)
                 ) {
+                    themeWidget.innerHTML = "dark";
                     document.documentElement.classList.add("dark");
                 } else {
+                    themeWidget.innerHTML = "light";
                     document.documentElement.classList.remove("dark");
                 }
             }
-            loadTheme();
 
             function toggleTheme() {
                 const isDark =
                     document.documentElement.classList.contains("dark");
-                if (isDark) {
-                    localStorage.theme = "light";
-                    document.documentElement.classList.remove("dark");
-                } else {
-                    localStorage.theme = "dark";
-                    document.documentElement.classList.add("dark");
-                }
+                localStorage.theme = isDark ? "light" : "dark";
+                loadTheme();
             }
 
             function useSystemTheme() {
