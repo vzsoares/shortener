@@ -38,7 +38,7 @@ module "public-api-lambda" {
   lambda_iam_arn        = module.role.iam_role_arn
 }
 
-module "front-bucket" {
+module "front_bucket" {
   source = "../../services/front-bucket"
   stage  = local.stage
 }
@@ -50,10 +50,17 @@ data "aws_acm_certificate" "issued" {
   types    = ["AMAZON_ISSUED"]
 }
 
+resource "aws_cloudfront_origin_access_control" "s3_origin_control" {
+  name                              = "s3_origin_control"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name              = aws_s3_bucket.b.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
+    domain_name              = module.front_bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.s3_origin_control.id
     origin_id                = "shortenerbucket"
   }
 
@@ -61,7 +68,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   comment             = "Shortner distribution"
   default_root_object = "index.html"
 
-  aliases = ["s${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"]
+  aliases = ["s${local.stage == "dev" ? "-dev" : ""}.zenhalab.com"]
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
