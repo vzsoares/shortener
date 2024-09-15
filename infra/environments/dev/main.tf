@@ -63,6 +63,16 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     origin_access_control_id = aws_cloudfront_origin_access_control.s3_origin_control.id
     origin_id                = "shortenerbucket"
   }
+  origin {
+    domain_name = "${module.api_gateway.id}.execute-api.${local.region}.amazonaws.com"
+    origin_id   = "public-api"
+    custom_origin_config {
+      http_port              = "80"
+      https_port             = "443"
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
 
   enabled             = true
   comment             = "Shortner distribution"
