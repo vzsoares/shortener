@@ -44,11 +44,17 @@ module "front-bucket" {
 }
 
 # front cloudfront
+data "aws_acm_certificate" "issued" {
+  domain   = "zenhalab.com"
+  statuses = ["ISSUED"]
+  types    = ["AMAZON_ISSUED"]
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.b.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id                = module.front-bucket.id
+    origin_id                = "shortenerbucket"
   }
 
   enabled             = true
@@ -60,7 +66,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = module.front-bucket.id
+    target_origin_id = "shortenerbucket"
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
@@ -82,6 +88,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = data.aws_acm_certificate.issued.arn
   }
 }
