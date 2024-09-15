@@ -64,7 +64,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     origin_id                = "shortenerbucket"
   }
   origin {
-    domain_name = "${module.api_gateway.id}.execute-api.${local.region}.amazonaws.com"
+    domain_name = "api${local.stage == "dev" ? "-dev" : ""}.zenhalab.com"
+    origin_path = "/shortener/v1/public-api/url"
     origin_id   = "public-api"
     custom_origin_config {
       http_port              = "80"
@@ -96,6 +97,27 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
         forward = "all"
       }
     }
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "/p-*"
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "public-api"
+
+    forwarded_values {
+      query_string = true
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
   }
 
   price_class = "PriceClass_100"
