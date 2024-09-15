@@ -61,7 +61,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   comment             = "Shortner distribution"
   default_root_object = "index.html"
 
-  aliases = ["s.zenhalab.com"]
+  aliases = ["s${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"]
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
