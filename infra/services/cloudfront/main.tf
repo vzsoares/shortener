@@ -13,9 +13,14 @@ resource "aws_cloudfront_origin_access_control" "s3_origin_control" {
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name              = var.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.s3_origin_control.id
-    origin_id                = "shortenerbucket"
+    domain_name = var.bucket_regional_domain_name
+    origin_id   = "shortenerbucket"
+    custom_origin_config {
+      http_port              = "80"
+      https_port             = "443"
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
   }
   origin {
     domain_name = "api${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"

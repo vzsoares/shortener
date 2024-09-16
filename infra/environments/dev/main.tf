@@ -47,5 +47,5 @@ module "cloudfront-distribution" {
   source = "../../services/cloudfront"
 
   stage                       = local.stage
-  bucket_regional_domain_name = module.front_bucket.bucket_regional_domain_name
+  bucket_regional_domain_name = module.front_bucket.website_endpoint
 }
