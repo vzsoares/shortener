@@ -38,17 +38,11 @@ func buildPath(p string, m *string) string {
 }
 
 var apiUrl string
-var apiUrlRemote string = "https://api-dev.zenhalab.com/shortener/v1"
-var apiUrlLocal string = "http://localhost:4000"
 var apiKeyA4 string
 var parameterStore *utils.Ssm
 
 func init() {
-	if tools.DEBUG {
-		apiUrl = apiUrlLocal
-	} else {
-		apiUrl = apiUrlRemote
-	}
+	apiUrl = tools.GetConst("API_BASE_URL")
 
 	client := http.Client{}
 	ctx := context.TODO()
@@ -58,12 +52,10 @@ func init() {
 	}
 	if parameterStore == nil {
 		parameterStore = utils.NewSmmStore(cfg, ctx)
-
 	}
 
 	if apiKeyA4 == "" {
 		apiKeyA4 = parameterStore.Get("API_KEY_A4")
-
 	}
 
 	handler := handlers.NewHttpHandler(ctx, client, apiUrl, apiKeyA4)
