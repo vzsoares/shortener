@@ -29,8 +29,8 @@ func NewHttpHandler(ctx context.Context, client http.Client, apiUrl string, apiK
 	}
 }
 
-var errorPageUrl = tools.DEFAULT_ERROR_PAGE
-var notFoundPageUrl = tools.DEFAULT_NOT_FOUND_PAGE
+var errorPageUrl = tools.GetConst("DEFAULT_ERROR_PAGE")
+var notFoundPageUrl = tools.GetConst("DEFAULT_NOT_FOUND_PAGE")
 
 func respondJson(w http.ResponseWriter, s int, j any) {
 	w.Header().Set("Content-Type", "application/json")

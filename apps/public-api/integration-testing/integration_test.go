@@ -56,8 +56,8 @@ func Test_GetHandler_RedirectNotFound(t *testing.T) {
 		t.Errorf("expected StatusCode to be 307 got %v", res.StatusCode)
 	}
 
-	if location != tools.DEFAULT_NOT_FOUND_PAGE {
-		t.Errorf("expected to be %v got %v", tools.DEFAULT_NOT_FOUND_PAGE, location)
+	if location != tools.GetConst("DEFAULT_NOT_FOUND_PAGE") {
+		t.Errorf("expected to be %v got %v", tools.GetConst("DEFAULT_NOT_FOUND_PAGE"), location)
 	}
 }
 
@@ -82,8 +82,8 @@ func Test_GetHandler_RedirectError(t *testing.T) {
 		t.Errorf("expected StatusCode to be 307 got %v", res.StatusCode)
 	}
 
-	if location != tools.DEFAULT_ERROR_PAGE {
-		t.Errorf("expected to be %v got %v", tools.DEFAULT_ERROR_PAGE, location)
+	if location != tools.GetConst("DEFAULT_ERROR_PAGE") {
+		t.Errorf("expected to be %v got %v", tools.GetConst("DEFAULT_ERROR_PAGE"), location)
 	}
 }
 
