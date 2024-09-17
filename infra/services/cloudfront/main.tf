@@ -7,7 +7,7 @@ data "aws_acm_certificate" "issued" {
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = var.bucket_regional_domain_name
-    origin_id   = "shortenerbucket"
+    origin_id   = "shortenerbucketstatic"
     custom_origin_config {
       http_port              = "80"
       https_port             = "443"
@@ -36,7 +36,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "shortenerbucket"
+    target_origin_id = "shortenerbucketstatic"
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
