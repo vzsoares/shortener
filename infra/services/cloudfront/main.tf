@@ -7,8 +7,14 @@ data "aws_acm_certificate" "issued" {
 data "aws_cloudfront_cache_policy" "s3_cache" {
   name = "Managed-CachingOptimized"
 }
-data "aws_cloudfront_cache_policy" "custom_origin_cache" {
-  name = "UseOriginCacheControlHeaders"
+data "aws_cloudfront_cache_policy" "no_cache_policy" {
+  name = "Managed-CachingDisabled"
+}
+data "aws_cloudfront_response_headers_policy" "cors_policy" {
+  name = "Managed-SimpleCORS"
+}
+data "aws_cloudfront_origin_request_policy" "origin_policy_all" {
+  name = "Managed-AllViewer"
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
@@ -35,7 +41,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   enabled             = true
-  comment             = "Shortner distribution"
+  comment             = "Shortner distribution ${var.stage}"
   default_root_object = "index.html"
 
   aliases = ["s${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"]
@@ -54,13 +60,15 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   ordered_cache_behavior {
-    path_pattern     = "/p-*"
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    path_pattern     = "p-*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "public-api"
 
-    cache_policy_id        = data.aws_cloudfront_cache_policy.custom_origin_cache.id
-    compress               = true
+    cache_policy_id            = data.aws_cloudfront_cache_policy.no_cache_policy.id
+    origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.origin_policy_all.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.cors_policy.id
+
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
