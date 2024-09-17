@@ -85,7 +85,6 @@ func (h *UrlHttpHandler) GetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("%+v\n", body)
 	respondRedirect(w, destinationstring)
 }
 
@@ -150,7 +149,7 @@ func (h *UrlHttpHandler) PostHandler(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
-	var frontBaseUrl = "https://s.zenhalab.com"
+	var frontBaseUrl = tools.GetConst("DEFAULT_WEBURL")
 	type data struct {
 		Url string `json:"url"`
 	}
