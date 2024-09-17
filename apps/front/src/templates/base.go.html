@@ -42,6 +42,64 @@
                 loadTheme();
             }
         </script>
+        <!-- Toast -->
+        <div
+            class="fixed start-0 bottom-[-100%] w-full transition-all duration-300 ease"
+            id="toast-box"
+        >
+            <div class="max-w-screen-lg mx-auto p-2">
+                <div
+                    class="flex scale-0 w-fit transition-all duration-300 ease"
+                    id="toast-box-in"
+                >
+                    <div
+                        class="bg-primary p-2 min-w-[192px] flex justify-between"
+                    >
+                        <h1
+                            class="text-text-widget select-none"
+                            id="toast-content"
+                        ></h1>
+                        <p
+                            class="text-text-widget text-bold hover:scale-125 cursor-pointer select-none"
+                            onclick="hideToaster()"
+                        >
+                            x
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            let hideToasterTimeoutId;
+            function showToaster(txt) {
+                const toastE = document.getElementById("toast-content");
+                const toastBoxE = document.getElementById("toast-box");
+                const toastBoxInE = document.getElementById("toast-box-in");
+
+                const showing = toastBoxE.classList.contains("bottom-0");
+
+                toastBoxInE.classList.remove("scale-0");
+                toastBoxE.classList.remove("bottom-[-100%]");
+                toastBoxE.classList.add("bottom-0");
+
+                toastE.innerHTML = txt;
+
+                clearTimeout(hideToasterTimeoutId);
+                hideToasterTimeoutId = setTimeout(() => {
+                    hideToaster();
+                }, 2500);
+            }
+            function hideToaster() {
+                const toastE = document.getElementById("toast-content");
+                const toastBoxE = document.getElementById("toast-box");
+                const toastBoxInE = document.getElementById("toast-box-in");
+                toastBoxInE.classList.add("scale-0");
+                toastBoxE.classList.remove("bottom-0");
+                toastBoxE.classList.add("bottom-[-100%]");
+
+                toastE.innerHTML = "";
+            }
+        </script>
         {{ block "page" . }}{{ end }}
     </body>
 </html>
