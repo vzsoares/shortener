@@ -29,8 +29,8 @@ func NewHttpHandler(ctx context.Context, client http.Client, apiUrl string, apiK
 	}
 }
 
-var errorPageUrl = tools.GetConst("DEFAULT_ERROR_PAGE")
-var notFoundPageUrl = tools.GetConst("DEFAULT_NOT_FOUND_PAGE")
+var errorPageUrl = tools.Consts.GetConst("DEFAULT_ERROR_PAGE")
+var notFoundPageUrl = tools.Consts.GetConst("DEFAULT_NOT_FOUND_PAGE")
 
 func respondJson(w http.ResponseWriter, s int, j any) {
 	w.Header().Set("Content-Type", "application/json")
@@ -149,7 +149,7 @@ func (h *UrlHttpHandler) PostHandler(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
-	var frontBaseUrl = tools.GetConst("DEFAULT_WEBURL")
+	var frontBaseUrl = tools.Consts.GetConst("DEFAULT_WEBURL")
 	type data struct {
 		Url string `json:"url"`
 	}

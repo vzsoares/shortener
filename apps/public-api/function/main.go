@@ -42,7 +42,7 @@ var apiKeyA4 string
 var parameterStore *utils.Ssm
 
 func init() {
-	apiUrl = tools.GetConst("API_BASE_URL")
+	apiUrl = tools.Consts.GetConst("API_BASE_URL")
 
 	client := http.Client{}
 	ctx := context.TODO()
