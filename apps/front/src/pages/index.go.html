@@ -51,8 +51,7 @@
             </div>
         </div>
         <script>
-            const baseUrl =
-                "https://api-dev.zenhalab.com/shortener/v1/public-api";
+            const baseUrl = {{ .Consts.API_BASE_URL }}
             let prevUrl;
 
             function shortenUrl(e) {
