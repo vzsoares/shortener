@@ -65,9 +65,13 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "public-api"
 
-    cache_policy_id            = data.aws_cloudfront_cache_policy.no_cache_policy.id
-    origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.origin_policy_all.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.cors_policy.id
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
