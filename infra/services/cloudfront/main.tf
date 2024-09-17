@@ -4,13 +4,6 @@ data "aws_acm_certificate" "issued" {
   types    = ["AMAZON_ISSUED"]
 }
 
-resource "aws_cloudfront_origin_access_control" "s3_origin_control" {
-  name                              = "s3_origin_control"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
-
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = var.bucket_regional_domain_name
@@ -18,7 +11,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     custom_origin_config {
       http_port              = "80"
       https_port             = "443"
-      origin_protocol_policy = "https-only"
+      origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
