@@ -4,6 +4,13 @@ data "aws_acm_certificate" "issued" {
   types    = ["AMAZON_ISSUED"]
 }
 
+data "aws_cloudfront_cache_policy" "s3_cache" {
+  name = "Managed-CachingOptimized"
+}
+data "aws_cloudfront_cache_policy" "custom_origin_cache" {
+  name = "UseOriginCacheControlHeaders"
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = var.bucket_regional_domain_name
@@ -38,17 +45,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "shortenerbucketstatic"
 
+    cache_policy_id        = data.aws_cloudfront_cache_policy.s3_cache.id
+    compress               = true
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
-    forwarded_values {
-      query_string = true
-
-      cookies {
-        forward = "all"
-      }
-    }
   }
 
   ordered_cache_behavior {
@@ -57,19 +59,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "public-api"
 
-    forwarded_values {
-      query_string = true
-
-      cookies {
-        forward = "all"
-      }
-    }
-
+    cache_policy_id        = data.aws_cloudfront_cache_policy.custom_origin_cache.id
+    compress               = true
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
-    compress               = true
   }
 
   price_class = "PriceClass_100"
