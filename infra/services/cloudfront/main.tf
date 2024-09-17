@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   aliases = ["s${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"]
 
   default_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "shortenerbucketstatic"
 
