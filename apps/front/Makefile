@@ -24,9 +24,15 @@ SAM_TERRAFORM_ROOT=--terraform-project-root-path ../../../
 ##@ Build
 ##@
 
-build: ##@ Build package
+build-go: ##@ Build package
 > @echo "Building for stage: ${STAGE}"
 > @GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap -tags ${BUILD_TAG},
+
+build:
+> @make rm-dist
+> @make build-go
+> @./bootstrap
+> @make css-build-mini
 
 css-build-mini:
 > @npx tailwindcss -i ./src/css/styles.css -o ./dist/css/styles.css --minify
@@ -58,6 +64,9 @@ sync-bucket:
 ##@
 ##@ Misc commands
 ##@
+
+rm-dist:
+> @rm -rf ./dist
 
 help: ##@ (Default) This help menu
 > @printf "\nUsage: STAGE=dev make <command>\n"
