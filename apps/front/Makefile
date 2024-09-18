@@ -68,7 +68,7 @@ sync-bucket:
 
 invalidate-distribution:
 > $(eval DISTRI := $(shell [[ ${STAGE} = "dev" ]] && echo "E1WR5S0OYB2OKY" || echo "TODO"))
-> @aws cloudfront create-invalidation --distribution-id=${DISTRI} --paths="/*"
+> @aws cloudfront create-invalidation --distribution-id=${DISTRI} --paths="/*" | cat
 
 ##@
 ##@ Misc commands
