@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 type Palette struct {
@@ -50,13 +51,31 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	w, err := os.Create("dist/index.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = templates.ExecuteTemplate(w, "index.go.html", data)
-	if err != nil {
-		log.Fatal(err)
+	pages, err := filepath.Glob("src/pages/*")
+	for _, v := range pages {
+		fname := filepath.Base(v)
+		bname := strings.Split(fname, ".")[0]
+
+		w, err := os.Create(fmt.Sprintf("dist/%v.html", bname))
+		if err != nil {
+			log.Fatal(err)
+		}
+		// clone and reparse file fixes redefined template names
+		// https://stackoverflow.com/a/69244593/16923160
+		tmpl, err := templates.Clone()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		tmpl, err = tmpl.ParseFiles(v)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = tmpl.ExecuteTemplate(w, fname, data)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// copy assets
