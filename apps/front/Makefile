@@ -57,9 +57,18 @@ watch-build:
 ##@ Deploy
 ##@
 
+deploy:
+> @make build
+> @make sync-bucket
+> @make invalidate-distribution
+
 sync-bucket:
 > $(eval BUCKET := $(shell [[ ${STAGE} = "dev" ]] && echo "s-dev.zenhalab.com" || echo "s.zenhalab.com"))
 > @aws s3 sync --acl=public-read ./dist s3://${BUCKET}/
+
+invalidate-distribution:
+> $(eval DISTRI := $(shell [[ ${STAGE} = "dev" ]] && echo "E1WR5S0OYB2OKY" || echo "TODO"))
+> @aws cloudfront create-invalidation --distribution-id=${DISTRI} --paths="/*"
 
 ##@
 ##@ Misc commands
