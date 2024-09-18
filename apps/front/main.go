@@ -18,7 +18,8 @@ type Palette struct {
 	Primary string
 }
 type Consts struct {
-	API_BASE_URL string
+	API_BASE_URL  string
+	SITE_BASE_URL string
 }
 
 type Data struct {
@@ -26,8 +27,14 @@ type Data struct {
 	Consts  Consts
 }
 
-var DevConsts = utils.ConstsMap{"API_BASE_URL": "https://api-dev.zenhalab.com/shortener/v1/public-api"}
-var ProdConsts = utils.ConstsMap{"API_BASE_URL": "https://api.zenhalab.com/shortener/v1/public-api"}
+var DevConsts = utils.ConstsMap{
+	"API_BASE_URL":  "https://api-dev.zenhalab.com/shortener/v1/public-api",
+	"SITE_BASE_URL": "https://s-dev.zenhalab.com",
+}
+var ProdConsts = utils.ConstsMap{
+	"API_BASE_URL":  "https://api.zenhalab.com/shortener/v1/public-api",
+	"SITE_BASE_URL": "https://s.zenhalab.com",
+}
 
 func main() {
 	consts := utils.NewConsts(os.Getenv("STAGE"), ProdConsts, DevConsts)
@@ -37,7 +44,8 @@ func main() {
 			Primary: "#532B88",
 		},
 		Consts: Consts{
-			API_BASE_URL: consts.GetConst("API_BASE_URL"),
+			API_BASE_URL:  consts.GetConst("API_BASE_URL"),
+			SITE_BASE_URL: consts.GetConst("SITE_BASE_URL"),
 		},
 	}
 
