@@ -51,7 +51,7 @@ watch-build:
 ##@ Deploy
 ##@
 
-deploy-front:
+sync-bucket:
 > $(eval BUCKET := $(shell [[ ${STAGE} = "dev" ]] && echo "s-dev.zenhalab.com" || echo "s.zenhalab.com"))
 > @aws s3 sync --acl=public-read ./dist s3://${BUCKET}/
 

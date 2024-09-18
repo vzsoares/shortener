@@ -6,7 +6,8 @@ import (
 	"os"
 )
 
-const DEFAULT_ERROR_PATH = "oops"
+const DEFAULT_ERROR_PATH = "oops.html"
+const DEFAULT_NOT_FOUND_PATH = "404.html"
 
 var BASE_API_URL_REMOTE_DEV string = "https://api-dev.zenhalab.com/shortener/v1"
 var BASE_API_URL_REMOTE_PROD string = "https://api.zenhalab.com/shortener/v1"
@@ -29,17 +30,17 @@ var GET_API_BASE_URL = func(dev bool) string {
 
 var ProdConsts = utils.ConstsMap{
 	"DEFAULT_ERROR_PAGE":     fmt.Sprintf("%v/%v", GET_DEFAULT_WEBURL(false), DEFAULT_ERROR_PATH),
-	"DEFAULT_NOT_FOUND_PAGE": fmt.Sprintf("%v/%v", GET_DEFAULT_WEBURL(false), "404"),
+	"DEFAULT_NOT_FOUND_PAGE": fmt.Sprintf("%v/%v", GET_DEFAULT_WEBURL(false), DEFAULT_NOT_FOUND_PATH),
 	"DEFAULT_WEBURL":         GET_DEFAULT_WEBURL(false),
-	"DEFAULT_ERROR_PATH":     "oops",
+	"DEFAULT_ERROR_PATH":     DEFAULT_ERROR_PATH,
 	"API_BASE_URL":           GET_API_BASE_URL(false),
 }
 
 var DevConsts = utils.ConstsMap{
 	"DEFAULT_ERROR_PAGE":     fmt.Sprintf("%v/%v", GET_DEFAULT_WEBURL(true), DEFAULT_ERROR_PATH),
-	"DEFAULT_NOT_FOUND_PAGE": fmt.Sprintf("%v/%v", GET_DEFAULT_WEBURL(true), "404"),
+	"DEFAULT_NOT_FOUND_PAGE": fmt.Sprintf("%v/%v", GET_DEFAULT_WEBURL(true), DEFAULT_NOT_FOUND_PATH),
 	"DEFAULT_WEBURL":         GET_DEFAULT_WEBURL(true),
-	"DEFAULT_ERROR_PATH":     "oops",
+	"DEFAULT_ERROR_PATH":     DEFAULT_ERROR_PATH,
 	"API_BASE_URL":           GET_API_BASE_URL(true),
 }
 
