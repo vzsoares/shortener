@@ -1,0 +1,25 @@
+{
+    "name": "shortener",
+    "$schema": "./node_modules/nx/schemas/project-schema.json",
+    "root": ".",
+    "implicitDependencies": ["*"],
+    "targets": {
+        "deploy": {
+            "dependsOn": ["^build", "^push", "^deploy"],
+            "cache": true,
+            "configurations": {
+                "prod": {
+                    "args": ["STAGE=prod"]
+                },
+                "dev": {
+                    "args": ["STAGE=dev"]
+                }
+            },
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "make deploy"
+            }
+        }
+    }
+}
