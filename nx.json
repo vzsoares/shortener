@@ -45,7 +45,15 @@
             }
         },
         "test": {
-            "cache": true
+            "cache": true,
+            "configurations": {
+                "prod": {
+                    "args": ["STAGE=prod"]
+                },
+                "dev": {
+                    "args": ["STAGE=dev"]
+                }
+            }
         },
         "lint": {
             "cache": true

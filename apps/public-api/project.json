@@ -20,7 +20,11 @@
             }
         },
         "test": {
-            "executor": "@nx-go/nx-go:test"
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "make test"
+            }
         },
         "lint": {
             "executor": "@nx-go/nx-go:lint"

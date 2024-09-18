@@ -25,7 +25,8 @@ func TestGenUriSafeRash(t *testing.T) {
 
 func TestRetryN(t *testing.T) {
 	fn := func(i int) (string, error) {
-		if i == 5 {
+		// 0 index based
+		if i == 4 {
 			return "Yeah", nil
 		}
 		return "", errors.New("Test")

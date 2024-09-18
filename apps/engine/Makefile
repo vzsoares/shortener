@@ -74,6 +74,9 @@ tf-%: ##@ run Terraform %
 ##@ Misc commands
 ##@
 
+test:
+> @go test ./... -v -tags DEBUG,
+
 help: ##@ (Default) This help menu
 > @printf "\nUsage: STAGE=dev make <command>\n"
 > @grep -F -h "##@" $(MAKEFILE_LIST) | grep -F -v grep -F | sed -e 's/\\$$//' | $(AWK) 'BEGIN {FS = ":*[[:space:]]*##@[[:space:]]*"}; \

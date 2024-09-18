@@ -20,10 +20,10 @@
             }
         },
         "test": {
-            "executor": "@nx-go/nx-go:test",
+            "executor": "nx:run-commands",
             "options": {
-                "args": ["-tags DEBUG,"],
-                "env": { "STAGE": "dev" }
+                "cwd": "{projectRoot}",
+                "command": "make test"
             }
         },
         "lint": {
