@@ -1,0 +1,47 @@
+{{ template "base.go.html" . }}{{ define "page" }}
+<div class="min-h-screen flex flex-col bg-background">
+    <!-- navbar -->
+    <div class="max-w-screen-lg mx-auto w-full">
+        <div class="flex justify-between">
+            <div class="flex items-end p-2">
+                <h1 class="text-primary font-bold text-4xl">S</h1>
+                <p class="text-primary font-bold text-sm leading-loose">
+                    hortener
+                </p>
+            </div>
+            <div
+                class="flex items-end"
+                onclick="toggleTheme()"
+                id="theme_widget"
+            >
+                <p
+                    class="text-text-back cursor-pointer select-none p-2 leading-[1.8]"
+                    id="theme_widget_content"
+                >
+                    light
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- body -->
+
+    {{ block "body" . }}{{ end }}
+
+    <!-- footer -->
+    <div class="max-w-screen-lg mx-auto w-full">
+        <div class="flex p-2 flex-col">
+            <div class="ml-auto flex gap-6">
+                <a
+                    href="https://www.linkedin.com/in/vinicius-zenha/"
+                    target="_blank"
+                >
+                    <p class="text-text-back">linkedin</p>
+                </a>
+                <a href="https://github.com/vzsoares" target="_blank">
+                    <p class="text-text-back">github</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

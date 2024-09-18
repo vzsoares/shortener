@@ -1,129 +1,88 @@
-{{ template "base.go.html" . }} {{ define "title" }}Shortener{{ end }} {{ define
-"page" }}
-<div class="min-h-screen flex flex-col bg-background">
-    <!-- navbar -->
-    <div class="max-w-screen-lg mx-auto w-full">
-        <div class="flex justify-between">
-            <div class="flex items-end p-2">
-                <h1 class="text-primary font-bold text-4xl">S</h1>
-                <p class="text-primary font-bold text-sm leading-loose">
-                    hortener
-                </p>
-            </div>
-            <div
-                class="flex items-end"
-                onclick="toggleTheme()"
-                id="theme_widget"
-            >
-                <p
-                    class="text-text-back cursor-pointer select-none p-2 leading-[1.8]"
-                    id="theme_widget_content"
-                >
-                    light
-                </p>
-            </div>
-        </div>
-    </div>
-    <!-- body -->
-    <div class="max-w-screen-lg mx-auto w-full flex-1 mt-[10rem] flex flex-col">
-        <form class="flex px-2" onsubmit="return shortenUrl(event)">
-            <input class="h-10 w-full p-2" type="text" name="url" value="" />
+{{ template "layout.go.html" . }} {{ define "title" }}Shortener{{ end }} {{
+define "body" }}
+<!-- body -->
+<div class="max-w-screen-lg mx-auto w-full flex-1 mt-[10rem] flex flex-col">
+    <form class="flex px-2" onsubmit="return shortenUrl(event)">
+        <input class="h-10 w-full p-2" type="text" name="url" value="" />
+        <button
+            type="submit"
+            class="bg-primary p-2 text-text-widget hover:scale-110 active:opacity-80"
+        >
+            Shorten
+        </button>
+    </form>
+    <div
+        class="mx-6 opacity-0 transition-all duration-300 ease"
+        id="result-box"
+    >
+        <div class="border border-border mt-8 w-full flex">
+            <p class="w-full p-2 text-text-back break-all" id="result"></p>
             <button
                 type="submit"
-                class="bg-primary p-2 text-text-widget hover:scale-110 active:opacity-80"
+                onclick="copyResultToClibBoard()"
+                class="border border-border p-2 text-border hover:scale-90 active:opacity-80"
             >
-                Shorten
+                Copy
             </button>
-        </form>
-        <div
-            class="mx-6 opacity-0 transition-all duration-300 ease"
-            id="result-box"
-        >
-            <div class="border border-border mt-8 w-full flex">
-                <p class="w-full p-2 text-text-back break-all" id="result"></p>
-                <button
-                    type="submit"
-                    onclick="copyResultToClibBoard()"
-                    class="border border-border p-2 text-border hover:scale-90 active:opacity-80"
-                >
-                    Copy
-                </button>
-            </div>
         </div>
-        <script>
-            const baseUrl = {{ .Consts.API_BASE_URL }}
-            let prevUrl;
+    </div>
+    <script>
+        const baseUrl = {{ .Consts.API_BASE_URL }}
+        let prevUrl;
 
-            function shortenUrl(e) {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const formProps = Object.fromEntries(formData);
-                const url = formProps["url"];
-                if (!isUrl(url)) {
-                    showToaster("Invalid Url ):");
-                    return;
-                }
-                if (url === prevUrl) return;
-                // fetch url
-                createEntry(url).then((v) => {
-                    prevUrl = url;
-                    // display url
-                    const resultE = document.getElementById("result");
-                    const resultBoxE = document.getElementById("result-box");
-                    resultBoxE.classList.remove("opacity-0");
-
-                    resultE.innerHTML = v;
-                });
+        function shortenUrl(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const formProps = Object.fromEntries(formData);
+            const url = formProps["url"];
+            if (!isUrl(url)) {
+                showToaster("Invalid Url ):");
+                return;
             }
-
-            async function createEntry(url) {
-                const res = fetch(`${baseUrl}/url`, {
-                    method: "POST",
-                    body: JSON.stringify({ destination: url }),
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "*/*",
-                    },
-                })
-                    .then((r) => r.json())
-                    .then((r) => r.data.url)
-                    .catch(() => showToaster("Error );"));
-                return res;
-            }
-
-            function copyResultToClibBoard() {
+            if (url === prevUrl) return;
+            // fetch url
+            createEntry(url).then((v) => {
+                prevUrl = url;
+                // display url
                 const resultE = document.getElementById("result");
-                navigator.clipboard.writeText(resultE.innerHTML).then(
-                    () => showToaster("Copied"),
-                    (err) => showToaster("Failed to copy"),
-                );
-            }
+                const resultBoxE = document.getElementById("result-box");
+                resultBoxE.classList.remove("opacity-0");
 
-            function isUrl(url) {
-                try {
-                    const u = new URL(url);
-                    return u.protocol === "https:";
-                } catch {
-                    return false;
-                }
+                resultE.innerHTML = v;
+            });
+        }
+
+        async function createEntry(url) {
+            const res = fetch(`${baseUrl}/url`, {
+                method: "POST",
+                body: JSON.stringify({ destination: url }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "*/*",
+                },
+            })
+                .then((r) => r.json())
+                .then((r) => r.data.url)
+                .catch(() => showToaster("Error );"));
+            return res;
+        }
+
+        function copyResultToClibBoard() {
+            const resultE = document.getElementById("result");
+            navigator.clipboard.writeText(resultE.innerHTML).then(
+                () => showToaster("Copied"),
+                (err) => showToaster("Failed to copy"),
+            );
+        }
+
+        function isUrl(url) {
+            try {
+                const u = new URL(url);
+                return u.protocol === "https:";
+            } catch {
+                return false;
             }
-        </script>
-    </div>
-    <!-- footer -->
-    <div class="max-w-screen-lg mx-auto w-full">
-        <div class="flex p-2 flex-col">
-            <div class="ml-auto flex gap-6">
-                <a
-                    href="https://www.linkedin.com/in/vinicius-zenha/"
-                    target="_blank"
-                >
-                    <p class="text-text-back">linkedin</p>
-                </a>
-                <a href="https://github.com/vzsoares" target="_blank">
-                    <p class="text-text-back">github</p>
-                </a>
-            </div>
-        </div>
-    </div>
+        }
+    </script>
 </div>
 {{ end }}
