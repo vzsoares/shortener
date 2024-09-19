@@ -3,7 +3,7 @@ terraform {
     #####################################
     # REPLACE THIS with STAGED bucket name!
     #####################################
-    bucket = "zenhalab-dev-terraform-iac"
+    bucket = "zenhalab-terraform-iac-dev"
     #####################################
     # REPLACE THIS with UNIQUE key!
     # e.g: {domain}/{project}/terraform.tfstate
@@ -11,7 +11,7 @@ terraform {
     key = "shortener/terraform.tfstate"
 
     region         = "us-east-1"
-    dynamodb_table = "terraform-iac-locks"
+    dynamodb_table = "terraform-iac-locks-dev"
     encrypt        = true
   }
 
