@@ -1,6 +1,6 @@
 ## API Gateway
 resource "aws_apigatewayv2_api" "gateway" {
-  name          = var.gateway_name
+  name          = "${var.gateway_name}-${var.stage}"
   protocol_type = "HTTP"
   cors_configuration {
     allow_headers = ["content-type", "x-amz-date", "authorization", "x-api-key", "x-amz-security-token", "x-amz-user-agent"]
