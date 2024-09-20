@@ -4,7 +4,7 @@ variable "stage" {
 
 ###### DynamoDB ######
 resource "aws_dynamodb_table" "urls-table" {
-  name         = "shortener-url-${var.stage}"
+  name         = "shortener-urls-${var.stage}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "Rash"
 
