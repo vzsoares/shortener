@@ -1,8 +1,10 @@
 package store
 
 import (
-	"apps/engine/types"
 	"context"
+
+	"apps/engine/tools"
+	"apps/engine/types"
 	"libs/utils"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -12,8 +14,6 @@ import (
 
 	ddbtypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
-
-var TableName = "shortener-urls"
 
 type DynamoStore struct {
 	Table  *string
@@ -29,14 +29,14 @@ func NewDynamoStore(ctx context.Context, endpoint string, https bool, cfg aws.Co
 	})
 
 	return &DynamoStore{
-		Table:  &TableName,
+		Table:  aws.String(tools.Consts.GetConst("URL_TABLE_NAME")),
 		Client: client,
 	}
 }
 
 func (s *DynamoStore) Get(ctx context.Context, rash string) (*types.UrlFull, error) {
 	input := &dynamodb.GetItemInput{
-		TableName: &TableName,
+		TableName: s.Table,
 		Key: map[string]ddbtypes.AttributeValue{
 			"Rash": &ddbtypes.AttributeValueMemberS{Value: rash},
 		}}
@@ -83,7 +83,7 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.UrlFull) error {
 	}
 
 	res, err := s.Client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
-		TableName: &TableName,
+		TableName: s.Table,
 		Key: map[string]ddbtypes.AttributeValue{
 			"Rash": &ddbtypes.AttributeValueMemberS{Value: url.Rash},
 		},
@@ -107,7 +107,7 @@ func (s *DynamoStore) Put(ctx context.Context, url *types.UrlFull) error {
 
 func (s *DynamoStore) Delete(ctx context.Context, rash string) error {
 	input := &dynamodb.DeleteItemInput{
-		TableName: &TableName,
+		TableName: s.Table,
 		Key: map[string]ddbtypes.AttributeValue{
 			"Rash": &ddbtypes.AttributeValueMemberS{Value: rash},
 		},
