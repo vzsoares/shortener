@@ -29,6 +29,7 @@ define "body" }}
     <script>
         const baseUrl = {{ .Consts.API_BASE_URL }}
         let prevUrl;
+        let fetching;
 
         function shortenUrl(e) {
             e.preventDefault();
@@ -40,7 +41,8 @@ define "body" }}
                 return;
             }
             if (url === prevUrl) return;
-            // fetch url
+            if (fetching === true) return;
+            fetching = true
             createEntry(url).then((v) => {
                 prevUrl = url;
                 // display url
@@ -49,7 +51,7 @@ define "body" }}
                 resultBoxE.classList.remove("opacity-0");
 
                 resultE.innerHTML = v;
-            });
+            }).finally(() => { fetching = false });
         }
 
         async function createEntry(url) {
