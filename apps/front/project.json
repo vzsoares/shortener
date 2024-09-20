@@ -12,6 +12,14 @@
                 "command": "make build"
             }
         },
+        "publish": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["build"],
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "make publish"
+            }
+        },
         "serve": {
             "executor": "nx:run-commands",
             "options": {

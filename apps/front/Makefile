@@ -57,8 +57,7 @@ watch-build:
 ##@ Deploy
 ##@
 
-deploy:
-> @make build
+publish:
 > @make sync-bucket
 > @make invalidate-distribution
 
