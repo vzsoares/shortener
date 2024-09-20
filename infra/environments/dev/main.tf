@@ -10,8 +10,9 @@ module "urls-table" {
 }
 
 module "role" {
-  source    = "../../services/lambda-iam-role"
-  table-arn = module.urls-table.arn
+  source = "../../services/lambda-iam-role"
+
+  stage = local.stage
 }
 
 module "api_gateway" {

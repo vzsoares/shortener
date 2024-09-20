@@ -1,3 +1,3 @@
-variable "table-arn" {
+variable "stage" {
   type = string
 }

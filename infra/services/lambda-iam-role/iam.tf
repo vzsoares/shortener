@@ -1,5 +1,5 @@
 resource "aws_iam_role" "iam" {
-  name = "shortener_lambda_executor"
+  name = "shortener_lambda_executor_${var.stage}"
   assume_role_policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -37,12 +37,12 @@ data "aws_iam_policy_document" "url-table-full-acesss-policy-doc" {
   statement {
     effect    = "Allow"
     actions   = ["dynamodb:*"]
-    resources = ["arn:aws:dynamodb:*:*:table/shortener-urls-*"]
+    resources = ["arn:aws:dynamodb:*:*:table/shortener-urls-${var.stage}"]
   }
 }
 
 resource "aws_iam_policy" "url-table-full-acesss-policy" {
-  name        = "ShortenerUrlsTableFullAccess"
+  name        = "ShortenerUrlsTableFullAccess-${var.stage}"
   description = "Dynamodb shortener urls table access"
   policy      = data.aws_iam_policy_document.url-table-full-acesss-policy-doc.json
 }
