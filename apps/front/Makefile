@@ -67,7 +67,7 @@ sync-bucket:
 > @aws s3 sync --acl=public-read ./dist s3://${BUCKET}/
 
 invalidate-distribution:
-> $(eval DISTRI := $(shell [[ ${STAGE} = "dev" ]] && echo "E1WR5S0OYB2OKY" || echo "TODO"))
+> $(eval DISTRI := $(shell [[ ${STAGE} = "dev" ]] && echo "E1WR5S0OYB2OKY" || echo "E1BLLPJRDAF46D"))
 > @aws cloudfront create-invalidation --distribution-id=${DISTRI} --paths="/*" | cat
 
 ##@
