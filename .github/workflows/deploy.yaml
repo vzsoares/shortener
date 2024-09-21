@@ -1,4 +1,4 @@
-name: Release
+name: Deploy
 
 on:
     push:
@@ -13,7 +13,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Release
+            - name: Deploy
               run: |
                   git config --global --add safe.directory '*'
                   aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ${{ secrets.AWS_PROFILE }}
