@@ -20,5 +20,6 @@ jobs:
                   aws configure set region ${{ secrets.AWS_REGION }} --profile ${{ secrets.AWS_PROFILE }}
                   LAST_TAG=$(git rev-list --tags --max-count=1 --skip=1)
                   export NX_BASE="${LAST_TAG:=origin/prod}"
+                  export STAGE="${{ secrets.AWS_PROFILE }}"
                   yarn install
                   make deploy
