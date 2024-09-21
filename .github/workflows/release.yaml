@@ -21,7 +21,7 @@ jobs:
                   aws configure set region ${{ secrets.AWS_REGION }} --profile ${{ secrets.AWS_PROFILE }}
                   LAST_TAG=$(git rev-list --tags --max-count=1 --skip=1)
                   export NX_BASE="${LAST_TAG:=origin/prod}"
-                  export STAGE="${{ secrets.AWS_PROFILE }}"
+                  export STAGE="${{ secrets.STAGE }}"
                   export AWS_PROFILE="${{ secrets.AWS_PROFILE }}"
                   yarn install
-                  yarn run -- nx run shortener:deploy:dev
+                  yarn run -- nx run shortener:deploy --configuration=${{ secrets.STAGE }} --runner=${{ secrets.NX_RUNNER }}

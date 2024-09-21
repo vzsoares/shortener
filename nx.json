@@ -84,6 +84,18 @@
                 "forcePathStyle": true,
                 "readOnly": false
             }
+        },
+        "prod": {
+            "runner": "@pellegrims/nx-remotecache-s3",
+            "options": {
+                "cacheableOperations": ["build", "test", "lint", "e2e"],
+                "bucket": "zenhalab-artifacts-prod",
+                "name": "approva-artifacts-prod",
+                "prefix": "cache/nx/shortener/",
+                "region": "us-east-1",
+                "forcePathStyle": true,
+                "readOnly": false
+            }
         }
     }
 }
