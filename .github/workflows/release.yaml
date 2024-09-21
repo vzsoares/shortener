@@ -9,13 +9,16 @@ jobs:
     build:
         runs-on: ubuntu-latest
         container: public.ecr.aws/j5s7c7d2/zenhalab-ci-runner-prod:1
+        environment: prod
         steps:
             - uses: actions/checkout@v4
 
-            - name: Run a one-line script
-              run: aws configure get region | echo
-
-            - name: Run a multi-line script
+            - name: Configure aws
               run: |
-                  echo Add other actions to build,
-                  echo test, and deploy your project.
+                  aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ${{ secrets.AWS_PROFILE }}
+                  aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile ${{ secrets.AWS_PROFILE }}
+                  aws configure set region ${{ secrets.AWS_REGION }} --profile ${{ secrets.AWS_PROFILE }}
+                  LAST_TAG=$(git rev-list --tags --max-count=1 --skip=1)
+                  export NX_BASE="${LAST_TAG:=origin/prod}"
+                  yarn install
+                  make deploy
