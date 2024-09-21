@@ -1,0 +1,8 @@
+go 1.22
+
+use (
+	./apps/engine
+	./apps/front
+	./apps/public-api
+	./libs/utils
+)

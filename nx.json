@@ -45,7 +45,15 @@
             }
         },
         "test": {
-            "cache": true
+            "cache": true,
+            "configurations": {
+                "prod": {
+                    "args": ["STAGE=prod"]
+                },
+                "dev": {
+                    "args": ["STAGE=dev"]
+                }
+            }
         },
         "lint": {
             "cache": true
@@ -71,7 +79,7 @@
                 "cacheableOperations": ["build", "test", "lint", "e2e"],
                 "bucket": "zenhalab-artifacts-dev",
                 "name": "zenhalab-artifacts-dev",
-                "prefix": "cache/nx/microservices/",
+                "prefix": "cache/nx/shortener/",
                 "region": "us-east-1",
                 "forcePathStyle": true,
                 "readOnly": false

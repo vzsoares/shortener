@@ -9,7 +9,6 @@ end
 box rgba(100,100,0,0.25) Url Shortener Service
 participant s as Service Backend
 participant d as DB
-participant r as Scheduled Routine
 end
 rect rgba(0,0,0,0.25)
 note right of u: Interaction A
@@ -44,7 +43,12 @@ note right of u: Interaction B
     activate d
     s->d: 
     deactivate d
-    s->>b: url entry
+    s->>s: validate expiry
+    alt has expired
+        s->>b: null
+    else
+        s->>b: url entry
+    end
     deactivate s
     b->>b: validate entry
     alt entry is valid
@@ -55,13 +59,5 @@ note right of u: Interaction B
         b->>u: redirect to error page
     end
     deactivate b
-end
-rect rgba(0,100,100,0.25)
-note right of s: Business logic
-    loop Every week
-    r->>s: POST /url/ops/cleanup-expired
-    s->>d: Expires old urls
-    s->>d: Delete old expired urls
-    end
 end
 ```

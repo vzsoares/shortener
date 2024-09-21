@@ -1,0 +1,90 @@
+{{ template "layout.go.html" . }} {{ define "title" }}Shortener{{ end }} {{
+define "body" }}
+<!-- body -->
+<div class="max-w-screen-lg mx-auto w-full flex-1 mt-[10rem] flex flex-col">
+    <form class="flex px-2" onsubmit="return shortenUrl(event)">
+        <input class="h-10 w-full p-2" type="text" name="url" value="" />
+        <button
+            type="submit"
+            class="bg-primary p-2 text-text-widget hover:scale-110 active:opacity-80"
+        >
+            Shorten
+        </button>
+    </form>
+    <div
+        class="mx-6 opacity-0 transition-all duration-300 ease"
+        id="result-box"
+    >
+        <div class="border border-border mt-8 w-full flex">
+            <p class="w-full p-2 text-text-back break-all" id="result"></p>
+            <button
+                type="submit"
+                onclick="copyResultToClibBoard()"
+                class="border border-border p-2 text-border hover:scale-90 active:opacity-80"
+            >
+                Copy
+            </button>
+        </div>
+    </div>
+    <script>
+        const baseUrl = {{ .Consts.API_BASE_URL }}
+        let prevUrl;
+        let fetching;
+
+        function shortenUrl(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const formProps = Object.fromEntries(formData);
+            const url = formProps["url"];
+            if (!isUrl(url)) {
+                showToaster("Invalid Url ):");
+                return;
+            }
+            if (url === prevUrl) return;
+            if (fetching === true) return;
+            fetching = true
+            createEntry(url).then((v) => {
+                prevUrl = url;
+                // display url
+                const resultE = document.getElementById("result");
+                const resultBoxE = document.getElementById("result-box");
+                resultBoxE.classList.remove("opacity-0");
+
+                resultE.innerHTML = v;
+            }).finally(() => { fetching = false });
+        }
+
+        async function createEntry(url) {
+            const res = fetch(`${baseUrl}/url`, {
+                method: "POST",
+                body: JSON.stringify({ destination: url }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "*/*",
+                },
+            })
+                .then((r) => r.json())
+                .then((r) => r.data.url)
+                .catch(() => showToaster("Error );"));
+            return res;
+        }
+
+        function copyResultToClibBoard() {
+            const resultE = document.getElementById("result");
+            navigator.clipboard.writeText(resultE.innerHTML).then(
+                () => showToaster("Copied"),
+                (err) => showToaster("Failed to copy"),
+            );
+        }
+
+        function isUrl(url) {
+            try {
+                const u = new URL(url);
+                return u.protocol === "https:";
+            } catch {
+                return false;
+            }
+        }
+    </script>
+</div>
+{{ end }}

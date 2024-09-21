@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{{ block "title" . }}{{ end }}</title>
+        <link href="/css/styles.css" rel="stylesheet" />
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+        <!-- open graph -->
+        <meta property="og:title" content="Shortener" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="{{ .Consts.SITE_BASE_URL }}" />
+        <meta
+            property="og:description"
+            content="URL Shortener - make a url tiny"
+        />
+        <meta
+            property="og:image"
+            content="{{ .Consts.SITE_BASE_URL }}/assets/shortener-opengrap1200-600.jpg"
+        />
+    </head>
+    <body>
+        <script>
+            document.addEventListener("DOMContentLoaded", (event) => {
+                loadTheme();
+            });
+            function loadTheme() {
+                const themeWidget = document.getElementById(
+                    "theme_widget_content",
+                );
+                if (
+                    localStorage.theme === "dark" ||
+                    (!("theme" in localStorage) &&
+                        window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches)
+                ) {
+                    themeWidget.innerHTML = "dark";
+                    document.documentElement.classList.add("dark");
+                } else {
+                    themeWidget.innerHTML = "light";
+                    document.documentElement.classList.remove("dark");
+                }
+            }
+
+            function toggleTheme() {
+                const isDark =
+                    document.documentElement.classList.contains("dark");
+                localStorage.theme = isDark ? "light" : "dark";
+                loadTheme();
+            }
+
+            function useSystemTheme() {
+                localStorage.removeItem("theme");
+                loadTheme();
+            }
+        </script>
+        <!-- Toast -->
+        <div
+            class="fixed start-0 bottom-[-100%] w-full transition-all duration-300 ease"
+            id="toast-box"
+        >
+            <div class="max-w-screen-lg mx-auto p-2">
+                <div
+                    class="flex scale-0 w-fit transition-all duration-300 ease"
+                    id="toast-box-in"
+                >
+                    <div
+                        class="bg-primary p-2 min-w-[192px] flex justify-between"
+                    >
+                        <h1
+                            class="text-text-widget select-none"
+                            id="toast-content"
+                        ></h1>
+                        <p
+                            class="text-text-widget text-bold hover:scale-125 cursor-pointer select-none"
+                            onclick="hideToaster()"
+                        >
+                            x
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            let hideToasterTimeoutId;
+            function showToaster(txt) {
+                const toastE = document.getElementById("toast-content");
+                const toastBoxE = document.getElementById("toast-box");
+                const toastBoxInE = document.getElementById("toast-box-in");
+
+                const showing = toastBoxE.classList.contains("bottom-0");
+
+                toastBoxInE.classList.remove("scale-0");
+                toastBoxE.classList.remove("bottom-[-100%]");
+                toastBoxE.classList.add("bottom-0");
+
+                toastE.innerHTML = txt;
+
+                clearTimeout(hideToasterTimeoutId);
+                hideToasterTimeoutId = setTimeout(() => {
+                    hideToaster();
+                }, 2500);
+            }
+            function hideToaster() {
+                const toastE = document.getElementById("toast-content");
+                const toastBoxE = document.getElementById("toast-box");
+                const toastBoxInE = document.getElementById("toast-box-in");
+                toastBoxInE.classList.add("scale-0");
+                toastBoxE.classList.remove("bottom-0");
+                toastBoxE.classList.add("bottom-[-100%]");
+
+                toastE.innerHTML = "";
+            }
+        </script>
+        {{ block "page" . }}{{ end }}
+    </body>
+</html>
