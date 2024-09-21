@@ -2,18 +2,18 @@ name: Release
 
 on:
     push:
-        branches: ["prod"]
+        branches: ["prod", "dev"]
     workflow_dispatch:
 
 jobs:
     build:
         runs-on: ubuntu-latest
         container: public.ecr.aws/j5s7c7d2/zenhalab-ci-runner-prod:1
-        environment: prod
+        environment: ${{ github.ref_name == 'prod' && 'prod' || 'dev' }}
         steps:
             - uses: actions/checkout@v4
 
-            - name: Configure aws
+            - name: Release
               run: |
                   git config --global --add safe.directory '*'
                   aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ${{ secrets.AWS_PROFILE }}
