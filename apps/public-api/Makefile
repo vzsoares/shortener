@@ -75,7 +75,7 @@ tf-%: ##@ run Terraform %
 ##@
 
 test:
-> @go test ./... -v -tags DEBUG,
+> @go test ./... -v -tags DEBUG,unit
 
 help: ##@ (Default) This help menu
 > @printf "\nUsage: STAGE=dev make <command>\n"
