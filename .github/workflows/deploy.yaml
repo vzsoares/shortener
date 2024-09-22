@@ -8,7 +8,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    build:
+    deploy:
         runs-on: ubuntu-latest
         container: public.ecr.aws/j5s7c7d2/zenhalab-ci-runner-prod:1
         environment: ${{ github.ref_name == 'prod' && 'prod' || 'dev' }}
