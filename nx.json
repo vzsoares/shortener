@@ -21,6 +21,14 @@
             "!{projectRoot}/**/bootstrap"
         ]
     },
+    "release": {
+        "changelog": {
+            "workspaceChangelog": {
+                "createRelease": "github"
+            }
+        },
+        "projects": ["shortener"]
+    },
     "workspaceLayout": {
         "appsDir": "apps",
         "libsDir": "libs"
