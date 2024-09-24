@@ -51,7 +51,7 @@ var ProdConsts = utils.ConstsMap{
 }
 
 func i18nfn(s string) string {
-	return "zazaza"
+	return "1"
 }
 func main() {
 	consts := utils.NewConsts(os.Getenv("STAGE"), ProdConsts, DevConsts)
