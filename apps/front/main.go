@@ -1,8 +1,7 @@
 package main
 
-//go:generate make css-build
-
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -22,9 +21,24 @@ type Consts struct {
 	SITE_BASE_URL string
 }
 
+type I18nTs struct {
+	nav struct {
+		theme struct {
+			toggle_light string
+			toggle_dark  string
+		}
+	}
+}
+
+type I18n struct {
+	en I18nTs
+	pt I18nTs
+}
+
 type Data struct {
 	Palette Palette
 	Consts  Consts
+	I18n    I18n
 }
 
 var DevConsts = utils.ConstsMap{
@@ -36,8 +50,19 @@ var ProdConsts = utils.ConstsMap{
 	"SITE_BASE_URL": "https://s.zenhalab.com",
 }
 
+func i18nfn(s string) string {
+	return "zazaza"
+}
 func main() {
 	consts := utils.NewConsts(os.Getenv("STAGE"), ProdConsts, DevConsts)
+
+	var i18n I18n
+	fileBytes, _ := os.ReadFile("./i18n.json")
+	err := json.Unmarshal(fileBytes, &i18n)
+	fmt.Printf("%+v\n", i18n)
+
+	funcMap := map[string]interface{}{"T": i18nfn}
+	funcMap = template.FuncMap(funcMap)
 
 	data := &Data{
 		Palette: Palette{
@@ -47,6 +72,7 @@ func main() {
 			API_BASE_URL:  consts.GetConst("API_BASE_URL"),
 			SITE_BASE_URL: consts.GetConst("SITE_BASE_URL"),
 		},
+		I18n: i18n,
 	}
 
 	templates, err := template.ParseGlob("src/**/*.go.html")
