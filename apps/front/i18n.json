@@ -1,0 +1,12 @@
+{
+    "en": {
+        "nav": {
+            "theme": { "toggle_light": "light", "toggle_dark": "dark" }
+        }
+    },
+    "br": {
+        "nav": {
+            "theme": { "toggle_light": "claro", "toggle_dark": "escuro" }
+        }
+    }
+}
