@@ -75,10 +75,8 @@ func main() {
 		I18n: i18n,
 	}
 
-	templates, err := template.ParseGlob("src/**/*.go.html")
-	if err != nil {
-		log.Fatal(err)
-	}
+	templates := template.New("master").Funcs(funcMap)
+	template.Must(templates.ParseGlob("src/**/*.go.html"))
 
 	os.Mkdir("./dist", os.ModePerm)
 	if err != nil {
@@ -101,7 +99,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		tmpl, err = tmpl.ParseFiles(v)
+		template.Must(tmpl.ParseFiles(v))
 		if err != nil {
 			log.Fatal(err)
 		}
