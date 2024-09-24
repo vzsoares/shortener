@@ -22,23 +22,24 @@ type Consts struct {
 }
 
 type I18nTs struct {
-	nav struct {
-		theme struct {
-			toggle_light string
-			toggle_dark  string
-		}
-	}
+	Nav struct {
+		Theme struct {
+			Toggle_light string `json:"toggle_light"`
+			Toggle_dark  string `json:"toggle_dark"`
+		} `json:"theme"`
+	} `json:"nav"`
 }
 
 type I18n struct {
-	en I18nTs
-	pt I18nTs
+	En I18nTs `json:"en"`
+	Pt I18nTs `json:"pt"`
 }
 
 type Data struct {
 	Palette Palette
 	Consts  Consts
 	I18n    I18n
+	I18nStr string
 }
 
 var DevConsts = utils.ConstsMap{
@@ -59,7 +60,6 @@ func main() {
 	var i18n I18n
 	fileBytes, _ := os.ReadFile("./i18n.json")
 	err := json.Unmarshal(fileBytes, &i18n)
-	fmt.Printf("%+v\n", i18n)
 
 	funcMap := map[string]interface{}{"T": i18nfn}
 	funcMap = template.FuncMap(funcMap)
@@ -72,7 +72,8 @@ func main() {
 			API_BASE_URL:  consts.GetConst("API_BASE_URL"),
 			SITE_BASE_URL: consts.GetConst("SITE_BASE_URL"),
 		},
-		I18n: i18n,
+		I18n:    i18n,
+		I18nStr: string(fileBytes),
 	}
 
 	templates := template.New("master").Funcs(funcMap)
