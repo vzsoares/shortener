@@ -21,7 +21,25 @@
     </head>
     <body>
         <script>
+            const i18nBase = JSON.parse({{.I18nStr}});
+        </script>
+        <script>
+            const localeChangeEvent = new Event("locale-change");
+            let lang = "br";
+            let i18n = i18nBase[lang];
+            async function setLang(l) {
+                lang = l;
+                i18n = i18nBase[l];
+                window.dispatchEvent(localeChangeEvent);
+            }
+            window.addEventListener("locale-change", function () {
+                loadTheme();
+                // TODO set stuff
+            });
+        </script>
+        <script>
             document.addEventListener("DOMContentLoaded", (event) => {
+                setLang(lang);
                 loadTheme();
             });
             function loadTheme() {
@@ -34,10 +52,11 @@
                         window.matchMedia("(prefers-color-scheme: dark)")
                             .matches)
                 ) {
-                    themeWidget.innerHTML = "dark";
+                    themeWidget.innerHTML = i18n.nav.theme.toggle_dark;
                     document.documentElement.classList.add("dark");
                 } else {
-                    themeWidget.innerHTML = "light";
+                    console.log(i18n);
+                    themeWidget.innerHTML = i18n.nav.theme.toggle_light;
                     document.documentElement.classList.remove("dark");
                 }
             }
@@ -53,9 +72,6 @@
                 localStorage.removeItem("theme");
                 loadTheme();
             }
-        </script>
-        <script>
-            const i18n = JSON.parse({{.I18nStr}})
         </script>
         <!-- Toast -->
         <div
@@ -115,6 +131,8 @@
                 toastE.innerHTML = "";
             }
         </script>
+        <button type="" onclick="setLang('br')">br</button>
+        <button type="" onclick="setLang('en')">en</button>
         {{ block "page" . }}{{ end }}
     </body>
 </html>
