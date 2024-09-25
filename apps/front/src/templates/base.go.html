@@ -30,11 +30,12 @@
 
             const localeChangeEvent = new Event("locale-change");
             const langs = Object.keys(i18nBase);
-            let lang = "en";
+            let lang = localStorage.lang || "en";
             let i18n = i18nBase[lang];
             async function setLang(l) {
                 lang = l;
                 i18n = i18nBase[l];
+                localStorage.lang = l;
                 window.dispatchEvent(localeChangeEvent);
             }
 
@@ -64,8 +65,6 @@
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", (event) => {
-                // TODO get default lang + cache
-                setLang(lang);
                 loadTheme();
 
                 loadLang();
