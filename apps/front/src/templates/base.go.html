@@ -30,24 +30,36 @@
 
             const localeChangeEvent = new Event("locale-change");
             const langs = Object.keys(i18nBase);
-            let lang = "br";
+            let lang = "en";
             let i18n = i18nBase[lang];
             async function setLang(l) {
                 lang = l;
                 i18n = i18nBase[l];
                 window.dispatchEvent(localeChangeEvent);
             }
+
             function toggleLang() {
                 const currI = langs.indexOf(lang);
                 const max = langs.length - 1;
                 const next = currI + 1 > max ? 0 : currI + 1;
                 setLang(langs[next]);
             }
-            toggleLang();
+
+            function loadLang() {
+                const els = document.querySelectorAll("[i-lang]");
+                for (const el of els) {
+                    const path = el.attributes["i-lang"].value;
+                    const paths = path.split(".");
+                    const val = paths.reduce((a, c) => a[c], i18n);
+                    el.textContent = val;
+                }
+
+                el("lang_widget_content").innerHTML = lang;
+            }
+
             window.addEventListener("locale-change", function () {
                 loadTheme();
-                el("lang_widget_content").innerHTML = lang;
-                // TODO set stuff
+                loadLang();
             });
         </script>
         <script>
@@ -55,6 +67,8 @@
                 // TODO get default lang + cache
                 setLang(lang);
                 loadTheme();
+
+                loadLang();
             });
             function loadTheme() {
                 const themeWidget = document.getElementById(
