@@ -6,10 +6,10 @@ define "body" }}
         <input class="h-10 w-full p-2" type="text" name="url" value="" />
         <button
             type="submit"
-            class="bg-primary p-2 text-text-widget hover:scale-110 active:opacity-80"
-            i-lang="home.search.button"
+            id="shorten_btn"
+            class="bg-primary p-2 hover:scale-110 active:opacity-80"
         >
-            Shorten
+            <p i-lang="home.search.button" class="text-text-widget">Shorten</p>
         </button>
     </form>
     <div
@@ -26,6 +26,9 @@ define "body" }}
                 Copy
             </button>
         </div>
+        <p class="text-border text-sm" i-lang="home.search.hint">
+            valid for 30 days
+        </p>
     </div>
     <script>
         const baseUrl = {{ .Consts.API_BASE_URL }}
@@ -34,6 +37,10 @@ define "body" }}
 
         function shortenUrl(e) {
             e.preventDefault();
+
+            const parent = el("shorten_btn");
+            const tmp =  parent.innerHTML;
+
             const formData = new FormData(e.target);
             const formProps = Object.fromEntries(formData);
             const url = formProps["url"];
@@ -43,7 +50,10 @@ define "body" }}
             }
             if (url === prevUrl) return;
             if (fetching === true) return;
+
+            parent.innerHTML = spinner;
             fetching = true
+
             createEntry(url).then((v) => {
                 prevUrl = url;
                 // display url
@@ -52,7 +62,10 @@ define "body" }}
                 resultBoxE.classList.remove("opacity-0");
 
                 resultE.innerHTML = v;
-            }).finally(() => { fetching = false });
+            }).finally(() => {
+                fetching = false;
+                parent.innerHTML = tmp;
+            });
         }
 
         async function createEntry(url) {

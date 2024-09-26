@@ -8,7 +8,8 @@
         },
         "home": {
             "search": {
-                "button": "Shorten"
+                "button": "Shorten",
+                "hint": "Valid for 30 days"
             }
         }
     },
@@ -21,7 +22,8 @@
         },
         "home": {
             "search": {
-                "button": "Encurtar"
+                "button": "Encurtar",
+                "hint": "Válido por 30 dias"
             }
         }
     }
