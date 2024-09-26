@@ -7,7 +7,7 @@ define "body" }}
         <button
             type="submit"
             id="shorten_btn"
-            class="bg-primary p-2 hover:scale-110 active:opacity-80"
+            class="bg-primary p-2 hover:scale-110 active:opacity-80 min-w-[80px]"
         >
             <p i-lang="home.search.button" class="text-text-widget">Shorten</p>
         </button>
@@ -22,6 +22,7 @@ define "body" }}
                 type="submit"
                 onclick="copyResultToClibBoard()"
                 class="border border-border p-2 text-border hover:scale-90 active:opacity-80"
+                i-lang="home.search.copy"
             >
                 Copy
             </button>

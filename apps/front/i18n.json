@@ -9,7 +9,8 @@
         "home": {
             "search": {
                 "button": "Shorten",
-                "hint": "Valid for 30 days"
+                "hint": "Valid for 30 days",
+                "copy": "Copy"
             }
         }
     },
@@ -23,7 +24,8 @@
         "home": {
             "search": {
                 "button": "Encurtar",
-                "hint": "Válido por 30 dias"
+                "hint": "Válido por 30 dias",
+                "copy": "Copiar"
             }
         }
     }
