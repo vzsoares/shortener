@@ -21,24 +21,9 @@ type Consts struct {
 	SITE_BASE_URL string
 }
 
-type I18nTs struct {
-	Nav struct {
-		Theme struct {
-			Toggle_light string `json:"toggle_light"`
-			Toggle_dark  string `json:"toggle_dark"`
-		} `json:"theme"`
-	} `json:"nav"`
-}
-
-type I18n struct {
-	En I18nTs `json:"en"`
-	Pt I18nTs `json:"pt"`
-}
-
 type Data struct {
 	Palette Palette
 	Consts  Consts
-	I18n    I18n
 	I18nStr string
 }
 
@@ -51,17 +36,23 @@ var ProdConsts = utils.ConstsMap{
 	"SITE_BASE_URL": "https://s.zenhalab.com",
 }
 
-func i18nfn(s string) string {
-	return "1"
-}
+var DefaultLang = "en"
+
 func main() {
 	consts := utils.NewConsts(os.Getenv("STAGE"), ProdConsts, DevConsts)
 
-	var i18n I18n
+	var i18n map[string]any
 	fileBytes, _ := os.ReadFile("./i18n.json")
 	err := json.Unmarshal(fileBytes, &i18n)
 
-	funcMap := map[string]interface{}{"T": i18nfn}
+	funcT := func(s string) string {
+		stps := strings.Split(s, ".")
+		stps = append([]string{DefaultLang}, stps...)
+		r := Walk(stps, i18n)
+		return r
+	}
+
+	funcMap := map[string]interface{}{"T": funcT}
 	funcMap = template.FuncMap(funcMap)
 
 	data := &Data{
@@ -72,7 +63,6 @@ func main() {
 			API_BASE_URL:  consts.GetConst("API_BASE_URL"),
 			SITE_BASE_URL: consts.GetConst("SITE_BASE_URL"),
 		},
-		I18n:    i18n,
 		I18nStr: string(fileBytes),
 	}
 
@@ -155,4 +145,13 @@ func Copy(srcpath, dstpath string) (err error) {
 
 	_, err = io.Copy(w, r)
 	return err
+}
+
+func Walk(p []string, m map[string]any) string {
+	l := len(p)
+	el := p[0]
+	if l == 1 {
+		return m[el].(string)
+	}
+	return Walk(p[1:], m[el].(map[string]any))
 }
