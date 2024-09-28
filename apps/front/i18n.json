@@ -12,7 +12,11 @@
                 "hint": "Valid for 30 days",
                 "copy": "Copy"
             }
-        }
+        },
+        "oops": {
+            "main": { "msg": "Something went wrong ):" }
+        },
+        "404": { "main": { "msg": "Not found " } }
     },
     "br": {
         "nav": {
@@ -27,6 +31,10 @@
                 "hint": "Válido por 30 dias",
                 "copy": "Copiar"
             }
-        }
+        },
+        "oops": {
+            "main": { "msg": "Algo deu errado ):" }
+        },
+        "404": { "main": { "msg": "Não encontrado" } }
     }
 }
