@@ -1,6 +1,13 @@
 {{ template "layout.go.html" . }} {{ define "title" }}Shortener{{ end }} {{
 define "body" }}
-<div class="max-w-screen-lg mx-auto w-full flex-1 mt-[10rem] flex flex-col px-2">
-    <h1 class="text-5xl font-bold text-center text-text-back">Not found</h1>
+<div
+    class="max-w-screen-lg mx-auto w-full flex-1 mt-[10rem] flex flex-col px-2"
+>
+    <h1
+        class="text-5xl font-bold text-center text-text-back"
+        i-lang="404.main.msg"
+    >
+        {{ T "404.main.msg" }}
+    </h1>
 </div>
 {{ end }}

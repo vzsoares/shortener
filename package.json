@@ -14,6 +14,7 @@
     "@commitlint/config-conventional": "^19.2.2",
     "@nx-go/nx-go": "^3.2.0",
     "@nx/devkit": "19.2.2",
+    "@nx/js": "^19.8.0",
     "@nx/workspace": "19.2.2",
     "@pellegrims/nx-remotecache-s3": "^7.1.0",
     "husky": "^9.1.4",
