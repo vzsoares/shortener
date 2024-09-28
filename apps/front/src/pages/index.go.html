@@ -3,7 +3,9 @@ online{{ end }} {{ define "body" }}
 <!-- body -->
 <div class="max-w-screen-lg mx-auto w-full flex-1 mt-[10rem] flex flex-col">
     <form class="flex px-2" onsubmit="return shortenUrl(event)">
-        <label for="url" class="w-0 h-0">Url to shorten</label>
+        <label for="url" class="w-0 h-0 mt-[50px] text-transparent"
+            >Url to shorten</label
+        >
         <input
             class="h-10 w-full p-2"
             type="text"
