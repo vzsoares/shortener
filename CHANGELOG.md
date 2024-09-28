@@ -1,3 +1,14 @@
+## 1.2.1 (2024-09-28)
+
+
+### 🩹 Fixes
+
+- h1 + label ([1f155ef](https://github.com/vzsoares/short-url/commit/1f155ef))
+
+### ❤️  Thank You
+
+- vzsoares @vzsoares
+
 ## 1.2.0 (2024-09-28)
 
 
