@@ -25,6 +25,7 @@ type Data struct {
 	Palette Palette
 	Consts  Consts
 	I18nStr string
+	Stage   string
 }
 
 var DevConsts = utils.ConstsMap{
@@ -39,7 +40,8 @@ var ProdConsts = utils.ConstsMap{
 var DefaultLang = "en"
 
 func main() {
-	consts := utils.NewConsts(os.Getenv("STAGE"), ProdConsts, DevConsts)
+	stage := os.Getenv("STAGE")
+	consts := utils.NewConsts(stage, ProdConsts, DevConsts)
 
 	var i18n map[string]any
 	fileBytes, _ := os.ReadFile("./i18n.json")
@@ -64,6 +66,7 @@ func main() {
 			SITE_BASE_URL: consts.GetConst("SITE_BASE_URL"),
 		},
 		I18nStr: string(fileBytes),
+		Stage:   stage,
 	}
 
 	templates := template.New("master").Funcs(funcMap)
