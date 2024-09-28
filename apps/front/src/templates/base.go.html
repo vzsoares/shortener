@@ -3,7 +3,14 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{{ block "title" . }}{{ end }}</title>
+        <meta name="description" content="Free url shortener" />
+        <meta
+            name="keywords"
+            content="shortener, url shortener, url, tiny link, minify link, free"
+        />
+        <meta name="author" content="Vinicius Zenha" />
+        <title>Shortener | {{ block "title" . }}{{ end }}</title>
+        {{ if eq .Stage "prod" }}
         <!-- open graph -->
         <meta property="og:title" content="Shortener" />
         <meta property="og:type" content="website" />
@@ -16,7 +23,6 @@
             property="og:image"
             content="{{ .Consts.SITE_BASE_URL }}/assets/shortener-opengrap1200-600.jpg"
         />
-        {{ if eq .Stage "prod" }}
         <!-- Google tag (gtag.js) -->
         <script
             async
@@ -48,9 +54,17 @@
             })(window, document, "script", "dataLayer", "GTM-MJPTQVPQ");
         </script>
         <!-- End Google Tag Manager -->
+        {{ else }}
+        <meta name="robots" content="noindex, nofollow" />
         {{- end }}
         <link href="/css/styles.css" rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+        <link rel="canonical" href="{{ .Consts.SITE_BASE_URL }}" />
+        <link
+            rel="alternate"
+            hreflang="pt-br"
+            href="{{ .Consts.SITE_BASE_URL }}/pt"
+        />
     </head>
     <body>
         {{ if eq .Stage "prod" }}
@@ -81,7 +95,10 @@
 
             const localeChangeEvent = new Event("locale-change");
             const langs = Object.keys(i18nBase);
-            let lang = localStorage.lang || "en";
+            let lang =
+                (window.location.pathname.startsWith("pt") && "pt") ||
+                localStorage.lang ||
+                "en";
             let i18n = i18nBase[lang];
             async function setLang(l) {
                 lang = l;
@@ -163,10 +180,10 @@
                     <div
                         class="bg-primary p-2 min-w-[192px] flex justify-between"
                     >
-                        <h1
+                        <h3
                             class="text-text-widget select-none"
                             id="toast-content"
-                        ></h1>
+                        ></h3>
                         <p
                             class="text-text-widget text-bold hover:scale-125 cursor-pointer select-none"
                             onclick="hideToaster()"
