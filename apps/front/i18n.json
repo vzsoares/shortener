@@ -18,7 +18,7 @@
         },
         "404": { "main": { "msg": "Not found " } }
     },
-    "br": {
+    "pt": {
         "nav": {
             "theme": {
                 "toggle_light": "claro",
