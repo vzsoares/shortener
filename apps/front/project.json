@@ -11,7 +11,7 @@
                 "cwd": "{projectRoot}",
                 "command": "make build"
             },
-            "outputs": ["dist"]
+            "outputs": ["dist/"]
         },
         "publish": {
             "executor": "nx:run-commands",
