@@ -40,8 +40,8 @@
             "dependsOn": ["lint", "test", "pre-build"],
             "outputs": [
                 "{projectRoot}/dist",
-                "{projectRoot}/functions/**/function.zip",
-                "{projectRoot}/functions/**/bootstrap"
+                "{projectRoot}/function/**/function.zip",
+                "{projectRoot}/function/**/bootstrap"
             ],
             "configurations": {
                 "prod": {
