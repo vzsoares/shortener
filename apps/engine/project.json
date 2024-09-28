@@ -10,8 +10,7 @@
             "options": {
                 "cwd": "{projectRoot}",
                 "command": "make build"
-            },
-            "outputs": ["function/function.zip"]
+            }
         },
         "serve": {
             "executor": "nx:run-commands",

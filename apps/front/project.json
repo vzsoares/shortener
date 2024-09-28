@@ -10,8 +10,7 @@
             "options": {
                 "cwd": "{projectRoot}",
                 "command": "make build"
-            },
-            "outputs": ["dist/"]
+            }
         },
         "publish": {
             "executor": "nx:run-commands",
