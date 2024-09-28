@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{ block "title" . }}{{ end }}</title>
+        {{ if eq .Stage "prod" }}
         <!-- open graph -->
         <meta property="og:title" content="Shortener" />
         <meta property="og:type" content="website" />
@@ -16,7 +17,6 @@
             property="og:image"
             content="{{ .Consts.SITE_BASE_URL }}/assets/shortener-opengrap1200-600.jpg"
         />
-        {{ if eq .Stage "prod" }}
         <!-- Google tag (gtag.js) -->
         <script
             async
@@ -48,6 +48,8 @@
             })(window, document, "script", "dataLayer", "GTM-MJPTQVPQ");
         </script>
         <!-- End Google Tag Manager -->
+        {{ else }}
+        <meta name="robots" content="noindex, nofollow" />
         {{- end }}
         <link href="/css/styles.css" rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
