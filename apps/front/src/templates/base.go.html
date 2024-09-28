@@ -17,6 +17,20 @@
             content="{{ .Consts.SITE_BASE_URL }}/assets/shortener-opengrap1200-600.jpg"
         />
         {{ if eq .Stage "prod" }}
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-34F4B1KG3D"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-34F4B1KG3D");
+        </script>
         <!-- Google Tag Manager -->
         <script>
             (function (w, d, s, l, i) {
