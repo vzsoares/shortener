@@ -1,8 +1,7 @@
 package main
 
-//go:generate make css-build
-
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -25,6 +24,8 @@ type Consts struct {
 type Data struct {
 	Palette Palette
 	Consts  Consts
+	I18nStr string
+	Stage   string
 }
 
 var DevConsts = utils.ConstsMap{
@@ -36,8 +37,25 @@ var ProdConsts = utils.ConstsMap{
 	"SITE_BASE_URL": "https://s.zenhalab.com",
 }
 
+var DefaultLang = "en"
+
 func main() {
-	consts := utils.NewConsts(os.Getenv("STAGE"), ProdConsts, DevConsts)
+	stage := os.Getenv("STAGE")
+	consts := utils.NewConsts(stage, ProdConsts, DevConsts)
+
+	var i18n map[string]any
+	fileBytes, _ := os.ReadFile("./i18n.json")
+	err := json.Unmarshal(fileBytes, &i18n)
+
+	funcT := func(s string) string {
+		stps := strings.Split(s, ".")
+		stps = append([]string{DefaultLang}, stps...)
+		r := Walk(stps, i18n)
+		return r
+	}
+
+	funcMap := map[string]interface{}{"T": funcT}
+	funcMap = template.FuncMap(funcMap)
 
 	data := &Data{
 		Palette: Palette{
@@ -47,12 +65,12 @@ func main() {
 			API_BASE_URL:  consts.GetConst("API_BASE_URL"),
 			SITE_BASE_URL: consts.GetConst("SITE_BASE_URL"),
 		},
+		I18nStr: string(fileBytes),
+		Stage:   stage,
 	}
 
-	templates, err := template.ParseGlob("src/**/*.go.html")
-	if err != nil {
-		log.Fatal(err)
-	}
+	templates := template.New("master").Funcs(funcMap)
+	template.Must(templates.ParseGlob("src/**/*.go.html"))
 
 	os.Mkdir("./dist", os.ModePerm)
 	if err != nil {
@@ -75,7 +93,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		tmpl, err = tmpl.ParseFiles(v)
+		template.Must(tmpl.ParseFiles(v))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -130,4 +148,13 @@ func Copy(srcpath, dstpath string) (err error) {
 
 	_, err = io.Copy(w, r)
 	return err
+}
+
+func Walk(p []string, m map[string]any) string {
+	l := len(p)
+	el := p[0]
+	if l == 1 {
+		return m[el].(string)
+	}
+	return Walk(p[1:], m[el].(map[string]any))
 }

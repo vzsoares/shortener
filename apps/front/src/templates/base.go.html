@@ -4,8 +4,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{ block "title" . }}{{ end }}</title>
-        <link href="/css/styles.css" rel="stylesheet" />
-        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
         <!-- open graph -->
         <meta property="og:title" content="Shortener" />
         <meta property="og:type" content="website" />
@@ -18,11 +16,109 @@
             property="og:image"
             content="{{ .Consts.SITE_BASE_URL }}/assets/shortener-opengrap1200-600.jpg"
         />
+        {{ if eq .Stage "prod" }}
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-34F4B1KG3D"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-34F4B1KG3D");
+        </script>
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    "gtm.start": new Date().getTime(),
+                    event: "gtm.js",
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != "dataLayer" ? "&l=" + l : "";
+                j.async = true;
+                j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, "script", "dataLayer", "GTM-MJPTQVPQ");
+        </script>
+        <!-- End Google Tag Manager -->
+        {{- end }}
+        <link href="/css/styles.css" rel="stylesheet" />
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
     </head>
     <body>
+        {{ if eq .Stage "prod" }}
+        <!-- Google Tag Manager (noscript) -->
+        <noscript
+            ><iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-MJPTQVPQ"
+                height="0"
+                width="0"
+                style="display: none; visibility: hidden"
+            ></iframe
+        ></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        {{- end }}
+        <script>
+            const i18nBase = JSON.parse({{.I18nStr}});
+        </script>
+        <script>
+            const spinner = `<svg class="animate-spin  mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>`;
+        </script>
+        <script>
+            function el(id) {
+                return document.getElementById(id);
+            }
+
+            const localeChangeEvent = new Event("locale-change");
+            const langs = Object.keys(i18nBase);
+            let lang = localStorage.lang || "en";
+            let i18n = i18nBase[lang];
+            async function setLang(l) {
+                lang = l;
+                i18n = i18nBase[l];
+                localStorage.lang = l;
+                window.dispatchEvent(localeChangeEvent);
+            }
+
+            function toggleLang() {
+                const currI = langs.indexOf(lang);
+                const max = langs.length - 1;
+                const next = currI + 1 > max ? 0 : currI + 1;
+                setLang(langs[next]);
+            }
+
+            function loadLang() {
+                const els = document.querySelectorAll("[i-lang]");
+                for (const el of els) {
+                    const path = el.attributes["i-lang"].value;
+                    const paths = path.split(".");
+                    const val = paths.reduce((a, c) => a[c], i18n);
+                    el.textContent = val;
+                }
+
+                el("lang_widget_content").innerHTML = lang;
+            }
+
+            window.addEventListener("locale-change", function () {
+                loadTheme();
+                loadLang();
+            });
+        </script>
         <script>
             document.addEventListener("DOMContentLoaded", (event) => {
                 loadTheme();
+
+                loadLang();
             });
             function loadTheme() {
                 const themeWidget = document.getElementById(
@@ -34,10 +130,10 @@
                         window.matchMedia("(prefers-color-scheme: dark)")
                             .matches)
                 ) {
-                    themeWidget.innerHTML = "dark";
+                    themeWidget.innerHTML = i18n.nav.theme.toggle_dark;
                     document.documentElement.classList.add("dark");
                 } else {
-                    themeWidget.innerHTML = "light";
+                    themeWidget.innerHTML = i18n.nav.theme.toggle_light;
                     document.documentElement.classList.remove("dark");
                 }
             }

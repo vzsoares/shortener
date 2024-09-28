@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/github-workflow.json
+
+name: Deploy
+
+on:
+    push:
+        branches: ["prod", "dev"]
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        container: public.ecr.aws/j5s7c7d2/zenhalab-ci-runner-prod:1
+        environment: ${{ github.ref_name == 'prod' && 'prod' || 'dev' }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Deploy
+              run: |
+                  git config --global --add safe.directory '*'
+                  aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ${{ secrets.AWS_PROFILE }}
+                  aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile ${{ secrets.AWS_PROFILE }}
+                  aws configure set region ${{ secrets.AWS_REGION }} --profile ${{ secrets.AWS_PROFILE }}
+                  LAST_TAG=$(git rev-list --tags --max-count=1 --skip=1)
+                  export NX_BASE="${LAST_TAG:=origin/prod}"
+                  export STAGE="${{ secrets.STAGE }}"
+                  export AWS_PROFILE="${{ secrets.AWS_PROFILE }}"
+                  yarn install
+                  yarn run -- nx run shortener:deploy --configuration=${{ secrets.STAGE }} --runner=${{ secrets.NX_RUNNER }}
