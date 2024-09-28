@@ -1,3 +1,17 @@
+## 1.2.0 (2024-09-28)
+
+
+### 🚀 Features
+
+- disable indexing for non prod pages ([9c4cda4](https://github.com/vzsoares/short-url/commit/9c4cda4))
+- improve seo ([772eae4](https://github.com/vzsoares/short-url/commit/772eae4))
+- enh h usage ([79dd2c2](https://github.com/vzsoares/short-url/commit/79dd2c2))
+- more seo ([e2efbe3](https://github.com/vzsoares/short-url/commit/e2efbe3))
+
+### ❤️  Thank You
+
+- vzsoares @vzsoares
+
 ## 1.1.1 (2024-09-28)
 
 This was a version bump only, there were no code changes.
