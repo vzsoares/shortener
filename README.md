@@ -19,6 +19,15 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 - All infra via Terraform
 - Github actions
 
+### Requirements 🛠️
+
+- make
+- aws
+- terraform
+- go
+- node
+- yarn
+
 ## Usage ☃️
 
 > Work in progress...
