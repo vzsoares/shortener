@@ -7,7 +7,7 @@ info:
     email: vinicius.zenha@gmail.com
   version: "1.0"
 servers:
-  - url: https://short.zenhalab.com
+  - url: https://s.zenhalab.com
     description: server
   - url: http:localhost:3000
     description: local server

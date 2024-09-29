@@ -36,10 +36,10 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 
 See more in [/docs](/docs)
 
-| ![Dark Interface](./static/hero.jpg)                   | ![Light Interface](./static/sequence_ex.png)                   |
+| ![deployment](./static/hero.jpg)                   | ![sequence](./static/sequence_ex.png)                   |
 | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| ![Settings Dark](./static/entity_ex.png)                | ![Settings Light](./static/hero.jpg)                |
-| ![Search Dark](./static/hero.jpg)                    | ![Search Light](./static/hero.jpg)                    |
+| ![entity](./static/entity_ex.png)                | ![Settings Light](./static/usecase_ex.png)                |
+| ![Search Dark](./static/swagger_public_ex.png)                    | ![Search Light](./static/swagger_engine_ex.png)                    |
 
 
 
