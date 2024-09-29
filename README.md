@@ -15,18 +15,18 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 
 ## Features 📃
 
-- Fully serverless pay per request
-- All infra via Terraform
-- Github actions
+-   Fully serverless pay per request
+-   All infra via Terraform
+-   Github actions
 
 ### Requirements 🛠️
 
-- make
-- aws
-- terraform
-- go
-- node
-- yarn
+-   make
+-   aws
+-   terraform
+-   go
+-   node
+-   yarn
 
 ## Usage ☃️
 
@@ -35,3 +35,11 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 ## Architecture 🎨
 
 See more in [/docs](/docs)
+
+| ![Dark Interface](./static/hero.jpg)                   | ![Light Interface](./static/sequence_ex.png)                   |
+| -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| ![Settings Dark](./static/entity_ex.png)                | ![Settings Light](./static/hero.jpg)                |
+| ![Search Dark](./static/hero.jpg)                    | ![Search Light](./static/hero.jpg)                    |
+
+
+
