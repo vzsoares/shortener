@@ -11,13 +11,16 @@
 <img src="./static/hero.jpg" width="500px">
 </p>
 
-Deploy your own shortener service in the aws free tier. Made in Go with minimal dependencies. Raw HTML JS and _tailwind_ front. Main shortener service engine meant to be consumed by others via http with api key.
+Deploy your own shortener service in the aws free tier. Made in Go with minimal dependencies. Raw HTML JS and _tailwind_ front. Main engine to integrate with other internal services.
 
 ## Features 📃
 
 -   Fully serverless pay per request
--   All infra via Terraform
+-   Terraform infra
 -   Github actions
+-   Generic main engine
+    -   Easily integrate using a api-key
+-   Bff implementation example
 
 ### Requirements 🛠️
 
@@ -34,7 +37,7 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 
 ## Architecture 🎨
 
-See more in [/docs](/docs)
+See in [/docs](/docs)
 
 | [![deployment](./static/hero.jpg)](./docs/deployment.md)                   | [![sequence](./static/sequence_ex.png)](./docs/sequence.md)                   |
 | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
