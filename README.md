@@ -25,13 +25,25 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 ### Requirements 🛠️
 
 -   make
--   aws
+-   aws-cli
 -   terraform
 -   go
 -   node
 -   yarn
 
+## Setup 🦩
+
+Make sure to have all requirements.
+
+1. Clone the repo
+1. Install node dependencies with `yarn install`
+1. Copy `.env.example` to `.env` and fill the values
+
+> Work in progress...
+
 ## Usage ☃️
+
+As this project uses nx you can see all available commands with `nx show projects` then `nx show project {projectName}`
 
 > Work in progress...
 
