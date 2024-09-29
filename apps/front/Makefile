@@ -13,7 +13,6 @@ GO ?= go
 MAKE ?= make
 
 STAGE ?= dev
-DEBUG ?= DEBUG
 
 BASE_TF_WORK_DIR=../../infra/environments
 
@@ -52,7 +51,6 @@ serve-watch:
 watch-build:
 > @npx nodemon -e tailwind.config.js,go.html,css,go --ignore "dist/*" --exec go run .
 
-
 ##@
 ##@ Deploy
 ##@
@@ -62,12 +60,10 @@ publish:
 > @make invalidate-distribution
 
 sync-bucket:
-> $(eval BUCKET := $(shell [[ ${STAGE} = "dev" ]] && echo "s-dev.zenhalab.com" || echo "s.zenhalab.com"))
-> @aws s3 sync --acl=public-read ./dist s3://${BUCKET}/
+> @aws s3 sync --acl=public-read ./dist s3://${FRONT_BUCKET_NAME}/
 
 invalidate-distribution:
-> $(eval DISTRI := $(shell [[ ${STAGE} = "dev" ]] && echo "E1WR5S0OYB2OKY" || echo "E1BLLPJRDAF46D"))
-> @aws cloudfront create-invalidation --distribution-id=${DISTRI} --paths="/*" | cat
+> @aws cloudfront create-invalidation --distribution-id=${FRONT_CLOUDFRONT_DISTRIBUTION} --paths="/*" | cat
 
 ##@
 ##@ Misc commands

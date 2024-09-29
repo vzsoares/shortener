@@ -37,7 +37,9 @@ Make sure to have all requirements.
 
 1. Clone the repo
 1. Install node dependencies with `yarn install`
-1. Copy `.env.example` to `.env` and fill the values
+1. Copy `.env.example` to `.env.dev` and `.env.prod` and fill the values
+    > Some values only exist after running Terraform apply
+1. Deploy with `nx run shortener:deploy:dev` and `nx run shortener:deploy:prod`
 
 > Work in progress...
 

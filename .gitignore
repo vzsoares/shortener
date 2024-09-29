@@ -44,7 +44,8 @@ Thumbs.db
 /node_modules
 /dist
 *.zip
-.env
+.env*
+!.env.example*
 .serverless
 .build
 .esbuild
