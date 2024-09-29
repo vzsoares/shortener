@@ -63,7 +63,7 @@ sync-bucket:
 > @aws s3 sync --acl=public-read ./dist s3://${FRONT_BUCKET_NAME}/
 
 invalidate-distribution:
-> @aws cloudfront create-invalidation --distribution-id=${FRONT_CLOUDFRONT_DISTRIBUTION} --paths="/*" | cat
+> @aws cloudfront create-invalidation --distribution-id=${FRONT_CLOUDFRONT_DISTRIBUTION_ID} --paths="/*" | cat
 
 ##@
 ##@ Misc commands
