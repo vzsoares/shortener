@@ -21,6 +21,10 @@ variable "gateway_api_name" {
   type = string
 }
 
+variable "dynamodb_table_name" {
+  type = string
+}
+
 locals {
   region     = "us-east-1"
   stage      = "dev"
@@ -29,19 +33,22 @@ locals {
 
 module "urls-table" {
   source = "../../services/urls-table"
-  stage  = local.stage
+
+  stage               = local.stage
+  dynamodb_table_name = var.dynamodb_table_name
 }
 
 module "role" {
   source = "../../services/lambda-iam-role"
 
-  stage = local.stage
+  stage               = local.stage
+  dynamodb_table_name = var.dynamodb_table_name
 }
 
 module "api_gateway" {
-  source       = "../../services/gateway"
-  stage        = local.stage
-  gateway_name = var.gateway_api_name
+  source                     = "../../services/gateway"
+  stage                      = local.stage
+  gateway_name               = var.gateway_api_name
   gateway_api_mapping_domain = var.gateway_api_mapping_domain
 }
 
@@ -64,17 +71,17 @@ module "public-api-lambda" {
 }
 
 module "front_bucket" {
-  source = "../../services/front-bucket"
-  stage  = local.stage
+  source            = "../../services/front-bucket"
+  stage             = local.stage
   front_bucket_name = var.front_bucket_name
 }
 
 module "cloudfront-distribution" {
   source = "../../services/cloudfront"
 
-  stage                       = local.stage
-  bucket_regional_domain_name = module.front_bucket.website_endpoint
-  issued_certificate_domain   = var.issued_certificate_domain
-  cloudfront_alias = var.cloudfront_alias
+  stage                        = local.stage
+  bucket_regional_domain_name  = module.front_bucket.website_endpoint
+  issued_certificate_domain    = var.issued_certificate_domain
+  cloudfront_alias             = var.cloudfront_alias
   api_cloudfront_origin_domain = var.api_cloudfront_origin_domain
 }

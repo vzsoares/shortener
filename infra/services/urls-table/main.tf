@@ -2,9 +2,13 @@ variable "stage" {
   type = string
 }
 
+variable "dynamodb_table_name" {
+  type = string
+}
+
 ###### DynamoDB ######
 resource "aws_dynamodb_table" "urls-table" {
-  name         = "shortener-urls-${var.stage}"
+  name         = var.dynamodb_table_name
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "Rash"
 

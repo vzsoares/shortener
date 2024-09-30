@@ -21,7 +21,8 @@ apply:
   -var='api_cloudfront_origin_domain=${API_BASE_URL_DOMAIN}' \
   -var='front_bucket_name=${FRONT_BASE_URL_DOMAIN}' \
   -var='gateway_api_mapping_domain=${API_BASE_URL_DOMAIN}' \
-  -var='gateway_api_name=${GATEWAY_API_NAME}'
+  -var='gateway_api_name=${GATEWAY_API_NAME}' \
+  -var='dynamodb_table_name=${DYNAMO_URL_TABLE_NAME}'
 
 #-auto-approve
 
