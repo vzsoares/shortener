@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = "s${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"
+  bucket = var.front_bucket_name
 
   tags = {
     Terraform = "true"

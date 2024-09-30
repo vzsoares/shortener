@@ -9,6 +9,10 @@ variable "api_cloudfront_origin_domain" {
   type = string
 }
 
+variable "front_bucket_name" {
+  type = string
+}
+
 locals {
   region     = "us-east-1"
   stage      = "dev"
@@ -53,6 +57,7 @@ module "public-api-lambda" {
 module "front_bucket" {
   source = "../../services/front-bucket"
   stage  = local.stage
+  front_bucket_name = var.front_bucket_name
 }
 
 module "cloudfront-distribution" {
