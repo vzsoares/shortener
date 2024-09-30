@@ -25,6 +25,10 @@ variable "dynamodb_table_name" {
   type = string
 }
 
+variable "artifacts_bucket_name" {
+  type = string
+}
+
 locals {
   region     = "us-east-1"
   stage      = "dev"
@@ -59,6 +63,7 @@ module "engine-lambda" {
   gateway_id            = module.api_gateway.id
   gateway_execution_arn = module.api_gateway.execution_arn
   lambda_iam_arn        = module.role.iam_role_arn
+  artifacts_bucket_name = var.artifacts_bucket_name
 }
 
 module "public-api-lambda" {
@@ -68,6 +73,7 @@ module "public-api-lambda" {
   gateway_id            = module.api_gateway.id
   gateway_execution_arn = module.api_gateway.execution_arn
   lambda_iam_arn        = module.role.iam_role_arn
+  artifacts_bucket_name = var.artifacts_bucket_name
 }
 
 module "front_bucket" {

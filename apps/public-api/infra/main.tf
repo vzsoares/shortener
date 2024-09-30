@@ -11,6 +11,10 @@ variable "lambda_iam_arn" {
   type = string
 }
 
+variable "artifacts_bucket_name" {
+  type = string
+}
+
 locals {
   base_route = "public-api"
 }
@@ -28,6 +32,6 @@ module "lambda_function" {
   filepath          = "${path.module}/../function"
   filename          = "function.zip"
   s3_prefix         = "build/lambda/shortener"
-  s3_bucket         = "zenhalab-artifacts-${var.stage}"
+  s3_bucket         = var.artifacts_bucket_name
 }
 

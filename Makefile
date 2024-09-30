@@ -22,7 +22,8 @@ apply:
   -var='front_bucket_name=${FRONT_BASE_URL_DOMAIN}' \
   -var='gateway_api_mapping_domain=${API_BASE_URL_DOMAIN}' \
   -var='gateway_api_name=${GATEWAY_API_NAME}' \
-  -var='dynamodb_table_name=${DYNAMO_URL_TABLE_NAME}'
+  -var='dynamodb_table_name=${DYNAMO_URL_TABLE_NAME}' \
+  -var='artifacts_bucket_name=${ARTIFACTS_BUCKET_NAME}'
 
 #-auto-approve
 
