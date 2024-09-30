@@ -1,5 +1,5 @@
 data "aws_acm_certificate" "issued" {
-  domain   = "zenhalab.com"
+  domain   = var.issued_certificate_domain
   statuses = ["ISSUED"]
   types    = ["AMAZON_ISSUED"]
 }
@@ -17,10 +17,15 @@ data "aws_cloudfront_origin_request_policy" "origin_policy_all" {
   name = "Managed-AllViewer"
 }
 
+locals {
+  bucket_origin_id = "shortenerbucketstatic"
+  api_origin_id = "public-api"
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = var.bucket_regional_domain_name
-    origin_id   = "shortenerbucketstatic"
+    origin_id   = local.bucket_origin_id
     custom_origin_config {
       http_port              = "80"
       https_port             = "443"
@@ -29,9 +34,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
   origin {
-    domain_name = "api${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"
+    domain_name = var.api_cloudfront_origin_domain
     origin_path = "/shortener/v1/public-api/url"
-    origin_id   = "public-api"
+    origin_id   = local.api_origin_id
     custom_origin_config {
       http_port              = "80"
       https_port             = "443"
@@ -44,12 +49,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   comment             = "Shortner distribution ${var.stage}"
   default_root_object = "index.html"
 
-  aliases = ["s${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"]
+  aliases = [var.cloudfront_alias]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "shortenerbucketstatic"
+    target_origin_id = local.bucket_origin_id
 
     cache_policy_id        = data.aws_cloudfront_cache_policy.s3_cache.id
     compress               = true
@@ -60,9 +65,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     path_pattern     = "p-*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "public-api"
+    target_origin_id = local.api_origin_id
 
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.cors_policy.id
+    # This legacy config is to allow api-gateway usage
     forwarded_values {
       query_string = false
       cookies {

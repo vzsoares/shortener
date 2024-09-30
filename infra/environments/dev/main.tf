@@ -1,3 +1,14 @@
+variable "issued_certificate_domain" {
+  type = string
+}
+variable "cloudfront_alias" {
+  type = string
+}
+
+variable "api_cloudfront_origin_domain" {
+  type = string
+}
+
 locals {
   region     = "us-east-1"
   stage      = "dev"
@@ -49,4 +60,7 @@ module "cloudfront-distribution" {
 
   stage                       = local.stage
   bucket_regional_domain_name = module.front_bucket.website_endpoint
+  issued_certificate_domain   = var.issued_certificate_domain
+  cloudfront_alias = var.cloudfront_alias
+  api_cloudfront_origin_domain = var.api_cloudfront_origin_domain
 }
