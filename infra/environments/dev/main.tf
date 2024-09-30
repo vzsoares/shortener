@@ -13,6 +13,14 @@ variable "front_bucket_name" {
   type = string
 }
 
+variable "gateway_api_mapping_domain" {
+  type = string
+}
+
+variable "gateway_api_name" {
+  type = string
+}
+
 locals {
   region     = "us-east-1"
   stage      = "dev"
@@ -33,7 +41,8 @@ module "role" {
 module "api_gateway" {
   source       = "../../services/gateway"
   stage        = local.stage
-  gateway_name = "shortener"
+  gateway_name = var.gateway_api_name
+  gateway_api_mapping_domain = var.gateway_api_mapping_domain
 }
 
 module "engine-lambda" {

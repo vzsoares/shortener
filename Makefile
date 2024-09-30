@@ -19,7 +19,9 @@ apply:
   -var='issued_certificate_domain=zenhalab.com' \
   -var='cloudfront_alias=${FRONT_BASE_URL_DOMAIN}' \
   -var='api_cloudfront_origin_domain=${API_BASE_URL_DOMAIN}' \
-  -var='front_bucket_name=${FRONT_BASE_URL_DOMAIN}'
+  -var='front_bucket_name=${FRONT_BASE_URL_DOMAIN}' \
+  -var='gateway_api_mapping_domain=${API_BASE_URL_DOMAIN}' \
+  -var='gateway_api_name=${GATEWAY_API_NAME}'
 
 #-auto-approve
 

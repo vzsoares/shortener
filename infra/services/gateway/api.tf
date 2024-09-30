@@ -24,7 +24,7 @@ resource "aws_apigatewayv2_stage" "gateway" {
 
 resource "aws_apigatewayv2_api_mapping" "mapping" {
   api_id          = aws_apigatewayv2_api.gateway.id
-  domain_name     = "api${var.stage == "dev" ? "-dev" : ""}.zenhalab.com"
+  domain_name     = var.gateway_api_mapping_domain
   stage           = aws_apigatewayv2_stage.gateway.id
   api_mapping_key = "shortener/v1"
 }

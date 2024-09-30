@@ -5,3 +5,7 @@ variable "gateway_name" {
 variable "stage" {
   type = string
 }
+
+variable "gateway_api_mapping_domain" {
+  type = string
+}
