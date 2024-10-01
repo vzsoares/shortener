@@ -77,6 +77,16 @@
                     "args": ["STAGE=dev"]
                 }
             }
+        },
+        "publish": {
+            "configurations": {
+                "prod": {
+                    "args": ["STAGE=prod"]
+                },
+                "dev": {
+                    "args": ["STAGE=dev"]
+                }
+            }
         }
     },
     "plugins": ["@nx-go/nx-go"],
