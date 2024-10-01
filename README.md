@@ -73,9 +73,16 @@ github actions:
 
 ## Usage ☃️
 
-As this project uses nx you can see all available commands with `nx show projects` then `nx show project {projectName}`
+See all available commands bellow and use with: `nx run {project}:{task}:{environment}`.
+Ex: `nx run engine:serve:dev` to start a local api.
 
-> Work in progress...
+| Projects    | Tasks                                                   |
+|--------------|----------------------------------------------------------|
+| engine        | build, lint, serve, test, tidy                           |
+| front        | build, lint, publish, serve, test, tidy                  |
+| public-api   | build, lint, serve, test, tidy                           |
+| utils        | lint, test, tidy                                         |
+| shortener    | deploy, first-deploy                                     |
 
 ## Architecture 🎨
 
