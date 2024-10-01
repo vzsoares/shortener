@@ -60,3 +60,7 @@ module "cloudfront-distribution" {
   cloudfront_alias             = var.cloudfront_alias
   api_cloudfront_origin_domain = var.api_cloudfront_origin_domain
 }
+
+output "aws_cloudfront_distribution_id" {
+  value = module.cloudfront-distribution.aws_cloudfront_distribution_id
+}

@@ -35,15 +35,41 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 
 Make sure to have all requirements.
 
+- configure aws credentials
+
+local:
+
 1. Clone the repo
 1. Install node dependencies with `yarn install`
 1. Copy `.env.example` to `.env.dev` and `.env.prod` and fill the values
     > Some values only exist after running Terraform apply
 2. Configure your runner in `nx.json tasksRunnerOptions`
-2. Configure or remove the `terraform remoteBackend bucket` in each environment
-3. Deploy with `nx run shortener:deploy:dev` and `nx run shortener:deploy:prod`
+3. ⚠️Configure the Terraform provider by changing or removing the `provider.tf` file in each environment.
+4. export AWS_PROFILE={your-profile}
+5. Deploy **once** with `nx run shortener:first-deploy:dev` and `nx run shortener:first-deploy:prod`
+6. Get the cloudfront distribution id and put it on your env
+7. Finally deploy with `nx run shortener:deploy:dev` and `nx run shortener:first:prod`
 
-> Work in progress...
+github actions:
+- configure a `prod` and `dev` environment with:
+  - secrets:
+    - AWS_ACCESS_KEY_ID
+    - AWS_PROFILE
+    - AWS_REGION
+    - AWS_SECRET_ACCESS_KEY
+  - variables:
+    > same as .env
+    - API_BASE_URL
+    - API_BASE_URL_DOMAIN
+    - ARTIFACTS_BUCKET_NAME
+    - DYNAMO_URL_TABLE_NAME
+    - FRONT_BASE_URL
+    - FRONT_BASE_URL_DOMAIN
+    - FRONT_BUCKET_NAME
+    - FRONT_CLOUDFRONT_DISTRIBUTION_ID
+    - GATEWAY_API_NAME
+    - NX_RUNNER
+    - STAGE
 
 ## Usage ☃️
 

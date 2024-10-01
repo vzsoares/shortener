@@ -12,7 +12,7 @@ WORK_DIR_BASE=./infra/environments
 deploy: ##@ Deploy to current $STAGE
 > @echo "Deploying for stage: ${STAGE}"
 > @make init
->  make apply
+> @make apply
 
 apply:
 > cd ${WORK_DIR_BASE}/${STAGE} && ${TERRAFORM} apply \

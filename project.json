@@ -29,6 +29,28 @@
                 "cwd": "{projectRoot}",
                 "command": "make deploy"
             }
+        },
+        "first-deploy": {
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "projects": ["*", "!front"]
+                }
+            ],
+            "cache": true,
+            "configurations": {
+                "prod": {
+                    "args": ["STAGE=prod"]
+                },
+                "dev": {
+                    "args": ["STAGE=dev"]
+                }
+            },
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "make deploy"
+            }
         }
     }
 }

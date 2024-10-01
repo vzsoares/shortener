@@ -62,3 +62,7 @@ module "cloudfront-distribution" {
   cloudfront_alias = var.cloudfront_alias
   issued_certificate_domain = var.issued_certificate_domain
 }
+
+output "aws_cloudfront_distribution_id" {
+  value = module.cloudfront-distribution.aws_cloudfront_distribution_id
+}
