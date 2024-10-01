@@ -1,3 +1,35 @@
+## 1.3.0 (2024-10-01)
+
+
+### 🚀 Features
+
+- readme skeleton ([c3955ef](https://github.com/vzsoares/short-url/commit/c3955ef))
+- requirements ([0e6e5bc](https://github.com/vzsoares/short-url/commit/0e6e5bc))
+- clickable img ([90352cc](https://github.com/vzsoares/short-url/commit/90352cc))
+- generic front makefile ([677aa9e](https://github.com/vzsoares/short-url/commit/677aa9e))
+- unify front consts ([e1ea911](https://github.com/vzsoares/short-url/commit/e1ea911))
+- unify engine consts ([4795851](https://github.com/vzsoares/short-url/commit/4795851))
+- unify public consts ([8b3f297](https://github.com/vzsoares/short-url/commit/8b3f297))
+- generic cloudfront ([b16db21](https://github.com/vzsoares/short-url/commit/b16db21))
+- generic s3 ([3abe4d6](https://github.com/vzsoares/short-url/commit/3abe4d6))
+- generic gateway ([77ee86d](https://github.com/vzsoares/short-url/commit/77ee86d))
+- table name var ([c092b05](https://github.com/vzsoares/short-url/commit/c092b05))
+- map artifacts bucket ([05cbac2](https://github.com/vzsoares/short-url/commit/05cbac2))
+- vars to prod ([e2997a7](https://github.com/vzsoares/short-url/commit/e2997a7))
+- setup ([b73764b](https://github.com/vzsoares/short-url/commit/b73764b))
+- usage ([d35c98b](https://github.com/vzsoares/short-url/commit/d35c98b))
+
+### 🩹 Fixes
+
+- pipeline ([0d6bf34](https://github.com/vzsoares/short-url/commit/0d6bf34))
+- nx sigbus ([ce3f377](https://github.com/vzsoares/short-url/commit/ce3f377))
+- deploy cmd ([70a4972](https://github.com/vzsoares/short-url/commit/70a4972))
+- publish env access ([92ef153](https://github.com/vzsoares/short-url/commit/92ef153))
+
+### ❤️  Thank You
+
+- vzsoares @vzsoares
+
 ## 1.2.1 (2024-09-28)
 
 
