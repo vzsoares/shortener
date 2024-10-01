@@ -36,5 +36,5 @@ jobs:
                   LAST_TAG=$(git rev-list --tags --max-count=1 --skip=1)
                   export NX_BASE="${LAST_TAG:=origin/prod}"
 
-                  yarn install
+                  yarn install --frozen-lockfile --ignore-scripts
                   yarn run -- nx run shortener:deploy --configuration=${{ vars.STAGE }} --runner=${{ vars.NX_RUNNER }}
