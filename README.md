@@ -11,9 +11,9 @@
 <img src="./static/hero.jpg" width="500px">
 </p>
 
-Deploy your own shortener service in the aws free tier. Made in Go with minimal dependencies. Raw HTML JS and _tailwind_ front. Main engine to integrate with other internal services.
+Deploy your own shortener service in the aws free tier. Made in Go with minimal dependencies. Raw HTML JS and _tailwind_ front. Main _engine_ to integrate with other internal services.
 
-## Features 📃
+## Features 🚀
 
 -   Fully serverless pay per request
 -   Terraform infra
@@ -35,20 +35,19 @@ Deploy your own shortener service in the aws free tier. Made in Go with minimal 
 
 Make sure to have all requirements.
 
-- configure aws credentials
-
 local:
 
 1. Clone the repo
-1. Install node dependencies with `yarn install`
-1. Copy `.env.example` to `.env.dev` and `.env.prod` and fill the values
+2. Install node dependencies with `yarn install`
+3. Copy `.env.example` to `.env.dev` and `.env.prod` and fill the values
     > Some values only exist after running Terraform apply
-2. Configure your runner in `nx.json tasksRunnerOptions`
-3. ⚠️Configure the Terraform provider by changing or removing the `provider.tf` file in each environment.
-4. export AWS_PROFILE={your-profile}
-5. Deploy **once** with `nx run shortener:first-deploy:dev` and `nx run shortener:first-deploy:prod`
-6. Get the cloudfront distribution id and put it on your env
-7. Finally deploy with `nx run shortener:deploy:dev` and `nx run shortener:first:prod`
+1. configure aws credentials
+4. Configure your runner in `nx.json tasksRunnerOptions`
+5. ⚠️Configure the Terraform provider `backend` by changing or removing the `provider.tf backend` section in each environment
+6. export AWS_PROFILE={your-profile}
+7. Deploy **once** with `nx run shortener:first-deploy:dev` and `nx run shortener:first-deploy:prod`
+8. Get the cloudfront distribution id and put it on your envs
+9. Finally deploy with `nx run shortener:deploy:dev` and `nx run shortener:deploy:prod`
 
 github actions:
 - configure a `prod` and `dev` environment with:
