@@ -7,16 +7,14 @@ import (
 type ConstsMap map[string]string
 
 type Consts struct {
-	STAGE   string
-	ProdMap ConstsMap
-	DevMap  ConstsMap
+	STAGE     string
+	ConstsMap ConstsMap
 }
 
-func NewConsts(STAGE string, ProdMap ConstsMap, DevMap ConstsMap) *Consts {
+func NewConsts(STAGE string, ConstsMap ConstsMap) *Consts {
 	return &Consts{
-		ProdMap: ProdMap,
-		DevMap:  DevMap,
-		STAGE:   STAGE,
+		ConstsMap: ConstsMap,
+		STAGE:     STAGE,
 	}
 }
 
@@ -28,11 +26,7 @@ func (s *Consts) GetConst(key string) string {
 		panic("No STAGE set")
 	}
 
-	if s.STAGE == "dev" {
-		v, ok = s.DevMap[key]
-	} else {
-		v, ok = s.ProdMap[key]
-	}
+	v, ok = s.ConstsMap[key]
 
 	if !ok {
 		panic(fmt.Sprintf("Variable not set: %v", key))

@@ -28,20 +28,16 @@ type Data struct {
 	Stage   string
 }
 
-var DevConsts = utils.ConstsMap{
-	"API_BASE_URL":  "https://api-dev.zenhalab.com/shortener/v1/public-api",
-	"SITE_BASE_URL": "https://s-dev.zenhalab.com",
-}
-var ProdConsts = utils.ConstsMap{
-	"API_BASE_URL":  "https://api.zenhalab.com/shortener/v1/public-api",
-	"SITE_BASE_URL": "https://s.zenhalab.com",
+var ConstsMap = utils.ConstsMap{
+	"API_BASE_URL":  fmt.Sprintf("%v/%v", os.Getenv("API_BASE_URL"), "/shortener/v1/public-api"),
+	"SITE_BASE_URL": os.Getenv("FRONT_BASE_URL"),
 }
 
 var DefaultLang = "en"
 
 func main() {
 	stage := os.Getenv("STAGE")
-	consts := utils.NewConsts(stage, ProdConsts, DevConsts)
+	consts := utils.NewConsts(stage, ConstsMap)
 
 	var i18n map[string]any
 	fileBytes, _ := os.ReadFile("./i18n.json")
