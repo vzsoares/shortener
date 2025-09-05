@@ -1,3 +1,14 @@
+## 1.3.2 (2025-09-05)
+
+
+### 🩹 Fixes
+
+- api path ([c679dbe](https://github.com/vzsoares/shortener/commit/c679dbe))
+
+### ❤️  Thank You
+
+- vzsoares @vzsoares
+
 ## 1.3.1 (2024-10-01)
 
 This was a version bump only, there were no code changes.
