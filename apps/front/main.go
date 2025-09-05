@@ -29,7 +29,7 @@ type Data struct {
 }
 
 var ConstsMap = utils.ConstsMap{
-	"API_BASE_URL":  fmt.Sprintf("%v/%v", os.Getenv("API_BASE_URL"), "/shortener/v1/public-api"),
+	"API_BASE_URL":  fmt.Sprintf("%v%v", os.Getenv("API_BASE_URL"), "/shortener/v1/public-api"),
 	"SITE_BASE_URL": os.Getenv("FRONT_BASE_URL"),
 }
 
