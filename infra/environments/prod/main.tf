@@ -34,6 +34,7 @@ module "engine-lambda" {
   gateway_execution_arn = module.api_gateway.execution_arn
   lambda_iam_arn        = module.role.iam_role_arn
   artifacts_bucket_name = var.artifacts_bucket_name
+  dynamodb_table_name   = var.dynamodb_table_name
 }
 
 module "public-api-lambda" {
@@ -44,6 +45,8 @@ module "public-api-lambda" {
   gateway_execution_arn = module.api_gateway.execution_arn
   lambda_iam_arn        = module.role.iam_role_arn
   artifacts_bucket_name = var.artifacts_bucket_name
+  api_base_url          = var.api_base_url
+  front_base_url        = var.front_base_url
 }
 
 module "front_bucket" {

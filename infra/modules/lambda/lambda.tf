@@ -23,9 +23,12 @@ resource "aws_lambda_function" "lambda" {
   publish = true
 
   environment {
-    variables = {
-      STAGE = var.stage
-    }
+    variables = merge(
+      {
+        STAGE = var.stage
+      },
+      var.environment_variables
+    )
   }
 
   tags = {

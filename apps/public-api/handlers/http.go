@@ -21,6 +21,7 @@ type UrlHttpHandler struct {
 }
 
 func NewHttpHandler(ctx context.Context, client http.Client, apiUrl string, apiKeyA4 string) *UrlHttpHandler {
+	println("NewHttpHandler initialized") // Debugging line
 	return &UrlHttpHandler{
 		ctx:      ctx,
 		client:   client,
@@ -57,22 +58,27 @@ func getValidRash(client http.Client, size int, apiUrl string, apiKeyA4 string) 
 }
 
 func (h *UrlHttpHandler) GetHandler(w http.ResponseWriter, r *http.Request) {
+	println("GetHandler called with path:", r.URL.Path) // Debugging line
 	id := r.PathValue("id")
 
 	if id == "" {
+		println("No ID provided in the request") // Debugging line
 		respondRedirect(w, errorPageUrl)
 	}
 	body, err := services.GetUrl(id, h.apiUrl, h.apiKeyA4, h.client)
 	if err != nil {
+		println("Error fetching URL:", err.Error()) // Debugging line
 		respondRedirect(w, errorPageUrl)
 		return
 	}
 
 	if body.Code == "DBI404" {
+		println("URL not found for ID:", id) // Debugging line
 		respondRedirect(w, notFoundPageUrl)
 		return
 	}
 	if body.Code != "S200" {
+		println("Unexpected response code:", body.Code) // Debugging line
 		respondRedirect(w, errorPageUrl)
 		return
 	}
@@ -81,6 +87,7 @@ func (h *UrlHttpHandler) GetHandler(w http.ResponseWriter, r *http.Request) {
 	destination, ok := data["destination"]
 	destinationstring, ok := destination.(string)
 	if !ok {
+		println("Invalid destination format for ID:", id) // Debugging line
 		respondRedirect(w, errorPageUrl)
 		return
 	}

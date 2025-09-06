@@ -28,3 +28,11 @@ variable "dynamodb_table_name" {
 variable "artifacts_bucket_name" {
   type = string
 }
+
+variable "api_base_url" {
+  type = string
+}
+
+variable "front_base_url" {
+  type = string
+}

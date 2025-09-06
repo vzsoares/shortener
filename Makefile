@@ -24,6 +24,8 @@ apply:
   -var='gateway_api_name=${GATEWAY_API_NAME}' \
   -var='dynamodb_table_name=${DYNAMO_URL_TABLE_NAME}' \
   -var='artifacts_bucket_name=${ARTIFACTS_BUCKET_NAME}' \
+  -var='api_base_url=${API_BASE_URL}' \
+  -var='front_base_url=${FRONT_BASE_URL}' \
   -auto-approve
 
 init:

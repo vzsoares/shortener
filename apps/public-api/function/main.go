@@ -84,7 +84,7 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 
 func main() {
 	if tools.DEBUG {
-		println("Running debug server...")
+		println("Running debug server...", ":3000")
 		log.Fatal(http.ListenAndServe(":3000", nil))
 	} else {
 		lambda.Start(Handler)
