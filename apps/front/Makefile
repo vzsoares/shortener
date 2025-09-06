@@ -34,9 +34,9 @@ build:
 > @make css-build-mini
 
 css-build-mini:
-> @npx tailwindcss -i ./src/css/styles.css -o ./dist/css/styles.css --minify
+> @npx tailwindcss@^3 -i ./src/css/styles.css -o ./dist/css/styles.css --minify
 css-build:
-> @npx tailwindcss -i ./src/css/styles.css -o ./dist/css/styles.css
+> @npx tailwindcss@^3 -i ./src/css/styles.css -o ./dist/css/styles.css
 
 ##@
 ##@ Run local
