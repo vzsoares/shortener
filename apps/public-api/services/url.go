@@ -27,6 +27,7 @@ func GetUrl(id string, apiUrl string, apiKeyA4 string, client http.Client) (*uti
 	body := &utils.Body{}
 	err = json.NewDecoder(response.Body).Decode(body)
 	if err != nil {
+		fmt.Println("Error decoding response body, status code:", response.StatusCode)
 		return nil, err
 	}
 	return body, nil

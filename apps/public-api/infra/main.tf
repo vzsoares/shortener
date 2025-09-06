@@ -10,6 +10,12 @@ variable "gateway_execution_arn" {
 variable "lambda_iam_arn" {
   type = string
 }
+variable "front_base_url" {
+  type = string
+}
+variable "api_base_url" {
+  type = string
+}
 
 variable "artifacts_bucket_name" {
   type = string
@@ -33,5 +39,10 @@ module "lambda_function" {
   filename          = "function.zip"
   s3_prefix         = "build/lambda/shortener"
   s3_bucket         = var.artifacts_bucket_name
+
+  environment_variables = {
+    FRONT_BASE_URL = var.front_base_url
+    API_BASE_URL   = var.api_base_url
+  }
 }
 

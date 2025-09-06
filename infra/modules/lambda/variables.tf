@@ -36,3 +36,8 @@ variable "s3_prefix" {
 variable "s3_bucket" {
   type = string
 }
+
+variable "environment_variables" {
+  type    = map(string)
+  default = {}
+}

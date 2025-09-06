@@ -10,6 +10,9 @@ variable "gateway_execution_arn" {
 variable "lambda_iam_arn" {
   type = string
 }
+variable "dynamodb_table_name" {
+  type = string
+}
 
 variable "artifacts_bucket_name" {
   type = string
@@ -33,5 +36,9 @@ module "lambda_function" {
   filename          = "function.zip"
   s3_prefix         = "build/lambda/shortener"
   s3_bucket         = var.artifacts_bucket_name
+
+  environment_variables = {
+    DYNAMO_URL_TABLE_NAME = var.dynamodb_table_name
+  }
 }
 

@@ -26,6 +26,13 @@
                 "command": "make test"
             }
         },
+        "test-integration": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "make test-integration"
+            }
+        },
         "lint": {
             "executor": "@nx-go/nx-go:lint"
         },

@@ -9,6 +9,7 @@ func AuthMiddleware(next http.HandlerFunc, parameterStore *utils.Ssm) http.Handl
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		incomingKey := r.Header.Get("X-Api-Key")
 		if incomingKey == "" {
+			println("Missing X-Api-Key")
 			http.Error(w, "\"Missing X-Api-Key\"", http.StatusForbidden)
 			return
 		}
@@ -16,6 +17,7 @@ func AuthMiddleware(next http.HandlerFunc, parameterStore *utils.Ssm) http.Handl
 		a4Key := parameterStore.Get("API_KEY_A4")
 
 		if incomingKey != a4Key {
+			println("Unauthorized: Invalid X-Api-Key")
 			http.Error(w, "\"Unauthorized\"", http.StatusForbidden)
 			return
 		}
