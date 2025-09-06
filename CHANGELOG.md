@@ -1,3 +1,14 @@
+## 1.3.3 (2025-09-06)
+
+
+### 🩹 Fixes
+
+- lock tailwind version ([edd8302](https://github.com/vzsoares/shortener/commit/edd8302))
+
+### ❤️  Thank You
+
+- vzsoares @vzsoares
+
 ## 1.3.2 (2025-09-05)
 
 
