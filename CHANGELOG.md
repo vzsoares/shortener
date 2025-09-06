@@ -1,3 +1,14 @@
+## 1.4.0 (2025-09-06)
+
+
+### 🚀 Features
+
+- new env vars; more logs ([5cbc5ae](https://github.com/vzsoares/shortener/commit/5cbc5ae))
+
+### ❤️  Thank You
+
+- vzsoares @vzsoares
+
 ## 1.3.3 (2025-09-06)
 
 
