@@ -1,3 +1,14 @@
+## 1.4.1 (2025-09-06)
+
+
+### 🩹 Fixes
+
+- api base url build ([526f6a7](https://github.com/vzsoares/shortener/commit/526f6a7))
+
+### ❤️  Thank You
+
+- vzsoares @vzsoares
+
 ## 1.4.0 (2025-09-06)
 
 
