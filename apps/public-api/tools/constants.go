@@ -15,7 +15,7 @@ var GET_API_BASE_URL = func() string {
 	if DEBUG {
 		return BASE_API_URL_LOCAL
 	}
-	return fmt.Sprintf("%v/%v", os.Getenv("API_BASE_URL"), "/shortener/v1")
+	return fmt.Sprintf("%v/%v", os.Getenv("API_BASE_URL"), "shortener/v1")
 }
 
 var ConstsMap = utils.ConstsMap{
